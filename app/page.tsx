@@ -1,9 +1,47 @@
-import { ArrowRight, BookOpen, Brain, Lightbulb, Sparkles, Zap, Laptop, BookMarked,
-  MessageCircle, Star, Github } from "lucide-react";
+"use client";
+
+import { ArrowRight, BookOpen, Brain, Lightbulb, Sparkles, Zap, Laptop, BookMarked, MessageCircle, Star, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { motion, Variants } from "framer-motion";
+import MotionWrapper from "@/components/motion-wrapper";
+
+constfadeIn: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 1, ease: "easeOut" } },
+};
+
+const slideUp: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 1, ease: "easeOut" } },
+};
+
+const blobVariants: Variants = {
+  animate: {
+    transform: [
+      "translate(0px, 0px) scale(1)",
+      "translate(30px, -50px) scale(1.1)",
+      "translate(-20px, 20px) scale(0.9)",
+      "translate(0px, 0px) scale(1)",
+    ],
+    transition: {
+      duration: 7,
+      repeat: Infinity,
+    },
+  },
+};
+
+const bounceSlow: Variants = {
+  animate: {
+    y: ["0px", "-10px", "0px"],
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
 
 export default function Home() {
   return (
@@ -18,45 +56,53 @@ export default function Home() {
 
         {/* Floating elements animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute top-60 -right-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-40 left-20 w-64 h-64 bg-green-500/5 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+          <MotionWrapper variants={blobVariants} animate="animate" className="absolute -top-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
+          <MotionWrapper variants={blobVariants} animate="animate" transition={{ delay: 2 }} className="absolute top-60 -right-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
+          <MotionWrapper variants={blobVariants} animate="animate" transition={{ delay: 4 }} className="absolute -bottom-40 left-20 w-64 h-64 bg-green-500/5 rounded-full blur-3xl" />
         </div>
 
         <div className="container px-4 mx-auto max-w-6xl relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="text-left md:pr-8 animate-fade-in">
-              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary mb-6 animate-slide-up">
-                <Sparkles className="h-3.5 w-3.5 mr-2" />
-                <span>AI-powered learning platform</span>
+            <MotionWrapper variants={fadeIn}>
+              <div className="text-left md:pr-8">
+                <MotionWrapper variants={slideUp} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary mb-6">
+                  <Sparkles className="h-3.5 w-3.5 mr-2" />
+                  <span>AI-powered learning platform</span>
+                </MotionWrapper>
+                <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }}>
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-foreground">
+                    Think <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Smarter</span>,<br />
+                    Not Harder
+                  </h1>
+                </MotionWrapper>
+                <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }}>
+                  <p className="text-xl text-muted-foreground max-w-2xl mb-10">
+                    The ultimate tool for understanding any information that matters
+                    most to you, built with Generative AI.
+                  </p>
+                </MotionWrapper>
+                <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }}>
+                  <div className="flex flex-wrap gap-4">
+                    <Button
+                      size="lg"
+                      className="rounded-full px-10 py-6 h-auto text-base font-medium bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
+                      asChild
+                    >
+                      <Link href="/dashboard">Try AI Tutor</Link>
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="rounded-full px-8 py-6 h-auto text-base font-medium hover:bg-muted/50 transition-all"
+                      asChild
+                    >
+                      <Link href="#features">Learn More</Link>
+                    </Button>
+                  </div>
+                </MotionWrapper>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-foreground animate-slide-up animation-delay-300">
-                Think <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Smarter</span>,<br />
-                Not Harder
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mb-10 animate-slide-up animation-delay-600">
-                The ultimate tool for understanding any information that matters
-                most to you, built with Generative AI.
-              </p>
-              <div className="flex flex-wrap gap-4 animate-slide-up animation-delay-900">
-                <Button
-                  size="lg"
-                  className="rounded-full px-10 py-6 h-auto text-base font-medium bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
-                  asChild
-                >
-                  <Link href="/dashboard">Try AI Tutor</Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="rounded-full px-8 py-6 h-auto text-base font-medium hover:bg-muted/50 transition-all"
-                  asChild
-                >
-                  <Link href="#features">Learn More</Link>
-                </Button>
-              </div>
-            </div>
-            <div className="hidden md:block animate-fade-in animation-delay-1200">
+            </MotionWrapper>
+            <MotionWrapper variants={fadeIn} transition={{ delay: 1.2 }} className="hidden md:block">
               <div className="relative rounded-xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-all duration-300 group">
                 <Image
                   src="/images/hero-image.jpg"
@@ -71,7 +117,7 @@ export default function Home() {
                   <p className="text-sm font-medium">Experience personalized learning with AI that adapts to your needs</p>
                 </div>
               </div>
-            </div>
+            </MotionWrapper>
           </div>
         </div>
       </section>
@@ -79,17 +125,17 @@ export default function Home() {
       {/* Your AI Tutor Section */}
       <section id="features" className="py-24 bg-muted/10">
         <div className="container px-4 mx-auto max-w-6xl">
-          <div className="animate-fade-in">
+          <MotionWrapper variants={fadeIn}>
             <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8 text-foreground">
               Your Personalized AI Learning Assistant
             </h2>
             <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-24">
               Experience a revolutionary approach to learning with our AI-powered platform that adapts to your unique needs
             </p>
-          </div>
+          </MotionWrapper>
 
           {/* Feature 1 */}
-          <div className="grid md:grid-cols-5 gap-16 mb-32 items-center opacity-0 translate-y-8 animate-slide-up-fade-in">
+          <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }} className="grid md:grid-cols-5 gap-16 mb-32 items-center">
             <div className="space-y-6 order-2 md:order-1 md:col-span-2">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10">
                 <Sparkles className="h-6 w-6 text-primary" />
@@ -118,10 +164,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent mix-blend-overlay"></div>
               </div>
             </div>
-          </div>
+          </MotionWrapper>
 
           {/* Feature 2 */}
-          <div className="grid md:grid-cols-5 gap-16 mb-32 items-center opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-300">
+          <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }} className="grid md:grid-cols-5 gap-16 mb-32 items-center">
             <div className="rounded-xl overflow-hidden shadow-xl md:col-span-3 transform hover:scale-[1.02] transition-all duration-300">
               <div className="relative">
                 <Image
@@ -148,10 +194,10 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-          </div>
+          </MotionWrapper>
 
           {/* Feature 3 */}
-          <div className="grid md:grid-cols-5 gap-16 mb-32 items-center opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-600">
+          <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }} className="grid md:grid-cols-5 gap-16 mb-32 items-center">
             <div className="space-y-6 order-2 md:order-1 md:col-span-2">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-400/20 to-yellow-400/10">
                 <Lightbulb className="h-6 w-6 text-amber-500" />
@@ -178,10 +224,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-transparent mix-blend-overlay"></div>
               </div>
             </div>
-          </div>
+          </MotionWrapper>
 
           {/* Feature 4 */}
-          <div className="grid md:grid-cols-5 gap-16 mb-16 items-center opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-900">
+          <MotionWrapper variants={slideUp} transition={{ delay: 1.2 }} className="grid md:grid-cols-5 gap-16 mb-16 items-center">
             <div className="rounded-xl overflow-hidden shadow-xl md:col-span-3 transform hover:scale-[1.02] transition-all duration-300">
               <div className="relative">
                 <Image
@@ -208,7 +254,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-          </div>
+          </MotionWrapper>
         </div>
       </section>
 
@@ -236,18 +282,18 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-background to-muted/10 to-background"></div>
         </div>
         <div className="container px-4 mx-auto max-w-6xl relative z-10">
-          <div className="text-center mb-16 animate-fade-in">
+          <MotionWrapper variants={fadeIn} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-foreground">
               What Our Users Say
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Join thousands of students and professionals who have transformed their learning experience
             </p>
-          </div>
+          </MotionWrapper>
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Testimonial 1 */}
-            <div className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300 opacity-0 translate-y-8 animate-slide-up-fade-in">
+            <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }} className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300">
               <div className="flex items-center mb-4">
                 <div className="flex-shrink-0 mr-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -270,10 +316,10 @@ export default function Home() {
                 "AI Tutor has completely changed how I approach difficult programming concepts. The personalized learning paths helped me master algorithms in half the time it would have taken otherwise."
               </p>
               <p className="text-sm text-muted-foreground">2 weeks ago</p>
-            </div>
+            </MotionWrapper>
 
             {/* Testimonial 2 */}
-            <div className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300 opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-300">
+            <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }} className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300">
               <div className="flex items-center mb-4">
                 <div className="flex-shrink-0 mr-4">
                   <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
@@ -296,10 +342,10 @@ export default function Home() {
                 "Studying anatomy became so much easier with AI Tutor. The interactive explanations and source-based learning helped me connect concepts that I was struggling with for months."
               </p>
               <p className="text-sm text-muted-foreground">1 month ago</p>
-            </div>
+            </MotionWrapper>
 
             {/* Testimonial 3 */}
-            <div className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300 opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-600">
+            <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }} className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300">
               <div className="flex items-center mb-4">
                 <div className="flex-shrink-0 mr-4">
                   <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
@@ -316,13 +362,13 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
-                <Star className="h-5 w-5 text-amber-500" />
+                <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
                 "I needed to quickly learn about market analysis for a new project. AI Tutor created a custom course that fit my schedule and learning style. The mobile access was perfect for my busy lifestyle."
               </p>
               <p className="text-sm text-muted-foreground">3 months ago</p>
-            </div>
+            </MotionWrapper>
           </div>
         </div>
       </section>
@@ -330,16 +376,18 @@ export default function Home() {
       {/* Use Cases Section */}
       <section className="py-24">
         <div className="container px-4 mx-auto max-w-6xl">
-          <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8 text-foreground animate-fade-in">
-            How People Are Using AI Tutor
-          </h2>
-          <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-16 animate-fade-in">
-            Discover the many ways our platform can help you achieve your learning goals
-          </p>
+          <MotionWrapper variants={fadeIn} className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8 text-foreground">
+              How People Are Using AI Tutor
+            </h2>
+            <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-16">
+              Discover the many ways our platform can help you achieve your learning goals
+            </p>
+          </MotionWrapper>
 
           <div className="grid md:grid-cols-3 gap-10">
             {/* Use Case 1 */}
-            <div className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px] opacity-0 translate-y-8 animate-slide-up-fade-in">
+            <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }} className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]">
               <div className="flex flex-col items-center text-center mb-5">
                 <div className="bg-gradient-to-br from-primary/20 to-primary/5 p-4 rounded-full mb-4">
                   <BookOpen className="h-8 w-8 text-primary" />
@@ -349,10 +397,10 @@ export default function Home() {
               <p className="text-muted-foreground text-lg leading-relaxed text-center">
                 Break down difficult concepts from textbooks and research papers into digestible, easy-to-understand explanations.
               </p>
-            </div>
+            </MotionWrapper>
 
             {/* Use Case 2 */}
-            <div className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px] opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-300">
+            <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }} className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]">
               <div className="flex flex-col items-center text-center mb-5">
                 <div className="bg-gradient-to-br from-blue-400/20 to-blue-400/5 p-4 rounded-full mb-4">
                   <Brain className="h-8 w-8 text-blue-500" />
@@ -362,10 +410,10 @@ export default function Home() {
               <p className="text-muted-foreground text-lg leading-relaxed text-center">
                 Extract key insights from multiple sources and connect related concepts to create comprehensive knowledge maps.
               </p>
-            </div>
+            </MotionWrapper>
 
             {/* Use Case 3 */}
-            <div className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px] opacity-0 translate-y-8 animate-slide-up-fade-in animation-delay-600">
+            <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }} className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]">
               <div className="flex flex-col items-center text-center mb-5">
                 <div className="bg-gradient-to-br from-amber-400/20 to-amber-400/5 p-4 rounded-full mb-4">
                   <Zap className="h-8 w-8 text-amber-500" />
@@ -375,7 +423,7 @@ export default function Home() {
               <p className="text-muted-foreground text-lg leading-relaxed text-center">
                 Learn new subjects faster with interactive explanations and practical examples that reinforce theoretical concepts.
               </p>
-            </div>
+            </MotionWrapper>
           </div>
         </div>
       </section>
@@ -389,50 +437,56 @@ export default function Home() {
 
         {/* Floating elements animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
-          <div className="absolute bottom-40 -left-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl animate-blob"></div>
+          <MotionWrapper variants={blobVariants} animate="animate" transition={{ delay: 4 }} className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+          <MotionWrapper variants={blobVariants} animate="animate" className="absolute bottom-40 -left-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
         </div>
 
         <div className="container px-4 mx-auto text-center max-w-4xl relative z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 mb-8 animate-pulse">
+          <motion.div
+            variants={bounceSlow}
+            animate="animate"
+            className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 mb-8"
+          >
             <Sparkles className="h-8 w-8 text-primary" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-semibold mb-8 text-foreground animate-fade-in">
-            Ready to transform how you learn?
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in animation-delay-300">
-            Join thousands of students and professionals who are learning smarter, not harder.
-            Experience the future of personalized education today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in animation-delay-600">
-            <Button
-              size="lg"
-              className="rounded-full px-10 py-6 h-auto text-base font-medium bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
-              asChild
-            >
-              <Link href="/dashboard">Get Started with AI Tutor</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-full px-10 py-6 h-auto text-base font-medium hover:bg-muted/50 transition-all"
-              asChild
-            >
-              <Link href="/courses">Browse Courses</Link>
-            </Button>
-          </div>
+          </motion.div>
+          <MotionWrapper variants={fadeIn} className="text-center">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-8 text-foreground">
+              Ready to transform how you learn?
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+              Join thousands of students and professionals who are learning smarter, not harder.
+              Experience the future of personalized education today.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="rounded-full px-10 py-6 h-auto text-base font-medium bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
+                asChild
+              >
+                <Link href="/dashboard">Get Started with AI Tutor</Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full px-10 py-6 h-auto text-base font-medium hover:bg-muted/50 transition-all"
+                asChild
+              >
+                <Link href="/courses">Browse Courses</Link>
+              </Button>
+            </div>
+          </MotionWrapper>
         </div>
       </section>
 
       {/* Floating Chat Button */}
-      <div className="fixed bottom-6 right-6 z-50 animate-bounce-slow">
+      <MotionWrapper variants={bounceSlow} animate="animate" className="fixed bottom-6 right-6 z-50">
         <Button
           className="h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-white p-0 flex items-center justify-center group"
           aria-label="Chat with AI Assistant"
         >
           <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
         </Button>
-      </div>
+      </MotionWrapper>
 
       {/* Footer */}
       <footer className="bg-muted/30 border-t border-border">
@@ -448,9 +502,9 @@ export default function Home() {
               </p>
               <div className="flex space-x-4">
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" asChild>
-                  <Link href="https://github.com/qxnZero" target="_blank" rel="noopener noreferrer">
+                  <Link href={process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/qxnZero"} target="_blank" rel="noopener noreferrer">
                     <Github className="h-4 w-4" />
-                    <span className="sr-only">GitHub - qxnZero</span>
+                    <span className="sr-only">GitHub</span>
                   </Link>
                 </Button>
               </div>
@@ -482,7 +536,7 @@ export default function Home() {
             </p>
             <div className="flex items-center mt-4 md:mt-0">
               <span className="text-sm text-muted-foreground flex items-center">
-                Abhishek Yadav
+                {process.env.NEXT_PUBLIC_AUTHOR_NAME || "Abhishek Yadav"}
               </span>
             </div>
           </div>
