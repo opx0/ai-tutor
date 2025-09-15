@@ -1,10 +1,26 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
-const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_SECRET_ID!,
-});
+let razorpay: Razorpay | null = null;
+
+function getRazorpayClient() {
+  if (!razorpay) {
+    const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const key_secret = process.env.RAZORPAY_SECRET_ID;
+
+    if (!key_id || !key_secret) {
+      // In a real application, you might want to log this error or handle it differently
+      // For now, we'll just return null and let the calling function handle it
+      return null;
+    }
+
+    razorpay = new Razorpay({
+      key_id,
+      key_secret,
+    });
+  }
+  return razorpay;
+}
 
 export const SUBSCRIPTION_PLANS = {
   MONTHLY: {
@@ -42,11 +58,16 @@ export async function createOrder(
   currency: string = "INR",
   receipt: string
 ) {
+  const client = getRazorpayClient();
+  if (!client) {
+    throw new Error("Razorpay client is not initialized.");
+  }
+
   try {
     // Ensure receipt is no more than 40 characters (Razorpay requirement)
     const truncatedReceipt = receipt.substring(0, 40);
 
-    const order = await razorpay.orders.create({
+    const order = await client.orders.create({
       amount,
       currency,
       receipt: truncatedReceipt,
@@ -64,8 +85,12 @@ export function verifyPaymentSignature(
   paymentId: string,
   signature: string
 ) {
+  const key_secret = process.env.RAZORPAY_SECRET_ID;
+  if (!key_secret) {
+    throw new Error("Razorpay secret ID is not configured.");
+  }
   const generatedSignature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_SECRET_ID!)
+    .createHmac("sha256", key_secret)
     .update(`${orderId}|${paymentId}`)
     .digest("hex");
 
@@ -74,8 +99,12 @@ export function verifyPaymentSignature(
 
 // Create a Razorpay customer
 export async function createCustomer(name: string, email: string) {
+  const client = getRazorpayClient();
+  if (!client) {
+    throw new Error("Razorpay client is not initialized.");
+  }
   try {
-    const customer = await razorpay.customers.create({
+    const customer = await client.customers.create({
       name,
       email,
       fail_existing: 0,
@@ -93,10 +122,14 @@ export async function createSubscription(
   customerId: string,
   totalCount: number = 12
 ) {
+  const client = getRazorpayClient();
+  if (!client) {
+    throw new Error("Razorpay client is not initialized.");
+  }
   try {
     // Note: This is a simplified version - in a real implementation,
     // you would need to use the correct Razorpay API parameters
-    const subscription = await razorpay.subscriptions.create({
+    const subscription = await client.subscriptions.create({
       plan_id: planId,
       // Using any to bypass TypeScript checking for this example
       // to be currected In production, use the correct types from Razorpay
@@ -112,8 +145,12 @@ export async function createSubscription(
 
 // Cancel a Razorpay subscription
 export async function cancelSubscription(subscriptionId: string) {
+  const client = getRazorpayClient();
+  if (!client) {
+    throw new Error("Razorpay client is not initialized.");
+  }
   try {
-    const subscription = await razorpay.subscriptions.cancel(subscriptionId);
+    const subscription = await client.subscriptions.cancel(subscriptionId);
     return subscription;
   } catch (error) {
     console.error("Error cancelling Razorpay subscription:", error);
@@ -123,8 +160,12 @@ export async function cancelSubscription(subscriptionId: string) {
 
 // Get subscription details
 export async function getSubscription(subscriptionId: string) {
+  const client = getRazorpayClient();
+  if (!client) {
+    throw new Error("Razorpay client is not initialized.");
+  }
   try {
-    const subscription = await razorpay.subscriptions.fetch(subscriptionId);
+    const subscription = await client.subscriptions.fetch(subscriptionId);
     return subscription;
   } catch (error) {
     console.error("Error fetching Razorpay subscription:", error);
