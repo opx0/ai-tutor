@@ -7,7 +7,7 @@ import Image from "next/image";
 import { motion, Variants } from "framer-motion";
 import MotionWrapper from "@/components/motion-wrapper";
 
-constfadeIn: Variants = {
+const fadeIn: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 1, ease: "easeOut" } },
 };
