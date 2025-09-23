@@ -108,25 +108,22 @@ function parseJsonResponse(responseText: string): CourseData {
 
   // Approach 4: Fix common JSON issues
   try {
-    // Replace unescaped newlines in string values
-    const fixedJson = jsonSubstring.replace(
-      /"([^"\\]*(\\.[^"\\]*)*)"/g,
-      (match: string) => match.replace(/\n/g, "\\n")
-    );
-
-    // Also escape HTML tags in content fields
-    const htmlEscapedJson = fixedJson.replace(
-      /"content":\s*"([^"]*)"/g,
-      (_match, content) => {
-        // Replace < and > with their escaped versions, but only outside of code blocks
-        const escapedContent = content
-          .replace(/</g, "\\u003c")
-          .replace(/>/g, "\\u003e");
-        return `"content":"${escapedContent}"`;
+    // Replace unescaped newlines in string values using a state machine
+    let fixedJson = "";
+    let inString = false;
+    for (let i = 0; i < jsonSubstring.length; i++) {
+      const char = jsonSubstring[i];
+      if (char === '"' && (i === 0 || jsonSubstring[i - 1] !== '\\')) {
+        inString = !inString;
       }
-    );
+      if (char === '\n' && inString) {
+        fixedJson += '\\n';
+      } else {
+        fixedJson += char;
+      }
+    }
 
-    return JSON.parse(htmlEscapedJson);
+    return JSON.parse(fixedJson);
   } catch (e) {
     // Continue to next approach
   }
