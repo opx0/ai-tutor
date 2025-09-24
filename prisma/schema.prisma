@@ -17,18 +17,6 @@ model User {
   password          String?
   image             String?
 
-
-  provider          String?
-  providerAccountId String?
-  refresh_token     String?   @db.Text
-  access_token      String?   @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?   @db.Text
-  session_state     String?
-
-
   subscriptionStatus      String    @default("free") // free, premium, cancelled
   subscriptionExpiresAt   DateTime?
   razorpayCustomerId      String?
@@ -38,15 +26,34 @@ model User {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
+  accounts      Account[]
   sessions      Session[]
+  authenticators Authenticator[]
+
   courses       Course[]
   progress      UserProgress[]
   notes         Note[]
   bookmarks     Bookmark[]
   transactions  SubscriptionTransaction[]
+}
 
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
-  @@index([provider, providerAccountId], name: "provider_providerAccountId")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
@@ -63,6 +70,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Authenticator {
+  id                   String  @id @default(cuid())
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Course {

@@ -93,3 +93,8 @@
 [2025-06-07T06:46:56.756Z] [INFO] [zktnpvkhlnq] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/home/abhi/oharadex/project/AI-Tutor/logs/nextjs-backend.log"}
 [2025-06-07T06:52:22.360Z] [INFO] [jcayxqermj] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/home/abhi/oharadex/project/AI-Tutor/logs/nextjs-backend.log"}
 [2025-06-07T06:52:24.457Z] [INFO] [it6phd955pq] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/home/abhi/oharadex/project/AI-Tutor/logs/nextjs-backend.log"}
+[2025-09-24T13:05:54.488Z] [INFO] [iq32r6xnx2e] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/app/logs/nextjs-backend.log"}
+[2025-09-24T13:06:23.518Z] [INFO] [rgntmom9lm] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/app/logs/nextjs-backend.log"}
+[2025-09-24T13:07:40.879Z] [INFO] [vadjt5851o] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/app/logs/nextjs-backend.log"}
+[2025-09-24T13:09:10.264Z] [INFO] [28txc8ag83q] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/app/logs/nextjs-backend.log"}
+[2025-09-24T13:09:11.239Z] [INFO] [wdzj75n65e] [UNKNOWN UNKNOWN] [UNKNOWN] [anonymous] Next.js Backend Logger initialized {"logLevel":"INFO","logFile":"/app/logs/nextjs-backend.log"}

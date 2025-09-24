@@ -1,0 +1,61 @@
+   ▲ Next.js 15.2.4
+   - Environments: .env
+   - Experiments (use with caution):
+     ✓ webpackBuildWorker
+     ✓ parallelServerCompiles
+     ✓ parallelServerBuildTraces
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 12.0s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+[Next.js] [INFO] Next.js Backend Logger initialized
+   Generating static pages (0/27) ...
+   Generating static pages (6/27)
+   Generating static pages (13/27)
+   Generating static pages (20/27)
+[Next.js] [INFO] Next.js Backend Logger initialized
+ ✓ Generating static pages (27/27)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    48.8 kB         160 kB
+├ ○ /_not-found                            977 B         101 kB
+├ ƒ /api/auth/[...nextauth]                171 B         101 kB
+├ ƒ /api/auth/signup                       171 B         101 kB
+├ ƒ /api/bookmarks                         171 B         101 kB
+├ ƒ /api/course-statistics                 171 B         101 kB
+├ ƒ /api/courses                           171 B         101 kB
+├ ƒ /api/courses/access                    171 B         101 kB
+├ ƒ /api/courses/generate                  171 B         101 kB
+├ ƒ /api/health                            171 B         101 kB
+├ ƒ /api/knowledge-test                    171 B         101 kB
+├ ƒ /api/notes                             171 B         101 kB
+├ ƒ /api/subscriptions                     171 B         101 kB
+├ ƒ /api/subscriptions/verify              171 B         101 kB
+├ ƒ /api/teaching-assistant                171 B         101 kB
+├ ƒ /api/user-activity                     171 B         101 kB
+├ ƒ /api/user-progress                     171 B         101 kB
+├ ○ /auth/signin                         3.73 kB         156 kB
+├ ○ /auth/signup                         3.74 kB         156 kB
+├ ƒ /bookmarks                             175 B         104 kB
+├ ○ /course-form                           367 B         101 kB
+├ ○ /courses                             8.47 kB         149 kB
+├ ƒ /courses/[id]                         5.1 kB         122 kB
+├ ƒ /courses/[id]/[lessonId]              161 kB         291 kB
+├ ƒ /dashboard                           1.86 kB         113 kB
+├ ƒ /notes                                 175 B         104 kB
+├ ƒ /profile                             2.18 kB         110 kB
+└ ○ /subscription                        3.82 kB         131 kB
++ First Load JS shared by all             101 kB
+  ├ chunks/4bd1b696-c3290c40dc0cdf83.js  53.2 kB
+  ├ chunks/684-b48a82c0d9f67949.js       45.3 kB
+  └ other shared chunks (total)          1.93 kB
+
+
+ƒ Middleware                             32.4 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
