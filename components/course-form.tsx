@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2, Sparkles } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -55,10 +56,12 @@ export default function CourseForm() {
       }
 
       const data = await response.json()
+      toast.success("Course generated successfully! Redirecting...")
       router.push(`/courses/${data.id}`)
       router.refresh()
     } catch (error) {
       console.error("Error generating course:", error)
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -87,7 +90,7 @@ export default function CourseForm() {
               </div>
 
               <div>
-                <Label>Difficulty Level</Label>
+                <Label id="difficulty-label">Difficulty Level</Label>
                 <FormField
                   control={form.control}
                   name="difficulty"
@@ -101,6 +104,7 @@ export default function CourseForm() {
                             if (value) field.onChange(value)
                           }}
                           className="justify-start mt-2 gap-2"
+                          aria-labelledby="difficulty-label"
                         >
                           <ToggleGroupItem value="Beginner" className="px-5 py-2 rounded-md">
                             Beginner
