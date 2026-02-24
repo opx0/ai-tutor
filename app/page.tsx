@@ -1,13 +1,16 @@
 
 "use client";
 
-import { ArrowRight, BookOpen, Brain, Lightbulb, Sparkles, Zap, Laptop, BookMarked, MessageCircle, Star, Github } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import { motion, Variants } from "framer-motion";
 import MotionWrapper from "@/components/motion-wrapper";
-import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
+import { Button } from "@/components/ui/button";
+import { motion, Variants } from "framer-motion";
+import { ArrowRight, BookMarked, BookOpen, Brain, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 
 const fadeIn: Variants = {
   hidden: { opacity: 0 },
@@ -46,6 +49,19 @@ const bounceSlow: Variants = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/dashboard");
+    }
+  }, [status, router]);
+
+  if (status === "loading" || status === "authenticated") {
+    return null;
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
