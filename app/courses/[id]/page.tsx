@@ -1,12 +1,12 @@
-import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { prisma } from "@/lib/prisma";
 import CourseDetail from "@/components/course-detail";
-import { getServerSession } from "next-auth";
+import { Button } from "@/components/ui/button";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 
 // Define the params type
 type PageParams = {
@@ -17,11 +17,11 @@ type PageParams = {
 export async function generateMetadata({
   params,
 }: {
-  params: PageParams;
+  params: Promise<PageParams>;
 }): Promise<Metadata> {
   try {
     // Extract params safely
-    const courseId = params?.id;
+    const { id: courseId } = await params;
 
     if (!courseId) {
       return {
@@ -55,8 +55,8 @@ export async function generateMetadata({
 }
 
 interface PageProps {
-  params: PageParams;
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<PageParams>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function CoursePage({
@@ -65,7 +65,7 @@ export default async function CoursePage({
 }: PageProps) {
   try {
     // Extract params safely
-    const courseId = params?.id;
+    const { id: courseId } = await params;
 
     if (!courseId) {
       notFound();
