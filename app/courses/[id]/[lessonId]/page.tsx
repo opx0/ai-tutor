@@ -1,9 +1,9 @@
-import { notFound, redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import LessonPageContent from "./LessonPageContent";
+import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import { notFound, redirect } from "next/navigation";
+import LessonPageContent from "./LessonPageContent";
 
 // Define the params type
 type PageParams = {
@@ -15,12 +15,11 @@ type PageParams = {
 export async function generateMetadata({
   params,
 }: {
-  params: PageParams;
+  params: Promise<PageParams>;
 }): Promise<Metadata> {
   try {
     // Extract params safely
-    const courseId = params?.id;
-    const lessonId = params?.lessonId;
+    const { id: courseId, lessonId } = await params;
 
     if (!lessonId) {
       return {
@@ -62,8 +61,8 @@ export async function generateMetadata({
 }
 
 interface PageProps {
-  params: PageParams;
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<PageParams>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function LessonPage({
@@ -72,8 +71,7 @@ export default async function LessonPage({
 }: PageProps) {
   try {
     // Extract params safely
-    const courseId = params?.id;
-    const lessonId = params?.lessonId;
+    const { id: courseId, lessonId } = await params;
 
     if (!courseId || !lessonId) {
       notFound();
