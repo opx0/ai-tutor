@@ -1,3 +1,4 @@
+
 "use client";
 
 import MotionWrapper from "@/components/motion-wrapper";
@@ -9,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
 
 const fadeIn: Variants = {
   hidden: { opacity: 0 },
@@ -63,13 +65,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="py-20 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-background"></div>
-          <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
-        </div>
-
+      <HeroHighlight containerClassName="py-20 md:py-32 h-auto min-h-screen overflow-hidden">
         {/* Floating elements animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <MotionWrapper variants={blobVariants} animate="animate" className="absolute -top-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
@@ -87,7 +83,7 @@ export default function Home() {
                 </MotionWrapper>
                 <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }}>
                   <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-foreground">
-                    Think <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Smarter</span>,<br />
+                    Think <Highlight className="text-black dark:text-white">Smarter</Highlight>,<br />
                     Not Harder
                   </h1>
                 </MotionWrapper>
@@ -136,7 +132,7 @@ export default function Home() {
             </MotionWrapper>
           </div>
         </div>
-      </section>
+      </HeroHighlight>
 
       {/* Your AI Tutor Section */}
       <section id="features" className="py-24 bg-muted/10">
