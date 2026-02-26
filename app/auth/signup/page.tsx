@@ -1,32 +1,23 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
 import { toast } from "sonner";
 
 const formSchema = z
@@ -44,7 +35,7 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"], // Apply error to the confirmPassword field
+    path: ["confirmPassword"],
   });
 
 function SignUpForm() {
@@ -69,7 +60,6 @@ function SignUpForm() {
 
     try {
       const response = await fetch("/api/auth/signup", {
-        // Ensure this endpoint exists
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,21 +67,20 @@ function SignUpForm() {
         body: JSON.stringify({
           name: values.name,
           email: values.email,
-          password: values.password, // Send the plain password to the backend for hashing
+          password: values.password,
         }),
       });
 
-      const data = await response.json(); // Always try to parse JSON
+      const data = await response.json();
 
       if (!response.ok) {
-        // Use message from backend response if available
         throw new Error(
           data.message || `HTTP error! status: ${response.status}`
         );
       }
 
       toast.success("Account created successfully! Please sign in.");
-      router.push("/auth/signin"); // Redirect to sign-in page
+      router.push("/auth/signin");
     } catch (error) {
       console.error("Registration error:", error);
       toast.error(
@@ -114,165 +103,202 @@ function SignUpForm() {
   };
 
   return (
-    <div className="container flex min-h-screen w-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30">
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
-        <div className="flex flex-col items-center mb-6 space-y-2">
-          <h1 className="text-3xl font-bold">AI Tutor</h1>
-          <p className="text-muted-foreground">Your personalized learning assistant</p>
+    <div className="flex w-[100%] flex-col min-h-screen bg-black relative">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0">
+          <CanvasRevealEffect
+            animationSpeed={3}
+            containerClassName="bg-black"
+            colors={[
+              [255, 255, 255],
+              [255, 255, 255],
+            ]}
+            dotSize={6}
+            reverse={false}
+          />
         </div>
-        <Card className="border-none shadow-lg dark:shadow-primary/5 sm:border sm:rounded-xl">
-          <CardHeader className="space-y-2 pb-2">
-            <CardTitle className="text-center text-2xl font-bold">
-              Join AI Tutor
-            </CardTitle>
-            <CardDescription className="text-center">
-              Create an account to start your learning journey
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              variant="outline"
-              onClick={handleGoogleSignUp}
-              disabled={isGoogleLoading}
-              className="w-full rounded-md border-muted-foreground/20 hover:bg-muted/50 transition-colors"
-            >
-              {isGoogleLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <svg
-                  className="mr-2 h-5 w-5"
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fab"
-                  data-icon="google"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 488 512"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                  ></path>
-                </svg>
-              )}
-              Sign up with Google
-            </Button>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,1)_0%,_transparent_100%)]" />
+        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-black to-transparent" />
+      </div>
 
-            <div className="relative my-2">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-muted-foreground/20" />
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-2 text-muted-foreground">
-                  or continue with email
-                </span>
-              </div>
-            </div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
+      <div className="relative z-10 flex flex-col flex-1">
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 flex bg-[#1f1f1f57] backdrop-blur-md border border-[#333] rounded-full p-1.5 shadow-lg">
+          <Link href="/auth/signin" className="px-6 py-2 rounded-full text-gray-400 hover:text-white text-sm font-medium transition-all">
+            Sign In
+          </Link>
+          <Link href="/auth/signup" className="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-all shadow-sm">
+            Sign Up
+          </Link>
+        </div>
+
+        <div className="flex flex-1 flex-col lg:flex-row">
+          <div className="flex-1 flex flex-col justify-center items-center">
+            <div className="w-full mt-[100px] max-w-sm px-4 md:px-0">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="space-y-6 text-center"
               >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-sm font-medium">Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="John Doe"
-                          className="rounded-md h-10 border-muted-foreground/20 focus:border-primary focus:ring-1 focus:ring-primary"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-sm font-medium">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="john.doe@example.com"
-                          className="rounded-md h-10 border-muted-foreground/20 focus:border-primary focus:ring-1 focus:ring-primary"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-sm font-medium">Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="********"
-                          className="rounded-md h-10 border-muted-foreground/20 focus:border-primary focus:ring-1 focus:ring-primary"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-sm font-medium">Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="********"
-                          className="rounded-md h-10 border-muted-foreground/20 focus:border-primary focus:ring-1 focus:ring-primary"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs" />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full rounded-md h-10 mt-2 bg-primary hover:bg-primary/90 transition-colors"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account...
-                    </>
-                  ) : (
-                    "Create account"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-          <CardFooter className="pt-0 pb-6 px-8 flex justify-center">
-            <div className="text-sm text-muted-foreground text-center">
-              Already have an account?{" "}
-              <Link
-                href="/auth/signin"
-                className="font-medium text-primary hover:underline transition-colors"
-              >
-                Sign in
-              </Link>
+                <div className="space-y-1">
+                  <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
+                    Join AI Tutor
+                  </h1>
+                  <p className="text-[1.2rem] text-white/70 font-light">
+                    Create an account to start your learning journey
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignUp}
+                    disabled={isGoogleLoading}
+                    className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full py-3 px-4 transition-colors disabled:opacity-50"
+                  >
+                    {isGoogleLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <svg
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fab"
+                        data-icon="google"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 488 512"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                        ></path>
+                      </svg>
+                    )}
+                    <span>Sign up with Google</span>
+                  </button>
+
+                  <div className="flex items-center gap-4">
+                    <div className="h-px bg-white/10 flex-1" />
+                    <span className="text-white/40 text-sm">or email</span>
+                    <div className="h-px bg-white/10 flex-1" />
+                  </div>
+
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-3 text-left"
+                      autoComplete="off"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1">
+                            <FormControl>
+                              <input
+                                type="text"
+                                placeholder="Full name"
+                                autoComplete="name"
+                                className="w-full backdrop-blur-[1px] text-white border border-white/10 bg-white/5 rounded-full py-3 px-6 focus:outline-none focus:border-white/30 transition-colors"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs text-red-400 pl-4" />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1">
+                            <FormControl>
+                              <input
+                                type="email"
+                                placeholder="Email address"
+                                autoComplete="new-email"
+                                className="w-full backdrop-blur-[1px] text-white border border-white/10 bg-white/5 rounded-full py-3 px-6 focus:outline-none focus:border-white/30 transition-colors"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs text-red-400 pl-4" />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1">
+                            <FormControl>
+                              <input
+                                type="password"
+                                placeholder="Password"
+                                autoComplete="new-password"
+                                className="w-full backdrop-blur-[1px] text-white border border-white/10 bg-white/5 rounded-full py-3 px-6 focus:outline-none focus:border-white/30 transition-colors"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs text-red-400 pl-4" />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1">
+                            <FormControl>
+                              <div className="relative">
+                                <input
+                                  type="password"
+                                  placeholder="Confirm Password"
+                                  autoComplete="new-password"
+                                  className="w-full backdrop-blur-[1px] text-white border border-white/10 bg-white/5 rounded-full py-3 px-6 pb-3 focus:outline-none focus:border-white/30 transition-colors pr-12"
+                                  {...field}
+                                />
+                                <button
+                                  type="submit"
+                                  disabled={isLoading}
+                                  className="absolute right-1.5 top-1.5 text-black w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-white/90 transition-colors group overflow-hidden disabled:opacity-50"
+                                >
+                                  {isLoading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <span className="relative w-full h-full block overflow-hidden">
+                                      <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-full">
+                                        →
+                                      </span>
+                                      <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 -translate-x-full group-hover:translate-x-0">
+                                        →
+                                      </span>
+                                    </span>
+                                  )}
+                                </button>
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-xs text-red-400 pl-4" />
+                          </FormItem>
+                        )}
+                      />
+                    </form>
+                  </Form>
+                </div>
+
+                <p className="text-xs text-white/40 pt-6">
+                  Already have an account?{" "}
+                  <Link
+                    href="/auth/signin"
+                    className="text-white hover:underline transition-colors"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </motion.div>
             </div>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -282,11 +308,8 @@ export default function SignUpPage() {
   return (
     <Suspense
       fallback={
-        <div className="container flex min-h-screen w-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30">
-          <div className="flex items-center justify-center space-x-2">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="text-lg font-medium">Loading...</span>
-          </div>
+        <div className="flex min-h-screen w-full items-center justify-center bg-black">
+          <Loader2 className="h-6 w-6 animate-spin text-white" />
         </div>
       }
     >
