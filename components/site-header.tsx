@@ -1,106 +1,163 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {
+    Bookmark,
+    CreditCard,
+    GraduationCap,
+    LayoutDashboard,
+    LogOut,
+    StickyNote,
+} from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { BookOpen, LogOut } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useMemo } from "react";
 
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ExpandableTabs } from "@/components/ui/expandable-tabs";
+
+const navTabs = [
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "Courses", icon: GraduationCap, href: "/courses" },
+  { type: "separator" as const },
+  { title: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
+  { title: "Notes", icon: StickyNote, href: "/notes" },
+  { type: "separator" as const },
+  { title: "Subscription", icon: CreditCard, href: "/subscription" },
+];
 
 export function SiteHeader() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
+
+  const tabs = useMemo(
+    () =>
+      navTabs.map((tab) =>
+        tab.type === "separator"
+          ? { type: "separator" as const }
+          : { title: tab.title, icon: tab.icon }
+      ),
+    []
+  );
+
+  // Find the active index based strictly on the current pathname
+  const activeIndex = useMemo(() => {
+    if (!pathname) return null;
+    const index = navTabs.findIndex(
+      (tab) => "href" in tab && tab.href === pathname
+    );
+    return index !== -1 ? index : null;
+  }, [pathname]);
+
+  const handleTabChange = useCallback(
+    (index: number | null) => {
+      if (index === null) return;
+      const tab = navTabs[index];
+      if (tab && "href" in tab && tab.href) {
+        router.push(tab.href);
+      }
+    },
+    [router]
+  );
+
   if (pathname?.startsWith("/auth")) return null;
 
-  const isActive = (path: string) => pathname === path;
-
   return (
-    <header className="sticky top-2 z-50 w-full bg-background/80 backdrop-blur-md border-b mb-3">
-      <div className="container mx-auto px-4">
-        <div className="flex h-12 items-center justify-between">
-          {/* Logo - Left End */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center">
-              <BookOpen className="h-6 w-6 text-primary" />
-              <span className="font-semibold ml-2 text-lg">AI Tutor</span>
-            </Link>
-          </div>
+    <header className="sticky top-4 z-50 w-full mb-6">
+      {/*
+        Container for the centered dock.
+        Instead of a full-width header block, we use a max-width container
+        with extreme margin auto to center the entire navigation.
+      */}
+      <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl relative h-16">
 
-          {/* Main Navigation - Middle */}
-          <nav className="hidden md:flex items-center gap-2">
-            <NavItem href="/dashboard" label="Dashboard" active={isActive("/dashboard")} />
-            <NavItem href="/courses" label="Courses" active={isActive("/courses")} />
-            {/* <NavItem href="/courses?tab=create" label="Create Course" active={pathname === "/courses" && pathname.includes("tab=create")} /> */}
-            <NavItem href="/bookmarks" label="Bookmarks" active={isActive("/bookmarks")} />
-            <NavItem href="/notes" label="Notes" active={isActive("/notes")} />
-            <NavItem href="/subscription" label="Subscription" active={isActive("/subscription")} />
-          </nav>
+        {/* Logo - Absolute Left */}
+        <div className="absolute left-4">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative overflow-hidden rounded-xl border border-border/50 shadow-sm transition-transform group-hover:scale-105">
+              <Image
+                src="/logo.svg"
+                alt="AI Tutor"
+                width={36}
+                height={36}
+                className="bg-background"
+                priority
+              />
+            </div>
+            <span className="font-bold text-lg hidden sm:inline-block tracking-tight text-foreground transition-colors group-hover:text-primary">
+              AI Tutor
+            </span>
+          </Link>
+        </div>
 
-          {/* Right side controls */}
-          <div className="flex items-center gap-2">
-            <ModeToggle />
+        {/* Main Navigation - Absolute Center Dock */}
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2">
+          <ExpandableTabs
+            tabs={tabs}
+            activeIndex={activeIndex}
+            onChange={handleTabChange}
+            activeColor="text-primary"
+            className="shadow-md shadow-black/5" // Extra pop for the centered dock
+          />
+        </nav>
 
-            {status === "loading" ? (
-              <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
-            ) : status === "authenticated" ? (
-              <div className="flex items-center gap-2">
-                <Link href="/profile">
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
-                    <AvatarFallback>
-                      {session?.user?.name
-                        ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase()
-                        : "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
+        {/* Right side controls - Absolute Right */}
+        <div className="absolute right-4 flex items-center gap-3">
+          <ModeToggle />
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="rounded-md hover:bg-destructive/10 hover:text-destructive"
-                  aria-label="Sign out"
-                >
-                  <LogOut className="h-5 w-5" />
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="rounded-md hover:bg-muted/50 transition-colors border-1"
-                  onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
-                >
-                  Sign Up
-                </Button>
-              </div>
-            )}
-          </div>
+          {status === "loading" ? (
+            <div className="h-9 w-9 rounded-full bg-muted animate-pulse"></div>
+          ) : status === "authenticated" ? (
+            <div className="flex items-center gap-2 bg-background/50 backdrop-blur-xl border border-border/50 p-1 rounded-full shadow-sm">
+              <Link href="/profile" className="rounded-full ring-2 ring-transparent transition-all hover:ring-primary/50">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={session?.user?.image || ""}
+                    alt={session?.user?.name || ""}
+                  />
+                  <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">
+                    {session?.user?.name
+                      ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase()
+                      : "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="h-8 w-8 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 bg-background/50 backdrop-blur-xl border border-border/50 p-1 rounded-2xl shadow-sm">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 rounded-xl px-3 hover:bg-muted/50 transition-colors"
+                onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
+              >
+                Sign In
+              </Button>
+              <Button
+                size="sm"
+                className="h-8 rounded-xl px-4 shadow-sm"
+                onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}
+              >
+                Sign Up
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>
-  );
-}
-
-function NavItem({ href, label, active }: { href: string; label: string; active: boolean }) {
-  return (
-    <Link
-      href={href}
-      className={`px-2.5 py-1 text-sm font-medium rounded-md transition-colors ${active
-        ? "bg-accent text-accent-foreground"
-        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}
-    >
-      {label}
-    </Link>
   );
 }
