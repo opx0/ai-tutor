@@ -3,6 +3,7 @@
 
 import MotionWrapper from "@/components/motion-wrapper";
 import { Button } from "@/components/ui/button";
+import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 import { motion, Variants } from "framer-motion";
 import { ArrowRight, BookMarked, BookOpen, Brain, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
 import { useSession } from "next-auth/react";
