@@ -1,26 +1,33 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { getServerSession } from "next-auth";
+import { createErrorResponse, createSuccessResponse } from "@/lib/api-utils";
 import { authOptions } from "@/lib/auth";
+import { logApiRequest, logError, logInfo } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import { SUBSCRIPTION_PLANS, createOrder } from "@/lib/razorpay";
+import { getServerSession } from "next-auth";
+import { type NextRequest } from "next/server";
+import { z } from "zod";
+
+const createOrderSchema = z.object({
+  planId: z.string().min(1, "Plan ID is required"),
+});
 
 // Get subscription plans
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
+    if (!session?.user?.id) {
+      return createErrorResponse(
+        "Unauthorized. Please sign in.",
+        401,
+        undefined,
+        "UNAUTHORIZED"
       );
     }
 
     // Get user's current subscription status
     const user = await prisma.user.findUnique({
-      where: {
-        id: session.user.id,
-      },
+      where: { id: session.user.id },
       select: {
         id: true,
         subscriptionStatus: true,
@@ -30,10 +37,8 @@ export async function GET() {
     });
 
     // Get available subscription plans
-    const subscriptionPlans = await prisma.subscription.findMany({
-      where: {
-        isActive: true,
-      },
+    let subscriptionPlans = await prisma.subscription.findMany({
+      where: { isActive: true },
     });
 
     // If no plans exist in the database, create them
@@ -57,75 +62,77 @@ export async function GET() {
         ],
       });
 
-      // Fetch the newly created plans
-      const newPlans = await prisma.subscription.findMany({
-        where: {
-          isActive: true,
-        },
-      });
-
-      return NextResponse.json({
-        subscriptionStatus: user?.subscriptionStatus || "free",
-        subscriptionExpiresAt: user?.subscriptionExpiresAt || null,
-        freeCoursesUsed: user?.freeCoursesUsed || 0,
-        plans: newPlans,
+      subscriptionPlans = await prisma.subscription.findMany({
+        where: { isActive: true },
       });
     }
 
-    return NextResponse.json({
-      subscriptionStatus: user?.subscriptionStatus || "free",
+    return createSuccessResponse({
+      subscriptionStatus: user?.subscriptionStatus || "FREE",
       subscriptionExpiresAt: user?.subscriptionExpiresAt || null,
       freeCoursesUsed: user?.freeCoursesUsed || 0,
       plans: subscriptionPlans,
     });
   } catch (error) {
-    console.error("Error fetching subscription plans:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch subscription plans" },
-      { status: 500 }
+    logError("Error fetching subscription plans", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to fetch subscription plans",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "SUBSCRIPTION_FETCH_ERROR"
     );
   }
 }
 
 // Create a new subscription order
 export async function POST(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
+    if (!session?.user?.id) {
+      return createErrorResponse(
+        "Unauthorized. Please sign in.",
+        401,
+        undefined,
+        "UNAUTHORIZED"
       );
     }
 
     const body = await req.json();
-    const { planId } = body;
 
-    if (!planId) {
-      return NextResponse.json(
-        { error: "Plan ID is required" },
-        { status: 400 }
+    // Validate input
+    const validation = createOrderSchema.safeParse(body);
+    if (!validation.success) {
+      return createErrorResponse(
+        "Invalid input data",
+        400,
+        JSON.stringify(validation.error.flatten().fieldErrors),
+        "VALIDATION_ERROR"
       );
     }
+
+    const { planId } = validation.data;
 
     // Get the subscription plan
     const plan = await prisma.subscription.findUnique({
-      where: {
-        id: planId,
-      },
+      where: { id: planId },
     });
 
     if (!plan) {
-      return NextResponse.json(
-        { error: "Subscription plan not found" },
-        { status: 404 }
+      return createErrorResponse(
+        "Subscription plan not found",
+        404,
+        undefined,
+        "PLAN_NOT_FOUND"
       );
     }
 
-    // Create a Razorpay order with a short receipt ID (max 40 chars)
+    // Create a Razorpay order
     const receiptId = `sub_${Date.now().toString().slice(-8)}`;
-
     const order = await createOrder(plan.price, plan.currency, receiptId);
 
     // Create a transaction record
@@ -135,36 +142,45 @@ export async function POST(req: NextRequest) {
         subscriptionId: plan.id,
         amount: plan.price,
         currency: plan.currency,
-        status: "created",
+        status: "CREATED",
         razorpayOrderId: order.id,
       },
     });
 
-    return NextResponse.json({
+    logInfo("Subscription order created", {
+      ...requestContext,
+      transactionId: transaction.id,
+    });
+
+    return createSuccessResponse({
       orderId: order.id,
       amount: order.amount,
       currency: order.currency,
       transactionId: transaction.id,
       keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     });
-  } catch (error) {
-    console.error("Error creating subscription order:", error);
+  } catch (error: unknown) {
+    logError("Error creating subscription order", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
 
-    // Provide more specific error messages based on the error type
-    if (error.error && error.error.description) {
-      return NextResponse.json(
-        {
-          error: "Failed to create subscription order",
-          details: error.error.description,
-          code: error.error.code || "UNKNOWN_ERROR",
-        },
-        { status: error.statusCode || 500 }
+    // Provide more specific error messages for Razorpay errors
+    const razorpayError = error as { error?: { description?: string; code?: string }; statusCode?: number };
+    if (razorpayError?.error?.description) {
+      return createErrorResponse(
+        "Failed to create subscription order",
+        razorpayError.statusCode || 500,
+        razorpayError.error.description,
+        razorpayError.error.code || "RAZORPAY_ERROR"
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to create subscription order" },
-      { status: 500 }
+    return createErrorResponse(
+      "Failed to create subscription order",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "SUBSCRIPTION_ORDER_ERROR"
     );
   }
 }

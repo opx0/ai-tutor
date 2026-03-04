@@ -1,20 +1,40 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createErrorResponse, createSuccessResponse } from "@/lib/api-utils";
+import { getTAGeminiModel } from "@/lib/gemini";
+import { logApiRequest, logError, logInfo } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
+import { type NextRequest } from "next/server";
+import { z } from "zod";
 
-// Initialize the Gemini API
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const teachingAssistantSchema = z.object({
+  message: z.string().min(1, "Message is required"),
+  courseId: z.string().min(1, "Course ID is required"),
+  lessonId: z.string().min(1, "Lesson ID is required"),
+  moduleName: z.string().min(1, "Module name is required"),
+  lessonName: z.string().min(1, "Lesson name is required"),
+});
 
 export async function POST(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const body = await req.json();
-    const { message, courseId, lessonId, moduleName, lessonName } = body;
+
+    // Validate input
+    const result = teachingAssistantSchema.safeParse(body);
+    if (!result.success) {
+      return createErrorResponse(
+        "Invalid input data",
+        400,
+        JSON.stringify(result.error.flatten().fieldErrors),
+        "VALIDATION_ERROR"
+      );
+    }
+
+    const { message, courseId, lessonId, moduleName, lessonName } = result.data;
 
     // Get the lesson content
     const lesson = await prisma.lesson.findUnique({
-      where: {
-        id: lessonId,
-      },
+      where: { id: lessonId },
       include: {
         module: {
           include: {
@@ -25,76 +45,87 @@ export async function POST(req: NextRequest) {
     });
 
     if (!lesson) {
-      return NextResponse.json({ error: "Lesson not found" }, { status: 404 });
+      return createErrorResponse(
+        "Lesson not found",
+        404,
+        `No lesson found with ID: ${lessonId}`,
+        "RESOURCE_NOT_FOUND"
+      );
     }
 
-    // Get course information for better context
     const course = lesson.module.course;
-    
+
     // Get other lessons in the same module for broader context
     const moduleWithLessons = await prisma.module.findUnique({
-      where: {
-        id: lesson.moduleId,
-      },
+      where: { id: lesson.moduleId },
       include: {
         lessons: {
-          select: {
-            title: true,
-            description: true,
-          },
-          orderBy: {
-            order: 'asc',
-          },
+          select: { title: true, description: true },
+          orderBy: { order: "asc" },
         },
       },
     });
 
     // Create enhanced context for the AI
     const context = `
-      You are a Teaching Assistant (TA) for the course "${course.title}" (${course.difficulty} level).
-      You are currently helping with the lesson "${lessonName}" in the module "${moduleName}".
-      
-      The course is about: ${course.description}
-      
-      The current module covers: ${lesson.module.description || "Various topics related to " + moduleName}
-      
-      The current lesson content is:
-      ${lesson.content || lesson.description || "No specific content available."}
-      
-      Other lessons in this module include:
-      ${moduleWithLessons?.lessons.map(l => `- ${l.title}: ${l.description || "No description"}`).join("\\n") || "No other lessons available."}
-      
-      As a Teaching Assistant, your role is to:
-      1. Provide clear, detailed explanations of concepts
-      2. Offer examples that illustrate the concepts
-      3. Answer questions with academic rigor but in an approachable way
-      4. Make connections between this lesson and other parts of the course
-      5. Suggest additional resources or exercises when appropriate
-      
-      If the student seems confused, break down complex ideas into simpler components.
-      If you don't know the answer, acknowledge this and suggest how the student might find the information.
-      Be encouraging, supportive, and focus on helping the student develop a deep understanding of the material.
-      
-      Format your responses with appropriate spacing and structure for readability.
-      Use markdown formatting when it helps clarify your explanation (e.g., for code blocks, lists, or emphasis).
+      Current Role: Expert Teaching Assistant for the course "${course.title}" (Level: ${course.difficulty}).
+      Current Focus: Lesson "${lessonName}" within Module "${moduleName}".
+
+      Course Overview:
+      ${course.description}
+
+      Module Context:
+      ${lesson.module.description || "Topics central to " + moduleName}
+
+      Primary Source Material (Current Lesson):
+      ---
+      ${lesson.content || lesson.description || "[No specific content provided for this lesson]"}
+      ---
+
+      Broader Module Landscape:
+      ${moduleWithLessons?.lessons.map((l) => `- ${l.title}: ${l.description || "N/A"}`).join("\\n") || "[No other lessons available]"}
+
+      Your Responsibilities & Teaching Persona:
+      1. Pedagogical Excellence: Provide clear, rigorous, yet highly accessible explanations.
+      2. Concrete Examples: Always anchor abstract concepts with illuminating real-world or practical examples.
+      3. Intellectual Connection: Seamlessly relate the student's question back to the core lesson material and the broader course objectives.
+      4. Guided Discovery: Don't just give the answer; structure your response to help the student build understanding step-by-step. Break down complex ideas dynamically.
+      5. Supportive Tone: Maintain an encouraging, patient, and deeply knowledgeable voice. Frame corrections constructively.
+      6. Knowledge Boundaries: If the answer cannot be confidently derived from the provided context or general subject mastery, transparently state this and guide the student on where to investigate further.
+
+      Formatting Requirements:
+      - Use markdown extensively.
+      - Employ clear headings, bullet points, and code blocks (where applicable).
+      - Bold key terms and write in well-structured paragraphs to maximize readability.
     `;
 
-    // Generate response using Gemini
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    // Generate response using centralized Gemini TA model
+    const model = getTAGeminiModel();
 
-    const result = await model.generateContent([
+    const aiResult = await model.generateContent([
       context,
       `Student question: ${message}`,
     ]);
 
-    const response = result.response.text();
+    const response = aiResult.response.text();
 
-    return NextResponse.json({ response });
+    logInfo("Teaching assistant response generated", {
+      ...requestContext,
+      courseId,
+      lessonId,
+    });
+
+    return createSuccessResponse({ response });
   } catch (error) {
-    console.error("Error generating Teaching Assistant response:", error);
-    return NextResponse.json(
-      { error: "Failed to generate response" },
-      { status: 500 }
+    logError("Error generating Teaching Assistant response", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to generate response",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "TA_GENERATION_ERROR"
     );
   }
 }

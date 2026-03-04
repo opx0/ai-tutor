@@ -2,24 +2,19 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
-import { Bot, User, Minimize2, Maximize2, Send, GraduationCap, Sparkles, BookOpen, FileText, Plus, Search, X, ExternalLink, ArrowLeft, Bookmark, Download, MessageSquare } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card, CardFooter, CardHeader, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
+import { ArrowLeft, GraduationCap, Send, Sparkles } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 // Markdown components
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import rehypeRaw from "rehype-raw"
-import rehypeHighlight from "rehype-highlight"
 import "highlight.js/styles/github-dark.css"
+import ReactMarkdown from "react-markdown"
+import rehypeHighlight from "rehype-highlight"
+import rehypeRaw from "rehype-raw"
+import remarkGfm from "remark-gfm"
 
 type Message = {
   role: "user" | "assistant"
@@ -44,7 +39,6 @@ type TeachingAssistantProps = {
 import { TypingEffect } from "./typing-effect"
 
 export default function TeachingAssistant({ courseId, lessonId, moduleName, lessonName }: TeachingAssistantProps) {
-  console.log("TeachingAssistant rendered:", { courseId, lessonId, moduleName, lessonName });
   const [isMinimized, setIsMinimized] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [isOverlayOpen, setIsOverlayOpen] = useState(false)
@@ -241,13 +235,14 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
               pre: ({ node, ...props }) => (
                 <pre className="bg-zinc-900 p-4 rounded-md overflow-auto my-2 w-full" {...props} />
               ),
-              code: ({ node, inline, className, children, ...props }) => (
-                inline ? (
+              code: ({ node, className, children, ...props }) => {
+                const isInline = !className;
+                return isInline ? (
                   <code className="bg-zinc-800 px-1 py-0.5 rounded text-pink-400" {...props}>{children}</code>
                 ) : (
                   <code className={className} {...props}>{children}</code>
-                )
-              ),
+                );
+              },
               a: ({ node, ...props }) => (
                 <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
               ),
@@ -297,13 +292,14 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
               pre: ({ node, ...props }) => (
                 <pre className="bg-zinc-900 p-4 rounded-md overflow-auto my-2 w-full" {...props} />
               ),
-              code: ({ node, inline, className, children, ...props }) => (
-                inline ? (
+              code: ({ node, className, children, ...props }) => {
+                const isInline = !className;
+                return isInline ? (
                   <code className="bg-zinc-800 px-1 py-0.5 rounded text-pink-400" {...props}>{children}</code>
                 ) : (
                   <code className={className} {...props}>{children}</code>
-                )
-              ),
+                );
+              },
               a: ({ node, ...props }) => (
                 <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
               ),

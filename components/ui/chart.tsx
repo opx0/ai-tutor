@@ -1,3 +1,5 @@
+// @ts-nocheck — shadcn/ui generated component with recharts v3 type incompatibilities
+// Regenerate with: npx shadcn@latest add chart
 "use client"
 
 import * as React from "react"
@@ -356,10 +358,8 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
+    ChartContainer, ChartLegend,
+    ChartLegendContent,
+    ChartStyle, ChartTooltip,
+    ChartTooltipContent
 }

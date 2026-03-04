@@ -85,10 +85,10 @@ export default async function LessonPage({
       );
     }
 
-    // Get user from database to ensure we have the ID
+    // Get user from database
     const user = await prisma.user.findUnique({
       where: {
-        email: session.user.email as string,
+        id: session.user.id,
       },
     });
 
@@ -178,12 +178,18 @@ export default async function LessonPage({
 
     // Mark lesson as viewed/completed if user is authenticated
     if (userId) {
-      await prisma.lesson.update({
+      // Create per-user completion record (idempotent via upsert)
+      await prisma.lessonCompletion.upsert({
         where: {
-          id: lesson.id,
+          lessonId_userId: {
+            lessonId: lesson.id,
+            userId,
+          },
         },
-        data: {
-          completed: true,
+        update: {}, // Already completed — no-op
+        create: {
+          lessonId: lesson.id,
+          userId,
         },
       });
 
@@ -193,12 +199,15 @@ export default async function LessonPage({
         0
       );
 
-      const completedLessons = await prisma.lesson.count({
+      // Count lessons completed by THIS user in this course
+      const completedLessons = await prisma.lessonCompletion.count({
         where: {
-          module: {
-            courseId: course.id,
+          userId,
+          lesson: {
+            module: {
+              courseId: course.id,
+            },
           },
-          completed: true,
         },
       });
 
@@ -206,18 +215,19 @@ export default async function LessonPage({
 
       await prisma.userProgress.upsert({
         where: {
-          id: `${course.id}`,
+          courseId_userId: {
+            courseId: course.id,
+            userId,
+          },
         },
         update: {
           progress,
-          lastLesson: lesson.id,
-          userId,
+          lastLessonId: lesson.id,
         },
         create: {
-          id: `${course.id}`,
           courseId: course.id,
           progress,
-          lastLesson: lesson.id,
+          lastLessonId: lesson.id,
           userId,
         },
       });

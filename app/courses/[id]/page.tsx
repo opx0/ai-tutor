@@ -84,7 +84,14 @@ export default async function CoursePage({
       include: {
         modules: {
           include: {
-            lessons: true,
+            lessons: {
+              include: {
+                completions: {
+                  where: { userId: session.user.id },
+                  select: { id: true },
+                },
+              },
+            },
           },
           orderBy: {
             order: "asc",
@@ -97,10 +104,10 @@ export default async function CoursePage({
       notFound();
     }
 
-    // Get user from database to ensure we have the ID
+    // Get user from database
     const user = await prisma.user.findUnique({
       where: {
-        email: session.user.email as string,
+        id: session.user.id,
       },
     });
 
@@ -122,7 +129,7 @@ export default async function CoursePage({
     });
 
     const progress = userProgress?.progress || 0;
-    const lastLesson = userProgress?.lastLesson;
+    const lastLesson = userProgress?.lastLessonId;
 
     return (
       <div className="container mx-auto px-4 py-8">

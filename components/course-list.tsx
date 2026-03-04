@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 // CourseButton import removed
 import type { Course } from "@prisma/client";
 // Assuming you have a SessionProvider or similar if courses depend on user session
@@ -46,7 +46,10 @@ export default function CourseList() {
           );
         }
 
-        const data = await response.json();
+        const response_data = await response.json();
+
+        // Unwrap the { status, data } envelope from createSuccessResponse
+        const data = response_data?.data ?? response_data;
 
         // --- Check 2: Is the received data actually an array? ---
         if (Array.isArray(data)) {

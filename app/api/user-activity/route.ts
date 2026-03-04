@@ -1,133 +1,135 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { createErrorResponse, createSuccessResponse } from "@/lib/api-utils";
 import { authOptions } from "@/lib/auth";
+import { logApiRequest, logError, logInfo } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { type NextRequest } from "next/server";
+import { z } from "zod";
+
+const validActivityTypes = [
+  "view_course",
+  "view_lesson",
+  "complete_lesson",
+  "create_note",
+  "create_bookmark",
+  "search",
+  "generate_course",
+  "take_quiz",
+] as const;
+
+const validResourceTypes = [
+  "course",
+  "lesson",
+  "note",
+  "bookmark",
+  "quiz",
+] as const;
+
+const activitySchema = z.object({
+  activityType: z.enum(validActivityTypes, {
+    errorMap: () => ({ message: "Invalid activity type" }),
+  }),
+  resourceId: z.string().optional(),
+  resourceType: z
+    .enum(validResourceTypes, {
+      errorMap: () => ({ message: "Invalid resource type" }),
+    })
+    .optional(),
+});
 
 export async function GET(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
-    }
-
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email as string },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
+    if (!session?.user?.id) {
+      return createErrorResponse(
+        "Unauthorized. Please sign in.",
+        401,
+        undefined,
+        "UNAUTHORIZED"
       );
     }
 
     // Get recent activity for the user
     const activities = await prisma.userActivity.findMany({
-      where: { userId: user.id },
+      where: { userId: session.user.id },
       orderBy: { createdAt: "desc" },
       take: 50,
     });
 
-    return NextResponse.json({ activities });
+    return createSuccessResponse({ activities });
   } catch (error) {
-    console.error("Error fetching user activity:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch user activity" },
-      { status: 500 }
+    logError("Error fetching user activity", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to fetch user activity",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "ACTIVITY_FETCH_ERROR"
     );
   }
 }
 
 export async function POST(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
+    if (!session?.user?.id) {
+      return createErrorResponse(
+        "Unauthorized. Please sign in.",
+        401,
+        undefined,
+        "UNAUTHORIZED"
       );
     }
 
     const body = await req.json();
-    const { activityType, resourceId, resourceType } = body;
 
-    if (!activityType) {
-      return NextResponse.json(
-        { error: "Activity type is required" },
-        { status: 400 }
+    // Validate input
+    const validation = activitySchema.safeParse(body);
+    if (!validation.success) {
+      return createErrorResponse(
+        "Invalid input data",
+        400,
+        JSON.stringify(validation.error.flatten().fieldErrors),
+        "VALIDATION_ERROR"
       );
     }
 
-    // Validate activity type
-    const validActivityTypes = [
-      "view_course",
-      "view_lesson", 
-      "complete_lesson",
-      "create_note",
-      "create_bookmark",
-      "search",
-      "generate_course",
-      "take_quiz",
-    ];
-
-    if (!validActivityTypes.includes(activityType)) {
-      return NextResponse.json(
-        { error: "Invalid activity type" },
-        { status: 400 }
-      );
-    }
-
-    // Validate resource type if provided
-    if (resourceType) {
-      const validResourceTypes = ["course", "lesson", "note", "bookmark", "quiz"];
-      if (!validResourceTypes.includes(resourceType)) {
-        return NextResponse.json(
-          { error: "Invalid resource type" },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email as string },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
+    const { activityType, resourceId, resourceType } = validation.data;
 
     // Record the activity
     const activity = await prisma.userActivity.create({
       data: {
-        userId: user.id,
+        userId: session.user.id,
         activityType,
         resourceId: resourceId || null,
         resourceType: resourceType || null,
       },
     });
 
-    return NextResponse.json(
-      {
-        message: "Activity recorded",
-        activity,
-      },
-      { status: 201 }
+    logInfo("Activity recorded", { ...requestContext, activityType });
+
+    return createSuccessResponse(
+      { message: "Activity recorded", activity },
+      201
     );
   } catch (error) {
-    console.error("Error recording user activity:", error);
-    return NextResponse.json(
-      { error: "Failed to record user activity" },
-      { status: 500 }
+    logError("Error recording user activity", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to record user activity",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "ACTIVITY_RECORD_ERROR"
     );
   }
 }

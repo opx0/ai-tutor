@@ -1,9 +1,10 @@
+import { logError } from "@/lib/logger";
+import { prisma } from "@/lib/prisma";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import argon2 from "argon2";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
-import argon2 from "argon2";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -47,7 +48,7 @@ export const authOptions: NextAuthOptions = {
             credentials.password
           );
         } catch (error) {
-          console.error("Argon2 verification error:", error);
+          logError("Argon2 verification error", { error });
           return null;
         }
 
@@ -65,13 +66,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   callbacks: {
-    async session({ session, user }) {
-      // Apply user data to session
-      if (user && session.user) {
-        session.user.id = user.id;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
       }
       return session;
     },

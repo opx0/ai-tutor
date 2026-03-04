@@ -1,3 +1,4 @@
+import { AmbientBackground } from "@/components/ambient-background";
 import { SessionProvider } from "@/components/session-provider";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -29,6 +30,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <AmbientBackground />
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
               <main className="flex-1 ">{children}</main>

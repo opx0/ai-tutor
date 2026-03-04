@@ -1,21 +1,21 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-import { prisma } from "@/lib/prisma";
+import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
+import { Award, BookMarked, BookOpen, Clock } from "lucide-react";
 import Link from "next/link";
-import { BookOpen, Clock, Award, BookMarked } from "lucide-react";
 
 function DashboardLoading() {
   return (
@@ -33,19 +33,16 @@ export default async function DashboardPage() {
     redirect("/auth/signin?callbackUrl=/dashboard");
   }
 
-  // Get user from database to ensure we have the ID
+  // Get user from database
   const user = await prisma.user.findUnique({
     where: {
-      email: session.user.email as string,
+      id: session.user.id,
     },
   });
 
   if (!user) {
-    console.log("Dashboard - User not found in database");
     redirect("/auth/signin");
   }
-
-  console.log("Dashboard - User found:", { id: user.id, email: user.email });
 
   // Get user's courses
   const courses = await prisma.course.findMany({

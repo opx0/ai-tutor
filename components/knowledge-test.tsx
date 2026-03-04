@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { Check, X, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/com ponents/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { AlertTriangle, Check, X } from "lucide-react"
+import { useState } from "react"
 
 type Question = {
   id: string
@@ -145,4 +145,3 @@ export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProp
     </div>
   )
 }
-
