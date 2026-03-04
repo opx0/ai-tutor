@@ -1,26 +1,24 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  BookOpen,
-  Clock,
-  Award,
-  User as UserIcon,
-  Mail,
-  Calendar,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { format } from "date-fns";
+import {
+    Award,
+    BookOpen,
+    Calendar,
+    Clock,
+    Mail,
+    User as UserIcon,
 } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 // Loading component for profile sections
@@ -51,8 +49,12 @@ async function ProfileData() {
     redirect("/auth/signin");
   }
 
-  // Check if user has Google provider info
-  const isGoogleUser = user.provider === "google";
+  // Check if user has Google provider by looking at linked accounts
+  const googleAccount = await prisma.account.findFirst({
+    where: { userId: user.id, provider: "google" },
+    select: { id: true },
+  });
+  const isGoogleUser = !!googleAccount;
 
   // Get user stats
   const courseCount = await prisma.course.count({
@@ -104,8 +106,8 @@ async function ProfileData() {
                   alt={session.user.name || user.name || ""}
                 />
                 <AvatarFallback className="text-2xl bg-primary/10">
-                  {session.user.name || user.name
-                    ? (session.user.name || user.name)
+                  {(session.user.name || user.name)
+                    ? (session.user.name || user.name)!
                         .split(" ")
                         .map((n) => n[0])
                         .join("")

@@ -1,151 +1,136 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { createErrorResponse, createSuccessResponse } from "@/lib/api-utils";
 import { authOptions } from "@/lib/auth";
+import { logApiRequest, logError, logInfo } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { type NextRequest } from "next/server";
 import { z } from "zod";
 
 const bookmarkSchema = z.object({
-  lessonId: z.string(),
+  lessonId: z.string().min(1, "Lesson ID is required"),
 });
 
 export async function POST(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email as string,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 401 });
+    if (!session?.user?.id) {
+      return createErrorResponse("Unauthorized", 401, undefined, "UNAUTHORIZED");
     }
 
     const body = await req.json();
 
-    const result = bookmarkSchema.safeParse(body);
-    if (!result.success) {
-      return NextResponse.json(
-        { message: "Invalid input data", errors: result.error.format() },
-        { status: 400 }
+    const validation = bookmarkSchema.safeParse(body);
+    if (!validation.success) {
+      return createErrorResponse(
+        "Invalid input data",
+        400,
+        JSON.stringify(validation.error.flatten().fieldErrors),
+        "VALIDATION_ERROR"
       );
     }
 
-    const { lessonId } = body;
+    const { lessonId } = validation.data;
 
     const lesson = await prisma.lesson.findUnique({
-      where: {
-        id: lessonId,
-      },
+      where: { id: lessonId },
     });
 
     if (!lesson) {
-      return NextResponse.json(
-        { message: "Lesson not found" },
-        { status: 404 }
+      return createErrorResponse(
+        "Lesson not found",
+        404,
+        undefined,
+        "RESOURCE_NOT_FOUND"
       );
     }
 
     const existingBookmark = await prisma.bookmark.findFirst({
-      where: {
-        lessonId,
-        userId: user.id,
-      },
+      where: { lessonId, userId: session.user.id },
     });
 
     if (existingBookmark) {
-      return NextResponse.json(
-        { message: "Lesson already bookmarked", bookmark: existingBookmark },
-        { status: 200 }
-      );
+      return createSuccessResponse({
+        message: "Lesson already bookmarked",
+        bookmark: existingBookmark,
+      });
     }
 
     const bookmark = await prisma.bookmark.create({
-      data: {
-        lessonId,
-        userId: user.id,
-      },
+      data: { lessonId, userId: session.user.id },
     });
 
-    return NextResponse.json(
+    logInfo("Bookmark created", { ...requestContext, lessonId });
+
+    return createSuccessResponse(
       { message: "Lesson bookmarked successfully", bookmark },
-      { status: 201 }
+      201
     );
   } catch (error) {
-    console.error("Error bookmarking lesson:", error);
-    return NextResponse.json(
-      { message: "Something went wrong" },
-      { status: 500 }
+    logError("Error bookmarking lesson", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to bookmark lesson",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "BOOKMARK_CREATE_ERROR"
     );
   }
 }
 
 export async function GET(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email as string,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 401 });
+    if (!session?.user?.id) {
+      return createErrorResponse("Unauthorized", 401, undefined, "UNAUTHORIZED");
     }
 
     const { searchParams } = new URL(req.url);
     const lessonId = searchParams.get("lessonId");
 
     if (!lessonId) {
-      return NextResponse.json(
-        { message: "Lesson ID is required" },
-        { status: 400 }
+      return createErrorResponse(
+        "Lesson ID is required",
+        400,
+        undefined,
+        "MISSING_LESSON_ID"
       );
     }
 
     const bookmark = await prisma.bookmark.findFirst({
-      where: {
-        lessonId,
-        userId: user.id,
-      },
+      where: { lessonId, userId: session.user.id },
     });
 
-    return NextResponse.json({ bookmark });
+    return createSuccessResponse({ bookmark });
   } catch (error) {
-    console.error("Error fetching bookmark:", error);
-    return NextResponse.json(
-      { message: "Something went wrong" },
-      { status: 500 }
+    logError("Error fetching bookmark", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to fetch bookmark",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "BOOKMARK_FETCH_ERROR"
     );
   }
 }
 
 export async function DELETE(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email as string,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 401 });
+    if (!session?.user?.id) {
+      return createErrorResponse("Unauthorized", 401, undefined, "UNAUTHORIZED");
     }
 
     const { searchParams } = new URL(req.url);
@@ -153,67 +138,66 @@ export async function DELETE(req: NextRequest) {
     const lessonId = searchParams.get("lessonId");
 
     if (!bookmarkId && !lessonId) {
-      return NextResponse.json(
-        { message: "Bookmark ID or Lesson ID is required" },
-        { status: 400 }
+      return createErrorResponse(
+        "Bookmark ID or Lesson ID is required",
+        400,
+        undefined,
+        "MISSING_IDENTIFIER"
       );
     }
 
     if (bookmarkId) {
       const bookmark = await prisma.bookmark.findUnique({
-        where: {
-          id: bookmarkId,
-        },
+        where: { id: bookmarkId },
       });
 
       if (!bookmark) {
-        return NextResponse.json(
-          { message: "Bookmark not found" },
-          { status: 404 }
+        return createErrorResponse(
+          "Bookmark not found",
+          404,
+          undefined,
+          "RESOURCE_NOT_FOUND"
         );
       }
 
-      if (bookmark.userId !== user.id) {
-        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      if (bookmark.userId !== session.user.id) {
+        return createErrorResponse("Unauthorized", 403, undefined, "FORBIDDEN");
       }
 
-      await prisma.bookmark.delete({
-        where: {
-          id: bookmarkId,
-        },
-      });
+      await prisma.bookmark.delete({ where: { id: bookmarkId } });
     } else {
       const bookmark = await prisma.bookmark.findFirst({
-        where: {
-          lessonId: lessonId as string,
-          userId: user.id,
-        },
+        where: { lessonId: lessonId as string, userId: session.user.id },
       });
 
       if (!bookmark) {
-        return NextResponse.json(
-          { message: "Bookmark not found" },
-          { status: 404 }
+        return createErrorResponse(
+          "Bookmark not found",
+          404,
+          undefined,
+          "RESOURCE_NOT_FOUND"
         );
       }
 
-
-      await prisma.bookmark.delete({
-        where: {
-          id: bookmark.id,
-        },
-      });
+      await prisma.bookmark.delete({ where: { id: bookmark.id } });
     }
 
-    return NextResponse.json(
-      { message: "Bookmark removed successfully", isBookmarked: false },
-      { status: 200 }
-    );
+    logInfo("Bookmark removed", { ...requestContext });
+
+    return createSuccessResponse({
+      message: "Bookmark removed successfully",
+      isBookmarked: false,
+    });
   } catch (error) {
-    console.error("Error removing bookmark:", error);
-    return NextResponse.json(
-      { message: "Something went wrong" },
-      { status: 500 }
+    logError("Error removing bookmark", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to remove bookmark",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "BOOKMARK_DELETE_ERROR"
     );
   }
 }

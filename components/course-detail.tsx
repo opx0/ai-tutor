@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { ChevronRight, CheckCircle2, Circle, FileText, Map } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CheckCircle2, ChevronRight, Circle, FileText, Map } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
 
 type CourseDetailProps = {
   course: any
@@ -71,7 +71,7 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
                           className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors"
                         >
                           <div className="flex-shrink-0">
-                            {lesson.completed ? (
+                            {lesson.completions?.length > 0 ? (
                               <CheckCircle2 className="h-5 w-5 text-green-500" />
                             ) : (
                               <Circle className="h-5 w-5 text-muted-foreground" />
@@ -123,7 +123,7 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
                         <div className="flex-grow">
                           <h5 className="font-medium">{lesson.title}</h5>
                         </div>
-                        {lesson.completed && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
+                        {lesson.completions?.length > 0 && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
                       </Link>
                     ))}
                   </div>
@@ -136,4 +136,3 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
     </div>
   )
 }
-

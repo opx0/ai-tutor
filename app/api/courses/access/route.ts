@@ -1,17 +1,23 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { getServerSession } from "next-auth";
+import { createErrorResponse, createSuccessResponse } from "@/lib/api-utils";
 import { authOptions } from "@/lib/auth";
+import { logApiRequest, logError, logInfo } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import { hasFullCourseAccess, hasModuleAccess } from "@/lib/razorpay";
+import { getServerSession } from "next-auth";
+import { type NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const requestContext = logApiRequest(req);
+
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
+    if (!session?.user?.id) {
+      return createErrorResponse(
+        "Unauthorized. Please sign in.",
+        401,
+        undefined,
+        "UNAUTHORIZED"
       );
     }
 
@@ -20,17 +26,17 @@ export async function GET(req: NextRequest) {
     const moduleId = searchParams.get("moduleId");
 
     if (!courseId) {
-      return NextResponse.json(
-        { error: "Course ID is required" },
-        { status: 400 }
+      return createErrorResponse(
+        "Course ID is required",
+        400,
+        undefined,
+        "MISSING_COURSE_ID"
       );
     }
 
     // Get user with subscription info
     const user = await prisma.user.findUnique({
-      where: {
-        id: session.user.id,
-      },
+      where: { id: session.user.id },
       select: {
         id: true,
         subscriptionStatus: true,
@@ -40,56 +46,51 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
+      return createErrorResponse(
+        "User not found",
+        404,
+        undefined,
+        "USER_NOT_FOUND"
       );
     }
 
     // Check if subscription has expired
     if (
-      user.subscriptionStatus === "premium" &&
+      user.subscriptionStatus === "PREMIUM" &&
       user.subscriptionExpiresAt &&
       new Date(user.subscriptionExpiresAt) < new Date()
     ) {
-      // Update user to free tier if subscription has expired
       await prisma.user.update({
-        where: {
-          id: session.user.id,
-        },
+        where: { id: session.user.id },
         data: {
-          subscriptionStatus: "free",
+          subscriptionStatus: "FREE",
           subscriptionExpiresAt: null,
         },
       });
-      
-      user.subscriptionStatus = "free";
+
+      user.subscriptionStatus = "FREE" as any;
       user.subscriptionExpiresAt = null;
     }
 
     // If checking module access
     if (moduleId) {
       const module = await prisma.module.findUnique({
-        where: {
-          id: moduleId,
-        },
-        select: {
-          id: true,
-          order: true,
-          courseId: true,
-        },
+        where: { id: moduleId },
+        select: { id: true, order: true, courseId: true },
       });
 
       if (!module) {
-        return NextResponse.json(
-          { error: "Module not found" },
-          { status: 404 }
+        return createErrorResponse(
+          "Module not found",
+          404,
+          undefined,
+          "MODULE_NOT_FOUND"
         );
       }
 
       const hasAccess = hasModuleAccess(user, courseId, module.order);
 
-      return NextResponse.json({
+      return createSuccessResponse({
         hasAccess,
         subscriptionStatus: user.subscriptionStatus,
         moduleOrder: module.order,
@@ -99,29 +100,38 @@ export async function GET(req: NextRequest) {
     // If checking course access
     const hasAccess = hasFullCourseAccess(user, courseId);
 
-    // If this is the user's first course and they're accessing it fully,
-    // update their freeCoursesUsed count
-    if (hasAccess && user.subscriptionStatus === "free" && user.freeCoursesUsed === 0) {
+    if (
+      hasAccess &&
+      user.subscriptionStatus === "FREE" &&
+      user.freeCoursesUsed === 0
+    ) {
       await prisma.user.update({
-        where: {
-          id: session.user.id,
-        },
-        data: {
-          freeCoursesUsed: 1,
-        },
+        where: { id: session.user.id },
+        data: { freeCoursesUsed: 1 },
       });
     }
 
-    return NextResponse.json({
+    logInfo("Access check completed", {
+      ...requestContext,
+      courseId,
+      hasAccess,
+    });
+
+    return createSuccessResponse({
       hasAccess,
       subscriptionStatus: user.subscriptionStatus,
       freeCoursesUsed: user.freeCoursesUsed,
     });
   } catch (error) {
-    console.error("Error checking access:", error);
-    return NextResponse.json(
-      { error: "Failed to check access" },
-      { status: 500 }
+    logError("Error checking access", {
+      ...requestContext,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return createErrorResponse(
+      "Failed to check access",
+      500,
+      error instanceof Error ? error.message : "Unknown error",
+      "ACCESS_CHECK_ERROR"
     );
   }
 }

@@ -1,19 +1,19 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
 import { Loader2, Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const formSchema = z.object({
@@ -21,7 +21,7 @@ const formSchema = z.object({
     message: "Topic must be at least 2 characters.",
   }),
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
-  additionalDetails: z.boolean().default(false),
+  hasAdditionalDetails: z.boolean().default(false),
   details: z.string().optional(),
 })
 
@@ -34,7 +34,7 @@ export default function CourseForm() {
     defaultValues: {
       topic: "",
       difficulty: "Beginner",
-      additionalDetails: false,
+      hasAdditionalDetails: false,
       details: "",
     },
   })
@@ -55,7 +55,8 @@ export default function CourseForm() {
         throw new Error("Failed to generate course")
       }
 
-      const data = await response.json()
+      const response_data = await response.json()
+      const data = response_data?.data ?? response_data
       toast.success("Course generated successfully! Redirecting...")
       router.push(`/courses/${data.id}`)
       router.refresh()
@@ -126,14 +127,14 @@ export default function CourseForm() {
               <div className="flex items-center space-x-2">
                 <FormField
                   control={form.control}
-                  name="additionalDetails"
+                  name="hasAdditionalDetails"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <Label htmlFor="additionalDetails">Tell us more to tailor the course (optional)</Label>
+                        <Label htmlFor="hasAdditionalDetails">Tell us more to tailor the course (optional)</Label>
                         <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">recommended</span>
                       </div>
                     </FormItem>
@@ -141,7 +142,7 @@ export default function CourseForm() {
                 />
               </div>
 
-              {form.watch("additionalDetails") && (
+              {form.watch("hasAdditionalDetails") && (
                 <FormField
                   control={form.control}
                   name="details"
@@ -180,4 +181,3 @@ export default function CourseForm() {
     </Card>
   )
 }
-

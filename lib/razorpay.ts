@@ -1,5 +1,12 @@
-import Razorpay from "razorpay";
+import { logError } from "@/lib/logger";
 import crypto from "crypto";
+import Razorpay from "razorpay";
+
+// --- Types ---
+interface SubscriptionUser {
+  subscriptionStatus: string;
+  freeCoursesUsed: number;
+}
 
 let razorpay: Razorpay | null = null;
 
@@ -9,15 +16,10 @@ function getRazorpayClient() {
     const key_secret = process.env.RAZORPAY_SECRET_ID;
 
     if (!key_id || !key_secret) {
-      // In a real application, you might want to log this error or handle it differently
-      // For now, we'll just return null and let the calling function handle it
       return null;
     }
 
-    razorpay = new Razorpay({
-      key_id,
-      key_secret,
-    });
+    razorpay = new Razorpay({ key_id, key_secret });
   }
   return razorpay;
 }
@@ -28,7 +30,7 @@ export const SUBSCRIPTION_PLANS = {
     name: "Premium Monthly",
     description: "Unlimited access to all courses and features",
     price: 49900,
-    interval: "monthly",
+    interval: "MONTHLY" as const,
     features: [
       "Unlimited course access",
       "Unlimited module access",
@@ -43,7 +45,7 @@ export const SUBSCRIPTION_PLANS = {
     description:
       "Unlimited access to all courses and features with 2 months free",
     price: 499900,
-    interval: "yearly",
+    interval: "YEARLY" as const,
     features: [
       "All monthly features",
       "2 months free (save ₹999)",
@@ -74,7 +76,7 @@ export async function createOrder(
     });
     return order;
   } catch (error) {
-    console.error("Error creating Razorpay order:", error);
+    logError("Error creating Razorpay order", { error });
     throw error;
   }
 }
@@ -111,12 +113,13 @@ export async function createCustomer(name: string, email: string) {
     });
     return customer;
   } catch (error) {
-    console.error("Error creating Razorpay customer:", error);
+    logError("Error creating Razorpay customer", { error });
     throw error;
   }
 }
 
 // Create a Razorpay subscription
+// Note: Uses type assertion for Razorpay SDK parameters that have incomplete type definitions
 export async function createSubscription(
   planId: string,
   customerId: string,
@@ -127,18 +130,14 @@ export async function createSubscription(
     throw new Error("Razorpay client is not initialized.");
   }
   try {
-    // Note: This is a simplified version - in a real implementation,
-    // you would need to use the correct Razorpay API parameters
     const subscription = await client.subscriptions.create({
       plan_id: planId,
-      // Using any to bypass TypeScript checking for this example
-      // to be currected In production, use the correct types from Razorpay
-      customer_id: customerId as any,
-      total_count: totalCount as any,
-    });
+      total_count: totalCount,
+      customer_id: customerId,
+    } as Parameters<typeof client.subscriptions.create>[0]);
     return subscription;
   } catch (error) {
-    console.error("Error creating Razorpay subscription:", error);
+    logError("Error creating Razorpay subscription", { error });
     throw error;
   }
 }
@@ -153,7 +152,7 @@ export async function cancelSubscription(subscriptionId: string) {
     const subscription = await client.subscriptions.cancel(subscriptionId);
     return subscription;
   } catch (error) {
-    console.error("Error cancelling Razorpay subscription:", error);
+    logError("Error cancelling Razorpay subscription", { error });
     throw error;
   }
 }
@@ -168,20 +167,20 @@ export async function getSubscription(subscriptionId: string) {
     const subscription = await client.subscriptions.fetch(subscriptionId);
     return subscription;
   } catch (error) {
-    console.error("Error fetching Razorpay subscription:", error);
+    logError("Error fetching Razorpay subscription", { error });
     throw error;
   }
 }
 
 // Check if a user has access to a full course
-export function hasFullCourseAccess(user: any, courseId: string) {
+export function hasFullCourseAccess(user: SubscriptionUser, _courseId: string) {
   // Premium users have access to all courses
-  if (user.subscriptionStatus === "premium") {
+  if (user.subscriptionStatus === "PREMIUM") {
     return true;
   }
 
   // Free users can access one full course
-  if (user.subscriptionStatus === "free" && user.freeCoursesUsed === 0) {
+  if (user.subscriptionStatus === "FREE" && user.freeCoursesUsed === 0) {
     return true;
   }
 
@@ -190,17 +189,17 @@ export function hasFullCourseAccess(user: any, courseId: string) {
 
 // Check if a user has access to a specific module
 export function hasModuleAccess(
-  user: any,
-  courseId: string, // courseId is used for future implementation
+  user: SubscriptionUser,
+  _courseId: string,
   moduleOrder: number
 ) {
   // Premium users have access to all modules
-  if (user.subscriptionStatus === "premium") {
+  if (user.subscriptionStatus === "PREMIUM") {
     return true;
   }
 
   // Free users can access up to 3 modules per course (except their first course)
-  if (user.subscriptionStatus === "free") {
+  if (user.subscriptionStatus === "FREE") {
     // If this is their first course, they can access all modules
     if (user.freeCoursesUsed === 0) {
       return true;

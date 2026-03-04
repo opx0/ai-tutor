@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { Loader2 } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Loader2 } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 // PHP backend URL - Commented out for Render deployment
@@ -13,10 +13,10 @@ import { toast } from "sonner"
 type ProgressTrackerProps = {
   courseId: string
   initialProgress?: number
-  lastLesson?: string | null
+  lastLessonId?: string | null
 }
 
-export default function ProgressTracker({ courseId, initialProgress = 0, lastLesson = null }: ProgressTrackerProps) {
+export default function ProgressTracker({ courseId, initialProgress = 0, lastLessonId = null }: ProgressTrackerProps) {
   const { data: session, status } = useSession()
   const [progress, setProgress] = useState(initialProgress)
   const [isLoading, setIsLoading] = useState(true)
@@ -62,7 +62,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
     }
   }
 
-  const updateProgress = async (newProgress: number, newLastLesson?: string) => {
+  const updateProgress = async (newProgress: number, newLastLessonId?: string) => {
     if (!session?.user) return
 
     try {
@@ -77,7 +77,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
         body: JSON.stringify({
           courseId,
           progress: newProgress,
-          lastLesson: newLastLesson || lastLesson
+          lastLessonId: newLastLessonId || lastLessonId
         }),
       })
 
@@ -116,7 +116,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
         body: JSON.stringify({
           courseId,
           progress: newProgress,
-          lastLesson: newLastLesson || lastLesson
+          lastLessonId: newLastLessonId || lastLessonId
         }),
       })
 
