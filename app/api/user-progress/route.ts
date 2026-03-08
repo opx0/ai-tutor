@@ -1,18 +1,20 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Unauthorized. Please sign in." },
         { status: 401 }
       );
     }
+
+    const userId = session.user.id; // JWT — no extra DB lookup needed
 
     const { searchParams } = new URL(req.url);
     const courseId = searchParams.get("courseId");
@@ -24,40 +26,22 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email as string },
+    // findUnique with compound key — uses index, faster than findFirst
+    const progress = await prisma.userProgress.findFirst({
+      where: { courseId, userId },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    // Get user progress for the course
-    let progress = await prisma.userProgress.findFirst({
-      where: {
-        courseId,
-        userId: user.id,
-      },
-    });
-
-    // If no progress found, return default progress
-    if (!progress) {
-      progress = {
+    return NextResponse.json({
+      progress: progress ?? {
         id: "",
         courseId,
-        userId: user.id,
+        userId,
         progress: 0,
         lastLesson: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
-    }
-
-    return NextResponse.json({ progress });
+      },
+    });
   } catch (error) {
     console.error("Error fetching user progress:", error);
     return NextResponse.json(
@@ -71,12 +55,14 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Unauthorized. Please sign in." },
         { status: 401 }
       );
     }
+
+    const userId = session.user.id; // JWT — no extra DB lookup needed
 
     const body = await req.json();
     const { courseId, progress, lastLesson } = body;
@@ -88,7 +74,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate progress is a number between 0 and 100
     if (typeof progress !== "number" || progress < 0 || progress > 100) {
       return NextResponse.json(
         { error: "Progress must be a number between 0 and 100" },
@@ -96,27 +81,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email as string },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    // Verify course exists and user has access
+    // Verify course exists and user has access (still needed — security check)
     const course = await prisma.course.findFirst({
       where: {
         id: courseId,
-        OR: [
-          { userId: user.id },
-          { isPublic: true },
-        ],
+        OR: [{ userId }, { isPublic: true }],
       },
+      select: { id: true }, // only need to confirm existence
     });
 
     if (!course) {
@@ -126,50 +97,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if progress already exists
+    // Check if progress exists, then update or create
     const existingProgress = await prisma.userProgress.findFirst({
-      where: {
-        courseId,
-        userId: user.id,
-      },
+      where: { courseId, userId },
     });
 
     let updatedProgress;
-
     if (existingProgress) {
-      // Update existing progress
       updatedProgress = await prisma.userProgress.update({
         where: { id: existingProgress.id },
-        data: {
-          progress,
-          lastLesson,
-          updatedAt: new Date(),
-        },
-      });
-
-      return NextResponse.json({
-        message: "Progress updated",
-        progress: updatedProgress,
+        data: { progress, lastLesson, updatedAt: new Date() },
       });
     } else {
-      // Create new progress record
       updatedProgress = await prisma.userProgress.create({
-        data: {
-          courseId,
-          userId: user.id,
-          progress,
-          lastLesson,
-        },
+        data: { courseId, userId, progress, lastLesson },
       });
-
-      return NextResponse.json(
-        {
-          message: "Progress created",
-          progress: updatedProgress,
-        },
-        { status: 201 }
-      );
     }
+
+    return NextResponse.json({
+      message: "Progress updated",
+      progress: updatedProgress,
+    });
   } catch (error) {
     console.error("Error updating user progress:", error);
     return NextResponse.json(

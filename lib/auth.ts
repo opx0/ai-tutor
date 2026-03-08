@@ -1,9 +1,9 @@
+import { prisma } from "@/lib/prisma";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import argon2 from "argon2";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
-import argon2 from "argon2";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -65,13 +65,20 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   callbacks: {
-    async session({ session, user }) {
-      // Apply user data to session
-      if (user && session.user) {
-        session.user.id = user.id;
+    async jwt({ token, user }) {
+      // On initial sign-in, user object is provided — store id in token
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Propagate id from JWT token to session (no DB hit)
+      if (token && session.user) {
+        session.user.id = token.id as string;
       }
       return session;
     },
