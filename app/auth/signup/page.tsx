@@ -17,8 +17,13 @@ import {
     FormItem,
     FormMessage,
 } from "@/components/ui/form";
-import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
+import dynamic from "next/dynamic";
 import { toast } from "sonner";
+
+const CanvasRevealEffect = dynamic(
+  () => import("@/components/ui/sign-in-flow-1").then((m) => m.CanvasRevealEffect),
+  { ssr: false }
+);
 
 const formSchema = z
   .object({

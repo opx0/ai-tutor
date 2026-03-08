@@ -17,11 +17,13 @@ import {
     FormItem,
     FormMessage,
 } from "@/components/ui/form";
-// import { CanvasRevealEffect, MiniNavbar } from "@/components/ui/sign-in-flow-1"; // Assuming CanvasRevealEffect is needed but MiniNavbar is not.
-// Wait, actually I just need to remove MiniNavbar from import and usage, but I see `CanvasRevealEffect` is still used in this file. Let me rewrite carefully:
-
-import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
+import dynamic from "next/dynamic";
 import { toast } from "sonner";
+
+const CanvasRevealEffect = dynamic(
+  () => import("@/components/ui/sign-in-flow-1").then((m) => m.CanvasRevealEffect),
+  { ssr: false }
+);
 
 const formSchema = z.object({
   email: z.string().email({
