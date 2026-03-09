@@ -5,7 +5,7 @@ import MotionWrapper from "@/components/motion-wrapper";
 import { Button } from "@/components/ui/button";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 import { motion, Variants } from "framer-motion";
-import { ArrowRight, BookMarked, BookOpen, Brain, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
+import { ArrowRight, BookMarked, BookOpen, Brain, Code2, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -102,6 +102,17 @@ export default function Home() {
                       asChild
                     >
                       <Link href="/dashboard">Try AI Tutor</Link>
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="rounded-full px-8 py-6 h-auto text-base font-medium border-primary/50 text-primary hover:bg-primary/10 transition-all"
+                      asChild
+                    >
+                      <Link href="/dsa-demo" className="flex items-center gap-2">
+                        <Code2 className="h-4 w-4" />
+                        DSA Demo Course
+                      </Link>
                     </Button>
                     <Button
                       size="lg"
@@ -481,6 +492,17 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
+                className="rounded-full px-10 py-6 h-auto text-base font-medium border-primary/50 text-primary hover:bg-primary/10 transition-all"
+                asChild
+              >
+                <Link href="/dsa-demo" className="flex items-center gap-2">
+                  <Code2 className="h-4 w-4" />
+                  Try DSA Demo Free
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
                 className="rounded-full px-10 py-6 h-auto text-base font-medium hover:bg-muted/50 transition-all"
                 asChild
               >
@@ -528,6 +550,7 @@ export default function Home() {
               <ul className="space-y-2">
                 <li><Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link></li>
                 <li><Link href="/courses" className="text-sm text-muted-foreground hover:text-foreground">Courses</Link></li>
+                <li><Link href="/dsa-demo" className="text-sm text-muted-foreground hover:text-foreground">DSA Demo Course</Link></li>
                 <li><Link href="/bookmarks" className="text-sm text-muted-foreground hover:text-foreground">Bookmarks</Link></li>
                 <li><Link href="/notes" className="text-sm text-muted-foreground hover:text-foreground">Notes</Link></li>
               </ul>

@@ -7,16 +7,13 @@ import { Progress } from "@/components/ui/progress"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 
-// PHP backend URL - Commented out for Render deployment
-// const PHP_API_URL = "http://localhost:8000/api"
-
 type ProgressTrackerProps = {
   courseId: string
   initialProgress?: number
-  lastLesson?: string | null
+  lastLessonId?: string | null
 }
 
-export default function ProgressTracker({ courseId, initialProgress = 0, lastLesson = null }: ProgressTrackerProps) {
+export default function ProgressTracker({ courseId, initialProgress = 0, lastLessonId = null }: ProgressTrackerProps) {
   const { data: session, status } = useSession()
   const [progress, setProgress] = useState(initialProgress)
   const [isLoading, setIsLoading] = useState(true)
@@ -32,20 +29,6 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
   const fetchProgress = async () => {
     setIsLoading(true)
     try {
-      /*
-      const response = await fetch(`${PHP_API_URL}/user-progress?courseId=${courseId}`, {
-        credentials: 'include',
-      })
-      const data = await response.json()
-
-      if (data.progress) {
-        setProgress(data.progress.progress)
-      } else {
-        setProgress(initialProgress)
-      }
-      */
-
-      // Using Next.js API directly
       const response = await fetch(`/api/user-progress?courseId=${courseId}`)
       const data = await response.json()
 
@@ -62,52 +45,10 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
     }
   }
 
-  const updateProgress = async (newProgress: number, newLastLesson?: string) => {
+  const updateProgress = async (newProgress: number, newLastLessonId?: string) => {
     if (!session?.user) return
 
     try {
-      // PHP API call commented out for Render deployment
-      /*
-      const response = await fetch(`${PHP_API_URL}/user-progress`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          courseId,
-          progress: newProgress,
-          lastLesson: newLastLesson || lastLesson
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to update progress")
-      }
-
-      const data = await response.json()
-      setProgress(data.progress.progress)
-
-      // Record activity
-      try {
-        await fetch(`${PHP_API_URL}/user-activity`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            activityType: 'update_progress',
-            resourceId: courseId,
-            resourceType: 'course'
-          }),
-        })
-      } catch (activityError) {
-        console.error("Failed to record activity:", activityError)
-      }
-      */
-
-      // Using Next.js API directly
       const response = await fetch("/api/user-progress", {
         method: "POST",
         headers: {
@@ -116,7 +57,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
         body: JSON.stringify({
           courseId,
           progress: newProgress,
-          lastLesson: newLastLesson || lastLesson
+          lastLessonId: newLastLessonId || lastLessonId,
         }),
       })
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, Code2 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -156,14 +156,22 @@ export default function CourseList() {
             <p className="text-muted-foreground">
               No courses found matching your search.
             </p>
-          ) : (
+          )           : (
             <>
               <p className="text-muted-foreground mb-4">
                 You haven't created any courses yet.
               </p>
-              <Button asChild>
-                <Link href="/courses?tab=create">Create a Course</Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button asChild>
+                  <Link href="/courses?tab=create">Create a Course</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/dsa-demo" className="flex items-center gap-2">
+                    <Code2 className="h-4 w-4" />
+                    Try DSA Demo Course
+                  </Link>
+                </Button>
+              </div>
             </>
           )}
         </div>

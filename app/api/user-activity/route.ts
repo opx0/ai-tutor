@@ -109,6 +109,7 @@ export async function POST(req: NextRequest) {
     // Record the activity
     const activity = await prisma.userActivity.create({
       data: {
+        id: `${user.id}_${activityType}_${Date.now()}`,
         userId: user.id,
         activityType,
         resourceId: resourceId || null,

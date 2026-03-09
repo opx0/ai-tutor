@@ -7,8 +7,8 @@ import TeachingAssistant from "@/components/teaching-assistant";
 import LessonKnowledgeTest from "@/components/lesson-knowledge-test";
 import LessonNotes from "@/components/lesson-notes";
 import LessonBookmark from "@/components/lesson-bookmark";
-
-// Markdown components   above prevous and next        <LessonKnowledgeTest lessonId={lesson.id} />
+import ScenePlayer from "@/components/visualization/ScenePlayer";
+import type { VisualizationBlock } from "@/lib/visualization/types";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -72,13 +72,14 @@ export default function LessonPageContent({
                   pre: ({ node, ...props }) => (
                     <pre className="bg-zinc-900 p-4 rounded-md overflow-auto my-4" {...props} />
                   ),
-                  code: ({ node, inline, className, children, ...props }) => (
-                    inline ? (
+                  code: ({ node, className, children, ...props }) => {
+                    const isInline = !className
+                    return isInline ? (
                       <code className="bg-zinc-800 px-1 py-0.5 rounded text-pink-400" {...props}>{children}</code>
                     ) : (
                       <code className={className} {...props}>{children}</code>
                     )
-                  ),
+                  },
                   a: ({ node, ...props }) => (
                     <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
                   ),
@@ -128,6 +129,13 @@ export default function LessonPageContent({
               <p>No content available for this lesson.</p>
             )}
           </div>
+
+          {lesson.visualization && (
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold mb-4">Algorithm Visualization</h2>
+              <ScenePlayer block={lesson.visualization as VisualizationBlock} />
+            </div>
+          )}
 
           {lesson.exercises && (
             <div className="mt-12">

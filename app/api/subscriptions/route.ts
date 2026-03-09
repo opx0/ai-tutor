@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
         subscriptionId: plan.id,
         amount: plan.price,
         currency: plan.currency,
-        status: "created",
+        status: "CREATED",
         razorpayOrderId: order.id,
       },
     });
@@ -151,14 +151,15 @@ export async function POST(req: NextRequest) {
     console.error("Error creating subscription order:", error);
 
     // Provide more specific error messages based on the error type
-    if (error.error && error.error.description) {
+    const razorpayError = error as any;
+    if (razorpayError?.error?.description) {
       return NextResponse.json(
         {
           error: "Failed to create subscription order",
-          details: error.error.description,
-          code: error.error.code || "UNKNOWN_ERROR",
+          details: razorpayError.error.description,
+          code: razorpayError.error.code || "UNKNOWN_ERROR",
         },
-        { status: error.statusCode || 500 }
+        { status: razorpayError.statusCode || 500 }
       );
     }
 

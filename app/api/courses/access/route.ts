@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 
     // Check if subscription has expired
     if (
-      user.subscriptionStatus === "premium" &&
+      user.subscriptionStatus === "PREMIUM" &&
       user.subscriptionExpiresAt &&
       new Date(user.subscriptionExpiresAt) < new Date()
     ) {
@@ -58,12 +58,12 @@ export async function GET(req: NextRequest) {
           id: session.user.id,
         },
         data: {
-          subscriptionStatus: "free",
+          subscriptionStatus: "FREE",
           subscriptionExpiresAt: null,
         },
       });
       
-      user.subscriptionStatus = "free";
+      user.subscriptionStatus = "FREE";
       user.subscriptionExpiresAt = null;
     }
 
@@ -101,7 +101,7 @@ export async function GET(req: NextRequest) {
 
     // If this is the user's first course and they're accessing it fully,
     // update their freeCoursesUsed count
-    if (hasAccess && user.subscriptionStatus === "free" && user.freeCoursesUsed === 0) {
+    if (hasAccess && user.subscriptionStatus === "FREE" && user.freeCoursesUsed === 0) {
       await prisma.user.update({
         where: {
           id: session.user.id,

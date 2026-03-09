@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
         id: transactionId,
       },
       data: {
-        status: "captured",
+      status: "CAPTURED",
         razorpayPaymentId,
         razorpaySignature,
       },
@@ -72,9 +72,9 @@ export async function POST(req: NextRequest) {
     const now = new Date();
     let expiryDate = new Date();
     
-    if (transaction.subscription.interval === "monthly") {
+    if (transaction.subscription.interval === "MONTHLY") {
       expiryDate.setMonth(now.getMonth() + 1);
-    } else if (transaction.subscription.interval === "yearly") {
+    } else if (transaction.subscription.interval === "YEARLY") {
       expiryDate.setFullYear(now.getFullYear() + 1);
     }
 
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         id: session.user.id,
       },
       data: {
-        subscriptionStatus: "premium",
+        subscriptionStatus: "PREMIUM",
         subscriptionExpiresAt: expiryDate,
       },
     });
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Payment verified successfully",
-      subscriptionStatus: "premium",
+      subscriptionStatus: "PREMIUM",
       subscriptionExpiresAt: expiryDate,
     });
   } catch (error) {

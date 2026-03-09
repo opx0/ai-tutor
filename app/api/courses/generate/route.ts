@@ -1,8 +1,9 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { generateCourseContent } from "@/lib/gemini";
-import { getServerSession } from "next-auth";
+import { generateCourseContent } from "@/lib/ai-router";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,15 +19,9 @@ export async function POST(req: NextRequest) {
     console.log("Starting course generation...");
     const body = await req.json();
     const { topic, difficulty, additionalDetails, details } = body;
-    console.log("Request body:", {
-      topic,
-      difficulty,
-      additionalDetails,
-      details,
-    });
+    console.log("Request body:", { topic, difficulty, additionalDetails, details });
 
-    // Generate course content using Gemini with improved JSON parsing
-    console.log("Generating course content with Gemini...");
+    console.log("Generating course content...");
     const courseData = await generateCourseContent(
       topic,
       difficulty,
@@ -35,26 +30,31 @@ export async function POST(req: NextRequest) {
     console.log("Course content generated successfully:", {
       title: courseData.title,
       moduleCount: courseData.modules.length,
-      lessonCount: courseData.modules.reduce((acc, module) => acc + module.lessons.length, 0)
+      lessonCount: courseData.modules.reduce(
+        (acc, module) => acc + module.lessons.length,
+        0
+      ),
     });
 
     // Ensure each module has at least one lesson
-    const validatedModules = courseData.modules.map(module => {
+    const validatedModules = courseData.modules.map((module) => {
       if (!module.lessons || module.lessons.length === 0) {
-        // Add a placeholder lesson if none exist
         return {
           ...module,
-          lessons: [{
-            title: `Introduction to ${module.title}`,
-            content: `<h1>Introduction to ${module.title}</h1><p>This lesson will introduce you to the key concepts of this module.</p>`,
-            summary: "An introduction to the key concepts of this module.",
-            exercises: { "Exercise 1": "Review the key concepts presented in this lesson." }
-          }]
+          lessons: [
+            {
+              title: `Introduction to ${module.title}`,
+              content: `<h1>Introduction to ${module.title}</h1><p>This lesson will introduce you to the key concepts of this module.</p>`,
+              summary: "An introduction to the key concepts of this module.",
+              exercises: {
+                "Exercise 1": "Review the key concepts presented in this lesson.",
+              },
+            },
+          ],
         };
       }
       return module;
     });
-
 
     console.log("Creating course in database...");
     const course = await prisma.course.create({
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         description: courseData.description,
         difficulty,
         topic,
-        userId: session.user.id, // Associate course with the current user
+        userId: session.user.id,
         modules: {
           create: validatedModules.map((module, moduleIndex) => ({
             title: module.title,
@@ -75,6 +75,7 @@ export async function POST(req: NextRequest) {
                 description: lesson.summary,
                 content: lesson.content,
                 exercises: lesson.exercises || {},
+                visualization: lesson.visualization ?? Prisma.DbNull,
                 order: lessonIndex,
               })),
             },

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { format } from "date-fns"
 
+export const dynamic = 'force-dynamic';
+
 export default async function NotesPage() {
   const session = await getServerSession(authOptions)
 

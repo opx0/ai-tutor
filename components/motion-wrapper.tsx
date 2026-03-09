@@ -4,7 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { FC, ReactNode } from "react";
 
 interface MotionWrapperProps {
-  children: ReactNode;
+  children?: ReactNode;
   variants: Variants;
   initial?: string;
   animate?: string;

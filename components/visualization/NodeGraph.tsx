@@ -15,7 +15,7 @@ import {
     type NodeProps,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 // ─── Custom Node ──────────────────────────────────────────────────────
 function GraphNodeComponent({ data }: NodeProps) {
@@ -113,8 +113,15 @@ export default function NodeGraph({ element }: NodeGraphProps) {
     [element]
   )
 
-  const [nodes, , onNodesChange] = useNodesState(initialNodes)
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges)
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  // Sync when element (step) changes
+  useEffect(() => {
+    const { nodes: newNodes, edges: newEdges } = applyLayout(element)
+    setNodes(newNodes)
+    setEdges(newEdges)
+  }, [element, setNodes, setEdges])
 
   const onInit = useCallback(() => {}, [])
 

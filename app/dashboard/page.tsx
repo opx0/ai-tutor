@@ -15,7 +15,9 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BookOpen, Clock, Award, BookMarked } from "lucide-react";
+import { BookOpen, Clock, Award, BookMarked, Code2 } from "lucide-react";
+
+export const dynamic = 'force-dynamic';
 
 function DashboardLoading() {
   return (
@@ -236,11 +238,19 @@ export default async function DashboardPage() {
                     <p className="text-muted-foreground mb-4">
                       You haven&apos;t created any courses yet.
                     </p>
-                    <Button asChild>
-                      <Link href="/courses?tab=create">
-                        Create Course
-                      </Link>
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button asChild>
+                        <Link href="/courses?tab=create">
+                          Create Course
+                        </Link>
+                      </Button>
+                      <Button variant="outline" asChild>
+                        <Link href="/dsa-demo" className="flex items-center gap-2">
+                          <Code2 className="h-4 w-4" />
+                          Try DSA Demo Course
+                        </Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ) : (

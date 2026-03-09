@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // findUnique with compound key — uses index, faster than findFirst
+    // findFirst with compound key — uses index, faster than full scan
     const progress = await prisma.userProgress.findFirst({
       where: { courseId, userId },
     });
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
         courseId,
         userId,
         progress: 0,
-        lastLesson: null,
+        lastLessonId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id; // JWT — no extra DB lookup needed
 
     const body = await req.json();
-    const { courseId, progress, lastLesson } = body;
+    const { courseId, progress, lastLessonId } = body;
 
     if (!courseId || progress === undefined) {
       return NextResponse.json(
@@ -97,22 +97,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if progress exists, then update or create
-    const existingProgress = await prisma.userProgress.findFirst({
-      where: { courseId, userId },
+    // Upsert using the compound unique key
+    const updatedProgress = await prisma.userProgress.upsert({
+      where: {
+        courseId_userId: { courseId, userId },
+      },
+      update: { progress, lastLessonId, updatedAt: new Date() },
+      create: { courseId, userId, progress, lastLessonId },
     });
-
-    let updatedProgress;
-    if (existingProgress) {
-      updatedProgress = await prisma.userProgress.update({
-        where: { id: existingProgress.id },
-        data: { progress, lastLesson, updatedAt: new Date() },
-      });
-    } else {
-      updatedProgress = await prisma.userProgress.create({
-        data: { courseId, userId, progress, lastLesson },
-      });
-    }
 
     return NextResponse.json({
       message: "Progress updated",

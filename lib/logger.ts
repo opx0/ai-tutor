@@ -189,7 +189,7 @@ export function logApiResponse(
   responseData: any = null,
   requestContext: Record<string, any> = {}
 ): void {
-  const context = {
+  const context: Record<string, any> = {
     ...requestContext,
     statusCode,
   };

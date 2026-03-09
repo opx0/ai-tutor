@@ -8,6 +8,8 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 // Define the params type
 type PageParams = {
   id: string;
@@ -114,15 +116,16 @@ export default async function CoursePage({
       redirect("/dashboard");
     }
 
-    // Get user progress
+    // Get user progress — filter by both courseId AND userId
     const userProgress = await prisma.userProgress.findFirst({
       where: {
-        courseId: courseId,
+        courseId,
+        userId: user.id,
       },
     });
 
-    const progress = userProgress?.progress || 0;
-    const lastLesson = userProgress?.lastLesson;
+    const progress = userProgress?.progress ?? 0;
+    const lastLessonId = userProgress?.lastLessonId ?? null;
 
     return (
       <div className="container mx-auto px-4 py-8">
@@ -138,7 +141,7 @@ export default async function CoursePage({
         <CourseDetail
           course={course}
           progress={progress}
-          lastLesson={lastLesson}
+          lastLessonId={lastLessonId}
         />
       </div>
     );

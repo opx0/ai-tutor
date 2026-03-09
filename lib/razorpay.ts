@@ -28,7 +28,7 @@ export const SUBSCRIPTION_PLANS = {
     name: "Premium Monthly",
     description: "Unlimited access to all courses and features",
     price: 49900,
-    interval: "monthly",
+    interval: "MONTHLY" as const,
     features: [
       "Unlimited course access",
       "Unlimited module access",
@@ -43,7 +43,7 @@ export const SUBSCRIPTION_PLANS = {
     description:
       "Unlimited access to all courses and features with 2 months free",
     price: 499900,
-    interval: "yearly",
+    interval: "YEARLY" as const,
     features: [
       "All monthly features",
       "2 months free (save ₹999)",
@@ -131,9 +131,8 @@ export async function createSubscription(
     // you would need to use the correct Razorpay API parameters
     const subscription = await client.subscriptions.create({
       plan_id: planId,
-      // Using any to bypass TypeScript checking for this example
-      // to be currected In production, use the correct types from Razorpay
-      customer_id: customerId as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(customerId ? { customer_id: customerId } as any : {}),
       total_count: totalCount as any,
     });
     return subscription;

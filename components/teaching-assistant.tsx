@@ -2,24 +2,19 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
-import { Bot, User, Minimize2, Maximize2, Send, GraduationCap, Sparkles, BookOpen, FileText, Plus, Search, X, ExternalLink, ArrowLeft, Bookmark, Download, MessageSquare } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card, CardFooter, CardHeader, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
+import { ArrowLeft, GraduationCap, Send, Sparkles } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 // Markdown components
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import rehypeRaw from "rehype-raw"
-import rehypeHighlight from "rehype-highlight"
 import "highlight.js/styles/github-dark.css"
+import ReactMarkdown from "react-markdown"
+import rehypeHighlight from "rehype-highlight"
+import rehypeRaw from "rehype-raw"
+import remarkGfm from "remark-gfm"
 
 type Message = {
   role: "user" | "assistant"
@@ -112,15 +107,17 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
     setInput("")
     setIsLoading(true)
 
-    // Add user message to chat
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }])
+    // Add user message then a placeholder assistant message we'll stream into
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: userMessage },
+      { role: "assistant", content: "" },
+    ])
 
     try {
       const response = await fetch("/api/teaching-assistant", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: userMessage,
           courseId,
@@ -130,36 +127,36 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
         }),
       })
 
-      if (!response.ok) {
+      if (!response.ok || !response.body) {
         throw new Error("Failed to get response")
       }
 
-      const data = await response.json()
+      // Read plain text stream (toTextStreamResponse emits raw text chunks)
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ""
 
-      // Generate some relevant sources for the response
-      // In a real implementation, these would come from the API
-      const relevantSources = sampleSources.map(source => ({
-        ...source,
-        id: `source-${Math.random().toString(36).substring(2, 9)}`,
-        content: `This source provides information relevant to: "${userMessage}". ${source.content}`
-      }));
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
 
-      // Add AI response to chat with sources
-      const newMessageIndex = messages.length;
-      setMessages((prev) => [...prev, {
-        role: "assistant",
-        content: data.response,
-        sources: relevantSources
-      }])
+        const chunk = decoder.decode(value, { stream: true })
+        accumulated += chunk
 
-      // Set typing effect for the new message
-      setIsTyping(true)
-      setCurrentTypingMessageIndex(newMessageIndex)
-
+        // Update the last (placeholder) assistant message in place
+        setMessages((prev) => {
+          const updated = [...prev]
+          updated[updated.length - 1] = {
+            role: "assistant",
+            content: accumulated,
+          }
+          return updated
+        })
+      }
     } catch (error) {
       console.error("Error getting TA response:", error)
       setMessages((prev) => [
-        ...prev,
+        ...prev.slice(0, -1), // Remove the empty placeholder
         {
           role: "assistant",
           content: "Sorry, I encountered an error. Please try again.",
@@ -241,13 +238,14 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
               pre: ({ node, ...props }) => (
                 <pre className="bg-zinc-900 p-4 rounded-md overflow-auto my-2 w-full" {...props} />
               ),
-              code: ({ node, inline, className, children, ...props }) => (
-                inline ? (
+              code: ({ node, className, children, ...props }) => {
+                const isInline = !className
+                return isInline ? (
                   <code className="bg-zinc-800 px-1 py-0.5 rounded text-pink-400" {...props}>{children}</code>
                 ) : (
                   <code className={className} {...props}>{children}</code>
                 )
-              ),
+              },
               a: ({ node, ...props }) => (
                 <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
               ),
@@ -297,13 +295,14 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
               pre: ({ node, ...props }) => (
                 <pre className="bg-zinc-900 p-4 rounded-md overflow-auto my-2 w-full" {...props} />
               ),
-              code: ({ node, inline, className, children, ...props }) => (
-                inline ? (
+              code: ({ node, className, children, ...props }) => {
+                const isInline = !className
+                return isInline ? (
                   <code className="bg-zinc-800 px-1 py-0.5 rounded text-pink-400" {...props}>{children}</code>
                 ) : (
                   <code className={className} {...props}>{children}</code>
                 )
-              ),
+              },
               a: ({ node, ...props }) => (
                 <a className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
               ),
@@ -386,7 +385,7 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
                   </div>
                   <div>
                     <h2 className="text-lg font-medium flex items-center gap-2">
-                      Teaching Assistant <Badge className="text-xs">Gemini AI</Badge>
+                      Teaching Assistant <Badge className="text-xs">Gemini 2.5 Pro</Badge>
                     </h2>
                     <p className="text-sm text-muted-foreground">{lessonName}</p>
                   </div>

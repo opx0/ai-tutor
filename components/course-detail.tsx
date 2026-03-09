@@ -11,10 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 type CourseDetailProps = {
   course: any
   progress: number
-  lastLesson: string | null | undefined
+  lastLessonId: string | null | undefined
 }
 
-export default function CourseDetail({ course, progress, lastLesson }: CourseDetailProps) {
+export default function CourseDetail({ course, progress, lastLessonId }: CourseDetailProps) {
   const [activeTab, setActiveTab] = useState<string>("outline")
 
   // Count total lessons
@@ -71,7 +71,7 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
                           className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors"
                         >
                           <div className="flex-shrink-0">
-                            {lesson.completed ? (
+                            {lastLessonId === lesson.id ? (
                               <CheckCircle2 className="h-5 w-5 text-green-500" />
                             ) : (
                               <Circle className="h-5 w-5 text-muted-foreground" />
@@ -81,7 +81,7 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
                             <span className="text-sm text-muted-foreground">{lessonIndex + 1}</span>
                             <h4 className="font-medium">{lesson.title}</h4>
                           </div>
-                          {lastLesson === lesson.id && (
+                          {lastLessonId === lesson.id && (
                             <Badge variant="outline" className="ml-auto">
                               Current
                             </Badge>
@@ -123,7 +123,7 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
                         <div className="flex-grow">
                           <h5 className="font-medium">{lesson.title}</h5>
                         </div>
-                        {lesson.completed && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
+                        {lastLessonId === lesson.id && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
                       </Link>
                     ))}
                   </div>
@@ -136,4 +136,3 @@ export default function CourseDetail({ course, progress, lastLesson }: CourseDet
     </div>
   )
 }
-

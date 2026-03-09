@@ -5,6 +5,8 @@ import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import LessonPageContent from "./LessonPageContent";
 
+export const dynamic = 'force-dynamic';
+
 // Define the params type
 type PageParams = {
   id: string;
@@ -176,49 +178,60 @@ export default async function LessonPage({
       previousLesson = prevModule.lessons[prevModule.lessons.length - 1];
     }
 
-    // Mark lesson as viewed/completed if user is authenticated
+    // Mark lesson as completed for this user and update progress
     if (userId) {
-      await prisma.lesson.update({
+      // Upsert a LessonCompletion record for this user+lesson pair
+      await prisma.lessonCompletion.upsert({
         where: {
-          id: lesson.id,
+          lessonId_userId: {
+            lessonId: lesson.id,
+            userId,
+          },
         },
-        data: {
-          completed: true,
+        update: {}, // already completed — nothing to change
+        create: {
+          id: `${lesson.id}_${userId}`,
+          lessonId: lesson.id,
+          userId,
         },
       });
 
-      // Update user progress
+      // Count how many lessons in this course the current user has completed
       const totalLessons = modules.reduce(
         (acc, module) => acc + module.lessons.length,
         0
       );
 
-      const completedLessons = await prisma.lesson.count({
+      const completedLessons = await prisma.lessonCompletion.count({
         where: {
-          module: {
-            courseId: course.id,
+          userId,
+          Lesson: {
+            module: {
+              courseId: course.id,
+            },
           },
-          completed: true,
         },
       });
 
       const progress = Math.round((completedLessons / totalLessons) * 100);
 
+      // Upsert UserProgress using the correct compound unique key
       await prisma.userProgress.upsert({
         where: {
-          id: `${course.id}`,
+          courseId_userId: {
+            courseId: course.id,
+            userId,
+          },
         },
         update: {
           progress,
-          lastLesson: lesson.id,
-          userId,
+          lastLessonId: lesson.id,
         },
         create: {
-          id: `${course.id}`,
           courseId: course.id,
-          progress,
-          lastLesson: lesson.id,
           userId,
+          progress,
+          lastLessonId: lesson.id,
         },
       });
     }

@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
 
     if (courseId) {
       // Get statistics for a specific course
-      
+
       // Check if course exists and user has access
       const course = await prisma.course.findFirst({
         where: {
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      // Get total number of lessons
+      // Get total number of lessons in the course
       const totalLessons = await prisma.lesson.count({
         where: {
           module: {
@@ -59,13 +59,15 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      // Get number of completed lessons
-      const completedLessons = await prisma.lesson.count({
+      // Get number of lessons this user has completed in the course
+      const completedLessons = await prisma.lessonCompletion.count({
         where: {
-          module: {
-            courseId,
+          userId: user.id,
+          Lesson: {
+            module: {
+              courseId,
+            },
           },
-          completed: true,
         },
       });
 
@@ -100,7 +102,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ statistics: response });
     } else {
       // Get overall statistics for the user
-      
+
       // Get total courses created by user
       const courseCount = await prisma.course.count({
         where: { userId: user.id },
@@ -126,7 +128,7 @@ export async function GET(req: NextRequest) {
       const topCourses = await prisma.userProgress.findMany({
         where: { userId: user.id },
         include: {
-          course: {
+          Course: {
             select: {
               id: true,
               title: true,
@@ -139,7 +141,7 @@ export async function GET(req: NextRequest) {
 
       const formattedTopCourses = topCourses.map((progress) => ({
         courseId: progress.courseId,
-        title: progress.course?.title || "Unknown Course",
+        title: progress.Course?.title || "Unknown Course",
         progress: progress.progress,
       }));
 

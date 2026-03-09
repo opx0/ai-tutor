@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { Suspense } from "react";
 
+export const dynamic = 'force-dynamic';
+
 // Loading component for profile sections
 function ProfileLoading() {
   return (
@@ -45,6 +47,9 @@ async function ProfileData() {
     where: {
       id: session.user.id,
     },
+    include: {
+      accounts: { select: { provider: true } },
+    },
   });
 
   if (!user) {
@@ -52,7 +57,7 @@ async function ProfileData() {
   }
 
   // Check if user has Google provider info
-  const isGoogleUser = user.provider === "google";
+  const isGoogleUser = user.accounts.some((a) => a.provider === "google");
 
   // Get user stats
   const courseCount = await prisma.course.count({
@@ -105,7 +110,7 @@ async function ProfileData() {
                 />
                 <AvatarFallback className="text-2xl bg-primary/10">
                   {session.user.name || user.name
-                    ? (session.user.name || user.name)
+                    ? ((session.user.name || user.name) ?? "")
                         .split(" ")
                         .map((n) => n[0])
                         .join("")
