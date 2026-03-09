@@ -2,7 +2,7 @@
 
 import { getCellStyle } from '@/lib/visualization/cellStateColors'
 import type { ArrayElement } from '@/lib/visualization/types'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type ArrayStripProps = {
   element: ArrayElement

@@ -2,7 +2,7 @@
 
 import { getCellStyle } from '@/lib/visualization/cellStateColors'
 import type { VariableElement } from '@/lib/visualization/types'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type VariableBoxProps = {
   element: VariableElement
