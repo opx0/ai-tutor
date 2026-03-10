@@ -7,8 +7,13 @@ import TeachingAssistant from "@/components/teaching-assistant";
 import LessonKnowledgeTest from "@/components/lesson-knowledge-test";
 import LessonNotes from "@/components/lesson-notes";
 import LessonBookmark from "@/components/lesson-bookmark";
-import ScenePlayer from "@/components/visualization/ScenePlayer";
+import dynamic from "next/dynamic";
 import type { VisualizationBlock } from "@/lib/visualization/types";
+
+const ScenePlayer = dynamic(
+  () => import("@/components/visualization/ScenePlayer"),
+  { ssr: false }
+);
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

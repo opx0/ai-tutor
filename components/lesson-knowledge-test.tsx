@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2 } from "lucide-react"
+import { LoaderCircle } from "lucide-react"
 import KnowledgeTest from "@/components/knowledge-test"
 import { Button } from "@/components/ui/button"
 
@@ -123,7 +123,7 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
             <Button onClick={generateQuestions} disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                   Generating Questions...
                 </>
               ) : (

@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Loader2, Sparkles } from "lucide-react"
+import { z } from "zod"
+import { LoaderCircle, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -17,11 +17,9 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const formSchema = z.object({
-  topic: z.string().min(2, {
-    message: "Topic must be at least 2 characters.",
-  }),
+  topic: z.string().min(2, "Topic must be at least 2 characters."),
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
-  additionalDetails: z.boolean().default(false),
+  additionalDetails: z.boolean(),
   details: z.string().optional(),
 })
 
@@ -164,7 +162,7 @@ export default function CourseForm() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                   Generating Course...
                 </>
               ) : (

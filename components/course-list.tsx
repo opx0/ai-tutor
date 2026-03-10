@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Code2 } from "lucide-react";
+import { Search, CodeXml } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -167,7 +167,7 @@ export default function CourseList() {
                 </Button>
                 <Button variant="outline" asChild>
                   <Link href="/dsa-demo" className="flex items-center gap-2">
-                    <Code2 className="h-4 w-4" />
+                    <CodeXml className="h-4 w-4" />
                     Try DSA Demo Course
                   </Link>
                 </Button>

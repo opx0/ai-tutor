@@ -1,7 +1,12 @@
 'use client'
 
-import ScenePlayer from '@/components/visualization/ScenePlayer'
+import dynamic from 'next/dynamic'
 import type { VisualizationBlock } from '@/lib/visualization/types'
+
+const ScenePlayer = dynamic(
+  () => import('@/components/visualization/ScenePlayer'),
+  { ssr: false }
+)
 
 // ─── All 5 Primitives in One Visualization ─────────────────────────────
 // Scenario: Dijkstra's shortest path on a small graph

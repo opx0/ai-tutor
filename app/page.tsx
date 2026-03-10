@@ -5,7 +5,7 @@ import MotionWrapper from "@/components/motion-wrapper";
 import { Button } from "@/components/ui/button";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 import { motion, Variants } from "framer-motion";
-import { ArrowRight, BookMarked, BookOpen, Brain, Code2, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
+import { ArrowRight, BookMarked, BookOpen, Brain, CodeXml, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -110,7 +110,7 @@ export default function Home() {
                       asChild
                     >
                       <Link href="/dsa-demo" className="flex items-center gap-2">
-                        <Code2 className="h-4 w-4" />
+                        <CodeXml className="h-4 w-4" />
                         DSA Demo Course
                       </Link>
                     </Button>
@@ -496,7 +496,7 @@ export default function Home() {
                 asChild
               >
                 <Link href="/dsa-demo" className="flex items-center gap-2">
-                  <Code2 className="h-4 w-4" />
+                  <CodeXml className="h-4 w-4" />
                   Try DSA Demo Free
                 </Link>
               </Button>

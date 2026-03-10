@@ -8,7 +8,7 @@ import {
   ExternalLink,
   Zap,
   ArrowRight,
-  CheckCircle2,
+  CircleCheck,
 } from 'lucide-react'
 import type { DemoPhase, DemoLesson } from '@/lib/dsa-demo/types'
 import dynamic from 'next/dynamic'
@@ -145,12 +145,12 @@ export function LessonView({
                 'bg-primary text-primary-foreground hover:bg-primary/90',
               )}
             >
-              <CheckCircle2 className="h-4 w-4" />
+              <CircleCheck className="h-4 w-4" />
               Mark Complete
             </button>
           ) : (
             <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 className="h-4 w-4" />
+              <CircleCheck className="h-4 w-4" />
               Completed
             </span>
           )}

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import CourseList from "@/components/course-list";
 import CourseForm from "@/components/course-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, Loader2 } from "lucide-react";
+import { BookOpen, Plus, LoaderCircle } from "lucide-react";
 
 function CoursesContent() {
   const searchParams = useSearchParams();
@@ -64,7 +64,7 @@ export default function CoursesPage() {
     <Suspense fallback={
       <div className="container mx-auto px-4 py-5 max-w-5xl flex justify-center items-center min-h-[50vh]">
         <div className="flex flex-col items-center gap-2">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
           <p className="text-muted-foreground">Loading courses...</p>
         </div>
       </div>

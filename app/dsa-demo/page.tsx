@@ -9,7 +9,7 @@ import { advancedPhases } from '@/lib/dsa-demo/advanced-phases'
 import type { DemoPhase, DemoLesson } from '@/lib/dsa-demo/types'
 import {
   BookOpen,
-  Code2,
+  CodeXml,
   GraduationCap,
   Menu,
   RotateCcw,
@@ -172,7 +172,7 @@ export default function DsaDemoPage() {
               )}
             </button>
 
-            <Code2 className="h-5 w-5 text-primary" />
+            <CodeXml className="h-5 w-5 text-primary" />
             <h1 className="text-sm font-semibold sm:text-base">
               DSA Mastery Course
             </h1>

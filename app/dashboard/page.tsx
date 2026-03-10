@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Suspense } from "react";
-import { Loader2 } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import {
@@ -15,14 +15,14 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BookOpen, Clock, Award, BookMarked, Code2 } from "lucide-react";
+import { BookOpen, Clock, Award, BookMarked, CodeXml } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
 function DashboardLoading() {
   return (
     <div className="flex justify-center items-center h-40">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
       <span className="ml-2 text-lg">Loading dashboard...</span>
     </div>
   );
@@ -246,7 +246,7 @@ export default async function DashboardPage() {
                       </Button>
                       <Button variant="outline" asChild>
                         <Link href="/dsa-demo" className="flex items-center gap-2">
-                          <Code2 className="h-4 w-4" />
+                          <CodeXml className="h-4 w-4" />
                           Try DSA Demo Course
                         </Link>
                       </Button>

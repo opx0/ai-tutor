@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { Loader2, Clock, BookOpen, FileText, BookMarked, Search, CheckCircle } from "lucide-react"
+import { LoaderCircle, Clock, BookOpen, FileText, BookMarked, Search, CircleCheckBig } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { format } from "date-fns"
 import Link from "next/link"
@@ -63,7 +63,7 @@ export default function UserActivityFeed() {
       case 'view_lesson':
         return <FileText className="h-4 w-4" />
       case 'complete_lesson':
-        return <CheckCircle className="h-4 w-4" />
+        return <CircleCheckBig className="h-4 w-4" />
       case 'create_note':
         return <FileText className="h-4 w-4" />
       case 'create_bookmark':
@@ -118,7 +118,7 @@ export default function UserActivityFeed() {
       <div className="space-y-4">
         <h2 className="text-xl font-bold">Recent Activity</h2>
         <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <LoaderCircle className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       </div>
     )

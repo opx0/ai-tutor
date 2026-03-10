@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { Loader2, Save, Trash } from "lucide-react"
+import { LoaderCircle, Save, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -171,7 +171,7 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
           <CardTitle>Notes</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center py-6">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <LoaderCircle className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     )
@@ -208,7 +208,7 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
           <Button variant="outline" size="sm" onClick={deleteNote} disabled={isDeleting || isSaving}>
             {isDeleting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                 Deleting...
               </>
             ) : (
@@ -227,7 +227,7 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
         >
           {isSaving ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
               Saving...
             </>
           ) : (

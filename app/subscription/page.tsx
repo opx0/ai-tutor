@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, Loader2, SparklesIcon } from "lucide-react";
+import { CheckIcon, LoaderCircle, SparklesIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -168,7 +168,7 @@ export default function SubscriptionPage() {
     return (
       <div className="container flex items-center justify-center min-h-[70vh]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <LoaderCircle className="h-8 w-8 animate-spin mx-auto mb-4" />
           <p className="text-lg">Loading subscription plans...</p>
         </div>
       </div>
@@ -333,7 +333,7 @@ export default function SubscriptionPage() {
                       >
                         {processingPayment ? (
                           <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                             Processing…
                           </>
                         ) : (
@@ -419,7 +419,7 @@ export default function SubscriptionPage() {
                       >
                         {processingPayment ? (
                           <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                             Processing…
                           </>
                         ) : (

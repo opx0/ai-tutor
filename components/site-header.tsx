@@ -2,7 +2,7 @@
 
 import {
     Bookmark,
-    Code2,
+    CodeXml,
     CreditCard,
     GraduationCap,
     LayoutDashboard,
@@ -23,7 +23,7 @@ import { ExpandableTabs } from "@/components/ui/expandable-tabs";
 const navTabs = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "Courses", icon: GraduationCap, href: "/courses" },
-  { title: "DSA Demo", icon: Code2, href: "/dsa-demo" },
+  { title: "DSA Demo", icon: CodeXml, href: "/dsa-demo" },
   { type: "separator" as const },
   { title: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
   { title: "Notes", icon: StickyNote, href: "/notes" },

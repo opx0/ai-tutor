@@ -3,11 +3,9 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  /* Add a subtle background pattern or gradient for a premium feel */
+  /* Subtle background gradient for a premium feel */
   background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.05), transparent 40%),
                     radial-gradient(circle at bottom left, hsl(var(--chart-5) / 0.05), transparent 40%);
-  background-attachment: fixed;
 }
 
 @layer utilities {

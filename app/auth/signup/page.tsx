@@ -2,13 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod";
 
 import {
   Form,
@@ -27,15 +27,9 @@ const CanvasRevealEffect = dynamic(
 
 const formSchema = z
   .object({
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    password: z.string().min(8, {
-      message: "Password must be at least 8 characters.",
-    }),
+    name: z.string().min(2, "Name must be at least 2 characters."),
+    email: z.string().email("Please enter a valid email address."),
+    password: z.string().min(8, "Password must be at least 8 characters."),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -162,7 +156,7 @@ function SignUpForm() {
                     className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full py-3 px-4 transition-colors disabled:opacity-50"
                   >
                     {isGoogleLoading ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <LoaderCircle className="h-5 w-5 animate-spin" />
                     ) : (
                       <svg
                         className="h-5 w-5"
@@ -269,7 +263,7 @@ function SignUpForm() {
                                   className="absolute right-1.5 top-1.5 text-black w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-white/90 transition-colors group overflow-hidden disabled:opacity-50"
                                 >
                                   {isLoading ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <LoaderCircle className="h-4 w-4 animate-spin" />
                                   ) : (
                                     <span className="relative w-full h-full block overflow-hidden">
                                       <span className="absolute inset-0 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-full">
@@ -314,7 +308,7 @@ export default function SignUpPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen w-full items-center justify-center bg-black">
-          <Loader2 className="h-6 w-6 animate-spin text-white" />
+          <LoaderCircle className="h-6 w-6 animate-spin text-white" />
         </div>
       }
     >
