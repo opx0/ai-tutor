@@ -15,7 +15,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BookOpen, Clock, Award, BookMarked, CodeXml } from "lucide-react";
+import { BookOpen, Clock, Award, BookMarked, CodeXml, RotateCcw } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
@@ -43,11 +43,8 @@ export default async function DashboardPage() {
   });
 
   if (!user) {
-    console.log("Dashboard - User not found in database");
     redirect("/auth/signin");
   }
-
-  console.log("Dashboard - User found:", { id: user.id, email: user.email });
 
   // Get user's courses
   const courses = await prisma.course.findMany({
@@ -147,12 +144,22 @@ export default async function DashboardPage() {
     take: 3,
   });
 
+  // Get count of due spaced reviews
+  const dueReviewCount = await prisma.spacedReview.count({
+    where: {
+      userId: user.id,
+      nextReviewAt: {
+        lte: new Date(),
+      },
+    },
+  });
+
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <Button asChild>
-          <Link href="/courses?tab=create">Create Course</Link>
+          <Link href="/courses/my">Create Course</Link>
         </Button>
       </div>
 
@@ -240,14 +247,14 @@ export default async function DashboardPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <Button asChild>
-                        <Link href="/courses?tab=create">
+                        <Link href="/courses/my">
                           Create Course
                         </Link>
                       </Button>
                       <Button variant="outline" asChild>
-                        <Link href="/dsa-demo" className="flex items-center gap-2">
+                        <Link href="/courses/dsa-mastery" className="flex items-center gap-2">
                           <CodeXml className="h-4 w-4" />
-                          Try DSA Demo Course
+                          Try DSA Mastery Course
                         </Link>
                       </Button>
                     </div>
@@ -329,6 +336,34 @@ export default async function DashboardPage() {
           </div>
 
           <div>
+            <div className="mb-5">
+              <h2 className="text-xl font-bold mb-3">Spaced Review</h2>
+              <Card className={dueReviewCount > 0 ? "border-primary/50 bg-primary/5" : ""}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`rounded-full p-2 ${dueReviewCount > 0 ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                      <RotateCcw className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold">{dueReviewCount}</div>
+                      <p className="text-xs text-muted-foreground">
+                        {dueReviewCount === 1 ? "review due" : "reviews due"}
+                      </p>
+                    </div>
+                  </div>
+                  {dueReviewCount > 0 ? (
+                    <Button asChild className="w-full">
+                      <Link href="/review">Start Review Session</Link>
+                    </Button>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center">
+                      No reviews due. Visit lessons to build your review queue.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
             <div className="mb-4">
               <h2 className="text-xl font-bold mb-3">Bookmarks</h2>
               {bookmarks.length === 0 ? (

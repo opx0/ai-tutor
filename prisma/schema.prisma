@@ -14,6 +14,7 @@ model User {
   emailVerified          DateTime?                 @db.Timestamptz(6)
   password               String?
   image                  String?
+  role                   UserRole                  @default(USER)
   subscriptionStatus     SubscriptionStatus        @default(FREE)
   subscriptionExpiresAt  DateTime?                 @db.Timestamptz(6)
   razorpayCustomerId     String?
@@ -28,6 +29,7 @@ model User {
   LessonCompletion       LessonCompletion[]
   notes                  Note[]
   sessions               Session[]
+  spacedReviews          SpacedReview[]
   transactions           SubscriptionTransaction[]
   UserActivity           UserActivity[]
   progress               UserProgress[]
@@ -86,19 +88,30 @@ model Authenticator {
 }
 
 model Course {
-  id           String         @id @default(cuid())
-  title        String
-  description  String?
-  difficulty   Difficulty
-  topic        String
-  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime       @updatedAt @db.Timestamptz(6)
-  userId       String
-  isPublic     Boolean        @default(false)
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  modules      Module[]
-  UserProgress UserProgress[]
+  id             String         @id @default(cuid())
+  title          String
+  description    String?
+  difficulty     Difficulty
+  topic          String
+  type           CourseType     @default(CUSTOM)
+  slug           String?        @unique
+  icon           String?
+  color          String?
+  estimatedHours Int?
+  createdAt      DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime       @updatedAt @db.Timestamptz(6)
+  userId         String
+  isPublic       Boolean        @default(false)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  modules        Module[]
+  roadmapNode    RoadmapNode?
+  UserProgress   UserProgress[]
 
+  // Self-relation for prerequisites (many-to-many)
+  prerequisites  Course[]       @relation("CoursePrerequisites")
+  prerequisiteOf Course[]       @relation("CoursePrerequisites")
+
+  @@index([type])
   @@index([isPublic])
   @@index([userId])
 }
@@ -124,11 +137,13 @@ model Lesson {
   exercises        Json?
   order            Int
   moduleId         String
+  estimatedMinutes Int?
   visualization    Json?
   bookmarks        Bookmark[]
   module           Module             @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   LessonCompletion LessonCompletion[]
   notes            Note[]
+  spacedReviews    SpacedReview[]
   UserProgress     UserProgress[]
 
   @@index([moduleId])
@@ -240,10 +255,47 @@ model UserActivity {
   @@index([userId])
 }
 
+model RoadmapNode {
+  id       String  @id @default(cuid())
+  courseId String  @unique
+  x        Float
+  y        Float
+  group    String?
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model SpacedReview {
+  id           String   @id @default(cuid())
+  userId       String
+  lessonId     String
+  nextReviewAt DateTime @db.Timestamptz(6)
+  interval     Int      @default(1) // days
+  easeFactor   Float    @default(2.5)
+  repetitions  Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson       Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId, nextReviewAt])
+  @@index([lessonId])
+}
+
 enum Difficulty {
   BEGINNER
   INTERMEDIATE
   ADVANCED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum CourseType {
+  CURATED
+  CUSTOM
 }
 
 enum SubscriptionInterval {

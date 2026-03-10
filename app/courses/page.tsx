@@ -1,75 +1,57 @@
-"use client";
+import { getRoadmapData } from "@/lib/roadmap"
+import RoadmapFlow from "@/components/roadmap/roadmap-flow"
+import { Map, Sparkles } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import CourseList from "@/components/course-list";
-import CourseForm from "@/components/course-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, LoaderCircle } from "lucide-react";
+export const dynamic = "force-dynamic"
 
-function CoursesContent() {
-  const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState("browse");
-
-  useEffect(() => {
-    const tab = searchParams.get("tab");
-    if (tab === "create") {
-      setActiveTab("create");
-    }
-  }, [searchParams]);
-
-  return (
-    <div className="container mx-auto px-4 py-5 max-w-5xl">
-      <div className="flex flex-col items-center justify-center text-center mb-5">
-        <h1 className="text-2xl font-bold tracking-tight mb-2">
-          Your Learning Journey
-        </h1>
-        <p className="text-base text-muted-foreground">
-          Browse and create personalized AI-generated courses
-        </p>
-      </div>
-
-      <Tabs defaultValue="browse" value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-          <TabsTrigger value="browse" className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Browse Courses
-          </TabsTrigger>
-          <TabsTrigger value="create" className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Create Course
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="browse" className="mt-0">
-          <CourseList />
-        </TabsContent>
-
-        <TabsContent value="create" className="mt-0">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-xl font-semibold mb-4 text-center">Create a New AI-Generated Course</h2>
-            <p className="text-muted-foreground text-center mb-6">
-              Specify your topic of interest and our AI will generate a complete course tailored to your needs
-            </p>
-            <CourseForm />
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
+export const metadata = {
+  title: "Learning Roadmap - AI Tutor",
+  description: "Interactive course roadmap — master topics step by step",
 }
 
-export default function CoursesPage() {
+export default async function CoursesRoadmapPage() {
+  const data = await getRoadmapData()
+
   return (
-    <Suspense fallback={
-      <div className="container mx-auto px-4 py-5 max-w-5xl flex justify-center items-center min-h-[50vh]">
-        <div className="flex flex-col items-center gap-2">
-          <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading courses...</p>
+    <div className="flex flex-col h-[calc(100vh-5rem)]">
+      {/* Header */}
+      <div className="container mx-auto px-4 pt-4 pb-2 max-w-7xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
+              <Map className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">
+                Learning Roadmap
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {data.courses.length} course{data.courses.length !== 1 ? "s" : ""} available
+              </p>
+            </div>
+          </div>
+
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/courses/my">My Courses</Link>
+          </Button>
         </div>
+
+        {data.courses.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <Sparkles className="w-12 h-12 text-muted-foreground/50 mb-4" />
+            <h2 className="text-lg font-semibold mb-2">No courses yet</h2>
+            <p className="text-muted-foreground text-sm max-w-md">
+              Curated courses will appear here once an admin adds them to the
+              roadmap. Check back soon!
+            </p>
+          </div>
+        )}
       </div>
-    }>
-      <CoursesContent />
-    </Suspense>
-  );
+
+      {/* Flow canvas */}
+      {data.courses.length > 0 && <RoadmapFlow data={data} />}
+    </div>
+  )
 }

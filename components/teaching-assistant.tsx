@@ -39,7 +39,6 @@ type TeachingAssistantProps = {
 import { TypingEffect } from "./typing-effect"
 
 export default function TeachingAssistant({ courseId, lessonId, moduleName, lessonName }: TeachingAssistantProps) {
-  console.log("TeachingAssistant rendered:", { courseId, lessonId, moduleName, lessonName });
   const [isMinimized, setIsMinimized] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [isOverlayOpen, setIsOverlayOpen] = useState(false)

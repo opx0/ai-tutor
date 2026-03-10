@@ -254,3 +254,27 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* ─── Roadmap Flow (xyflow theming) ─── */
+.roadmap-flow .react-flow__controls button {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+}
+.roadmap-flow .react-flow__controls button:hover {
+  background: hsl(var(--accent));
+}
+.roadmap-flow .react-flow__controls button svg {
+  fill: hsl(var(--foreground));
+}
+.roadmap-flow .react-flow__minimap {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.roadmap-flow .react-flow__edge-path {
+  stroke: hsl(var(--primary) / 0.35);
+}
+.roadmap-flow .react-flow__edge.animated path {
+  animation-duration: 3s;
+}

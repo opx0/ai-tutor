@@ -5,190 +5,149 @@ import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import LessonPageContent from "./LessonPageContent";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-// Define the params type
 type PageParams = {
   id: string;
   lessonId: string;
 };
 
-// Generate metadata for the page
+/**
+ * Lookup course by slug first, then by ID (reused from course page)
+ */
+async function findCourseId(idOrSlug: string): Promise<string | null> {
+  // Try slug first
+  const bySlug = await prisma.course.findUnique({
+    where: { slug: idOrSlug },
+    select: { id: true },
+  });
+  if (bySlug) return bySlug.id;
+
+  // Try ID
+  const byId = await prisma.course.findUnique({
+    where: { id: idOrSlug },
+    select: { id: true },
+  });
+  return byId?.id ?? null;
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<PageParams>;
 }): Promise<Metadata> {
   try {
-    // Extract params safely
-    const { id: courseId, lessonId } = await params;
-
-    if (!lessonId) {
-      return {
-        title: "Lesson Not Found",
-      };
-    }
+    const { lessonId } = await params;
+    if (!lessonId) return { title: "Lesson Not Found" };
 
     const lesson = await prisma.lesson.findUnique({
-      where: {
-        id: lessonId,
-      },
-      include: {
-        module: {
-          include: {
-            course: true,
-          },
-        },
-      },
+      where: { id: lessonId },
+      include: { module: { include: { course: true } } },
     });
 
-    if (!lesson) {
-      return {
-        title: "Lesson Not Found",
-      };
-    }
+    if (!lesson) return { title: "Lesson Not Found" };
 
     return {
       title: `${lesson.title} | ${lesson.module.course.title}`,
       description:
         lesson.description || `Learn about ${lesson.title} in this lesson.`,
     };
-  } catch (error) {
-    console.error("Error generating metadata:", error);
-    return {
-      title: "Lesson",
-      description: "View lesson details",
-    };
+  } catch {
+    return { title: "Lesson", description: "View lesson details" };
   }
 }
 
 interface PageProps {
   params: Promise<PageParams>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function LessonPage({
-  params,
-  searchParams,
-}: PageProps) {
-  try {
-    // Extract params safely
-    const { id: courseId, lessonId } = await params;
+export default async function LessonPage({ params }: PageProps) {
+  const { id: idOrSlug, lessonId } = await params;
+  if (!idOrSlug || !lessonId) notFound();
 
-    if (!courseId || !lessonId) {
-      notFound();
-    }
+  const session = await getServerSession(authOptions);
 
-    const session = await getServerSession(authOptions);
+  // Resolve the actual course ID
+  const courseId = await findCourseId(idOrSlug);
+  if (!courseId) notFound();
 
-    if (!session?.user) {
-      redirect(
-        `/auth/signin?callbackUrl=/courses/${courseId}/${lessonId}`
-      );
-    }
-
-    // Get user from database to ensure we have the ID
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email as string,
-      },
-    });
-
-    if (!user) {
-      redirect("/auth/signin");
-    }
-
-    const userId = user.id;
-
-    const lesson = await prisma.lesson.findUnique({
-      where: {
-        id: lessonId,
-      },
-      include: {
-        module: {
-          include: {
-            course: true,
-            lessons: {
-              orderBy: {
-                order: "asc",
-              },
-            },
-          },
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: lessonId },
+    include: {
+      module: {
+        include: {
+          course: true,
+          lessons: { orderBy: { order: "asc" } },
         },
       },
-    });
+    },
+  });
 
-    if (!lesson) {
-      notFound();
+  if (!lesson) notFound();
+
+  const course = lesson.module.course;
+
+  // Verify lesson belongs to the resolved course
+  if (course.id !== courseId) notFound();
+
+  // Access control
+  if (!course.isPublic && course.type === "CUSTOM") {
+    if (!session?.user) {
+      redirect(`/auth/signin?callbackUrl=/courses/${idOrSlug}/${lessonId}`);
     }
-
-    // Check if user has access to this course
-    if (
-      lesson.module.course.userId !== userId &&
-      !lesson.module.course.isPublic
-    ) {
-      // If the course doesn't belong to the user and isn't public, redirect to dashboard
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email as string },
+    });
+    if (!user || course.userId !== user.id) {
       redirect("/dashboard");
     }
+  }
 
-    const course = lesson.module.course;
-    const moduleId = lesson.moduleId;
+  // Get all modules for navigation
+  const modules = await prisma.module.findMany({
+    where: { courseId: course.id },
+    include: { lessons: { orderBy: { order: "asc" } } },
+    orderBy: { order: "asc" },
+  });
 
-    // Get all modules for the course
-    const modules = await prisma.module.findMany({
-      where: {
-        courseId: course.id,
-      },
-      include: {
-        lessons: {
-          orderBy: {
-            order: "asc",
-          },
-        },
-      },
-      orderBy: {
-        order: "asc",
-      },
+  // Compute prev/next navigation
+  const currentModuleIndex = modules.findIndex(
+    (m) => m.id === lesson.moduleId
+  );
+  const currentModule = modules[currentModuleIndex];
+  const currentLessonIndex = currentModule.lessons.findIndex(
+    (l) => l.id === lesson.id
+  );
+
+  let nextLesson = null;
+  let previousLesson = null;
+
+  if (currentLessonIndex < currentModule.lessons.length - 1) {
+    nextLesson = currentModule.lessons[currentLessonIndex + 1];
+  } else if (currentModuleIndex < modules.length - 1) {
+    nextLesson = modules[currentModuleIndex + 1].lessons[0];
+  }
+
+  if (currentLessonIndex > 0) {
+    previousLesson = currentModule.lessons[currentLessonIndex - 1];
+  } else if (currentModuleIndex > 0) {
+    const prevModule = modules[currentModuleIndex - 1];
+    previousLesson = prevModule.lessons[prevModule.lessons.length - 1];
+  }
+
+  // Mark lesson as completed + update progress (requires auth)
+  if (session?.user?.email) {
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
     });
 
-    // Find current lesson index and get next/previous lessons
-    const currentModuleIndex = modules.findIndex((m) => m.id === moduleId);
-    const currentModule = modules[currentModuleIndex];
-    const currentLessonIndex = currentModule.lessons.findIndex(
-      (l) => l.id === lesson.id
-    );
+    if (user) {
+      const userId = user.id;
 
-    let nextLesson = null;
-    let previousLesson = null;
-
-    // If not the last lesson in the module
-    if (currentLessonIndex < currentModule.lessons.length - 1) {
-      nextLesson = currentModule.lessons[currentLessonIndex + 1];
-    } else if (currentModuleIndex < modules.length - 1) {
-      // If there's a next module
-      nextLesson = modules[currentModuleIndex + 1].lessons[0];
-    }
-
-    // If not the first lesson in the module
-    if (currentLessonIndex > 0) {
-      previousLesson = currentModule.lessons[currentLessonIndex - 1];
-    } else if (currentModuleIndex > 0) {
-      // If there's a previous module
-      const prevModule = modules[currentModuleIndex - 1];
-      previousLesson = prevModule.lessons[prevModule.lessons.length - 1];
-    }
-
-    // Mark lesson as completed for this user and update progress
-    if (userId) {
-      // Upsert a LessonCompletion record for this user+lesson pair
       await prisma.lessonCompletion.upsert({
-        where: {
-          lessonId_userId: {
-            lessonId: lesson.id,
-            userId,
-          },
-        },
-        update: {}, // already completed — nothing to change
+        where: { lessonId_userId: { lessonId: lesson.id, userId } },
+        update: {},
         create: {
           id: `${lesson.id}_${userId}`,
           lessonId: lesson.id,
@@ -196,37 +155,22 @@ export default async function LessonPage({
         },
       });
 
-      // Count how many lessons in this course the current user has completed
       const totalLessons = modules.reduce(
-        (acc, module) => acc + module.lessons.length,
+        (acc, mod) => acc + mod.lessons.length,
         0
       );
-
       const completedLessons = await prisma.lessonCompletion.count({
         where: {
           userId,
-          Lesson: {
-            module: {
-              courseId: course.id,
-            },
-          },
+          Lesson: { module: { courseId: course.id } },
         },
       });
 
       const progress = Math.round((completedLessons / totalLessons) * 100);
 
-      // Upsert UserProgress using the correct compound unique key
       await prisma.userProgress.upsert({
-        where: {
-          courseId_userId: {
-            courseId: course.id,
-            userId,
-          },
-        },
-        update: {
-          progress,
-          lastLessonId: lesson.id,
-        },
+        where: { courseId_userId: { courseId: course.id, userId } },
+        update: { progress, lastLessonId: lesson.id },
         create: {
           courseId: course.id,
           userId,
@@ -234,20 +178,39 @@ export default async function LessonPage({
           lastLessonId: lesson.id,
         },
       });
-    }
 
-    return (
-      <LessonPageContent
-        lesson={lesson}
-        course={course}
-        currentModule={currentModule}
-        currentLessonIndex={currentLessonIndex}
-        nextLesson={nextLesson}
-        previousLesson={previousLesson}
-      />
-    );
-  } catch (error) {
-    console.error("Error rendering lesson page:", error);
-    notFound();
+      // Auto-enqueue for spaced review (if not already scheduled)
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      await prisma.spacedReview.upsert({
+        where: { userId_lessonId: { userId, lessonId: lesson.id } },
+        update: {}, // Don't overwrite existing review schedule
+        create: {
+          userId,
+          lessonId: lesson.id,
+          nextReviewAt: tomorrow,
+          interval: 1,
+          easeFactor: 2.5,
+          repetitions: 0,
+        },
+      });
+    }
   }
+
+  // Use slug for curated course links
+  const courseHref = course.slug || course.id;
+
+  return (
+    <LessonPageContent
+      lesson={lesson}
+      course={course}
+      courseHref={courseHref}
+      currentModule={currentModule}
+      currentLessonIndex={currentLessonIndex}
+      nextLesson={nextLesson}
+      previousLesson={previousLesson}
+    />
+  );
 }

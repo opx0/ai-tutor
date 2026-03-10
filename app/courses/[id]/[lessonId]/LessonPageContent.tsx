@@ -24,6 +24,7 @@ import "highlight.js/styles/github-dark.css";
 type LessonPageContentProps = {
   lesson: any;
   course: any;
+  courseHref: string;
   currentModule: any;
   currentLessonIndex: number;
   nextLesson: any;
@@ -33,6 +34,7 @@ type LessonPageContentProps = {
 export default function LessonPageContent({
   lesson,
   course,
+  courseHref,
   currentModule,
   currentLessonIndex,
   nextLesson,
@@ -42,7 +44,7 @@ export default function LessonPageContent({
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6 flex justify-between items-center">
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/courses/${course.id}`} className="flex items-center">
+          <Link href={`/courses/${courseHref}`} className="flex items-center">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Outline
           </Link>
@@ -183,7 +185,7 @@ export default function LessonPageContent({
           <div className="mt-8 pt-8 border-t flex justify-between">
             {previousLesson ? (
               <Button variant="outline" asChild>
-                <Link href={`/courses/${course.id}/${previousLesson.id}`}>
+                <Link href={`/courses/${courseHref}/${previousLesson.id}`}>
                   <ChevronLeft className="mr-2 h-4 w-4" />
                   Previous Lesson
                 </Link>
@@ -193,13 +195,13 @@ export default function LessonPageContent({
             )}
             {nextLesson ? (
               <Button asChild>
-                <Link href={`/courses/${course.id}/${nextLesson.id}`}>
+                <Link href={`/courses/${courseHref}/${nextLesson.id}`}>
                   Next Lesson
                 </Link>
               </Button>
             ) : (
               <Button asChild>
-                <Link href={`/courses/${course.id}`}>Complete Course</Link>
+                <Link href={`/courses/${courseHref}`}>Complete Course</Link>
               </Button>
             )}
           </div>

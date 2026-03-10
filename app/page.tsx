@@ -109,9 +109,9 @@ export default function Home() {
                       className="rounded-full px-8 py-6 h-auto text-base font-medium border-primary/50 text-primary hover:bg-primary/10 transition-all"
                       asChild
                     >
-                      <Link href="/dsa-demo" className="flex items-center gap-2">
+                      <Link href="/courses/dsa-mastery" className="flex items-center gap-2">
                         <CodeXml className="h-4 w-4" />
-                        DSA Demo Course
+                        DSA Mastery Course
                       </Link>
                     </Button>
                     <Button
@@ -495,9 +495,9 @@ export default function Home() {
                 className="rounded-full px-10 py-6 h-auto text-base font-medium border-primary/50 text-primary hover:bg-primary/10 transition-all"
                 asChild
               >
-                <Link href="/dsa-demo" className="flex items-center gap-2">
+                <Link href="/courses/dsa-mastery" className="flex items-center gap-2">
                   <CodeXml className="h-4 w-4" />
-                  Try DSA Demo Free
+                  Try DSA Mastery Free
                 </Link>
               </Button>
               <Button
@@ -550,7 +550,7 @@ export default function Home() {
               <ul className="space-y-2">
                 <li><Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link></li>
                 <li><Link href="/courses" className="text-sm text-muted-foreground hover:text-foreground">Courses</Link></li>
-                <li><Link href="/dsa-demo" className="text-sm text-muted-foreground hover:text-foreground">DSA Demo Course</Link></li>
+                <li><Link href="/courses/dsa-mastery" className="text-sm text-muted-foreground hover:text-foreground">DSA Mastery Course</Link></li>
                 <li><Link href="/bookmarks" className="text-sm text-muted-foreground hover:text-foreground">Bookmarks</Link></li>
                 <li><Link href="/notes" className="text-sm text-muted-foreground hover:text-foreground">Notes</Link></li>
               </ul>

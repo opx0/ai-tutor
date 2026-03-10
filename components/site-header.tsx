@@ -2,11 +2,11 @@
 
 import {
     Bookmark,
-    CodeXml,
+    BookOpen,
     CreditCard,
-    GraduationCap,
     LayoutDashboard,
     LogOut,
+    Map,
     StickyNote,
 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -22,8 +22,8 @@ import { ExpandableTabs } from "@/components/ui/expandable-tabs";
 
 const navTabs = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { title: "Courses", icon: GraduationCap, href: "/courses" },
-  { title: "DSA Demo", icon: CodeXml, href: "/dsa-demo" },
+  { title: "Learn", icon: Map, href: "/courses" },
+  { title: "My Courses", icon: BookOpen, href: "/courses/my" },
   { type: "separator" as const },
   { title: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
   { title: "Notes", icon: StickyNote, href: "/notes" },
@@ -46,13 +46,29 @@ export function SiteHeader() {
     []
   );
 
-  // Find the active index based strictly on the current pathname
+  // Find the active index: exact match first, then best prefix match
+  // "/courses/my" should match "My Courses", "/courses/[slug]" should match "Learn"
   const activeIndex = useMemo(() => {
     if (!pathname) return null;
-    const index = navTabs.findIndex(
+
+    // Exact match first
+    const exact = navTabs.findIndex(
       (tab) => "href" in tab && tab.href === pathname
     );
-    return index !== -1 ? index : null;
+    if (exact !== -1) return exact;
+
+    // Prefix match: find the longest matching href (most specific)
+    let bestIndex = -1;
+    let bestLen = 0;
+    navTabs.forEach((tab, i) => {
+      if ("href" in tab && tab.href && pathname.startsWith(tab.href)) {
+        if (tab.href.length > bestLen) {
+          bestLen = tab.href.length;
+          bestIndex = i;
+        }
+      }
+    });
+    return bestIndex !== -1 ? bestIndex : null;
   }, [pathname]);
 
   const handleTabChange = useCallback(

@@ -16,25 +16,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Starting course generation...");
     const body = await req.json();
     const { topic, difficulty, additionalDetails, details } = body;
-    console.log("Request body:", { topic, difficulty, additionalDetails, details });
 
-    console.log("Generating course content...");
     const courseData = await generateCourseContent(
       topic,
       difficulty,
       additionalDetails ? details : undefined
     );
-    console.log("Course content generated successfully:", {
-      title: courseData.title,
-      moduleCount: courseData.modules.length,
-      lessonCount: courseData.modules.reduce(
-        (acc, module) => acc + module.lessons.length,
-        0
-      ),
-    });
 
     // Ensure each module has at least one lesson
     const validatedModules = courseData.modules.map((module) => {
@@ -56,7 +45,6 @@ export async function POST(req: NextRequest) {
       return module;
     });
 
-    console.log("Creating course in database...");
     const course = await prisma.course.create({
       data: {
         title: courseData.title,
@@ -83,7 +71,6 @@ export async function POST(req: NextRequest) {
         },
       },
     });
-    console.log("Course created successfully:", { id: course.id });
 
     return NextResponse.json({ id: course.id });
   } catch (error) {

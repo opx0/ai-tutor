@@ -163,12 +163,12 @@ export default function CourseList() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button asChild>
-                  <Link href="/courses?tab=create">Create a Course</Link>
+                  <Link href="/courses/my">Create a Course</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/dsa-demo" className="flex items-center gap-2">
+                  <Link href="/courses/dsa-mastery" className="flex items-center gap-2">
                     <CodeXml className="h-4 w-4" />
-                    Try DSA Demo Course
+                    Try DSA Mastery Course
                   </Link>
                 </Button>
               </div>

@@ -62,7 +62,6 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
     setUsingSampleQuestions(false)
 
     try {
-      console.log("Sending request to generate questions for lesson:", lessonId)
       const response = await fetch("/api/knowledge-test", {
         method: "POST",
         headers: {
@@ -93,11 +92,8 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
         throw new Error("No valid questions were generated. Please try again.")
       }
 
-      console.log(`Successfully generated ${data.questions.length} questions`)
-
       // Check if these are fallback questions
       if (data.note && data.note.includes("fallback")) {
-        console.log("Using fallback questions from API")
         setUsingSampleQuestions(true)
       } else {
         setUsingSampleQuestions(false)
