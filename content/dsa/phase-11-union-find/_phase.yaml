@@ -1,0 +1,22 @@
+---
+id: phase-11
+phase: 11
+title: Union-Find
+goal: Track connected components with near-constant time operations.
+bossChallenge: >-
+  Implement Union-Find from memory. Then solve Redundant Connection (LC 684) —
+  find the edge that creates a cycle.
+leetcode:
+  - id: 200
+    title: Number of Islands
+    url: 'https://leetcode.com/problems/number-of-islands/'
+    tag: Union-Find/BFS
+  - id: 684
+    title: Redundant Connection
+    url: 'https://leetcode.com/problems/redundant-connection/'
+    tag: Union-Find
+  - id: 721
+    title: Accounts Merge
+    url: 'https://leetcode.com/problems/accounts-merge/'
+    tag: Union-Find
+---

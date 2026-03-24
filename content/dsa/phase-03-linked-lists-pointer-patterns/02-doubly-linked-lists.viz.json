@@ -1,0 +1,255 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Doubly linked list: each node has BOTH next and prev pointers. Unlike singly linked lists, we can traverse backwards and delete any node in O(1).",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "dll",
+          "label": "Doubly Linked List",
+          "layout": "linear",
+          "nodes": [
+            {
+              "id": "n1",
+              "value": "10",
+              "state": "default"
+            },
+            {
+              "id": "n2",
+              "value": "20",
+              "state": "default"
+            },
+            {
+              "id": "n3",
+              "value": "30",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n1",
+              "target": "n2",
+              "label": "next",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n2",
+              "target": "n1",
+              "label": "prev",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n2",
+              "target": "n3",
+              "label": "next",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n3",
+              "target": "n2",
+              "label": "prev",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-head",
+          "name": "head",
+          "value": "10",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-tail",
+          "name": "tail",
+          "value": "30",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "10 ⇄ 20 ⇄ 30. Each node knows both neighbors.",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "INSERT 15 after node 10: new.next=20, new.prev=10, 10.next=new, 20.prev=new. Four pointer updates, O(1).",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "dll",
+          "label": "After inserting 15",
+          "layout": "linear",
+          "nodes": [
+            {
+              "id": "n1",
+              "value": "10",
+              "state": "active"
+            },
+            {
+              "id": "new",
+              "value": "15",
+              "state": "highlight"
+            },
+            {
+              "id": "n2",
+              "value": "20",
+              "state": "active"
+            },
+            {
+              "id": "n3",
+              "value": "30",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n1",
+              "target": "new",
+              "label": "next",
+              "state": "highlight",
+              "directed": true
+            },
+            {
+              "source": "new",
+              "target": "n1",
+              "label": "prev",
+              "state": "highlight",
+              "directed": true
+            },
+            {
+              "source": "new",
+              "target": "n2",
+              "label": "next",
+              "state": "highlight",
+              "directed": true
+            },
+            {
+              "source": "n2",
+              "target": "new",
+              "label": "prev",
+              "state": "highlight",
+              "directed": true
+            },
+            {
+              "source": "n2",
+              "target": "n3",
+              "label": "next",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n3",
+              "target": "n2",
+              "label": "prev",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "new.next=20, new.prev=10",
+              "kind": "swap"
+            },
+            {
+              "text": "10.next=new, 20.prev=new",
+              "kind": "swap"
+            },
+            {
+              "text": "Insert O(1) — just pointer rewiring",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "DELETE node 20: node.prev.next = node.next, node.next.prev = node.prev. Only 2 pointer updates! O(1) — no need to find predecessor.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "dll",
+          "label": "After deleting 20",
+          "layout": "linear",
+          "nodes": [
+            {
+              "id": "n1",
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "id": "new",
+              "value": "15",
+              "state": "active"
+            },
+            {
+              "id": "n3",
+              "value": "30",
+              "state": "done"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n1",
+              "target": "new",
+              "label": "next",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "new",
+              "target": "n1",
+              "label": "prev",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "new",
+              "target": "n3",
+              "label": "next",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "n3",
+              "target": "new",
+              "label": "prev",
+              "state": "active",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "15.next = 30, 30.prev = 15 — skip 20",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Delete O(1) with reference. Key for LRU Cache!",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

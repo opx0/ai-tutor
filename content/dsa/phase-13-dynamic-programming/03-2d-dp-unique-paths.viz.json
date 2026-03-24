@@ -1,0 +1,298 @@
+{
+  "type": "grid",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "2D DP: Unique Paths in a 3x4 grid. Can only move right or down. dp[r][c] = ways to reach cell (r,c). First row and first column are all 1 (only one direction).",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[][] — Unique Paths",
+          "cells": [
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "highlight"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0",
+            "1",
+            "2"
+          ],
+          "colLabels": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Base: first row = 1, first col = 1 (only one path)",
+              "kind": "info"
+            },
+            {
+              "text": "dp[r][c] = dp[r-1][c] + dp[r][c-1]",
+              "kind": "info"
+            },
+            {
+              "text": "Fill (1,1): dp[0][1] + dp[1][0] = 1+1 = 2",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Fill row by row. dp[1][1]=2, dp[1][2]=3, dp[1][3]=4. Each cell = sum of cell above + cell to the left.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[][] — Unique Paths",
+          "cells": [
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "2",
+                "state": "active"
+              },
+              {
+                "value": "3",
+                "state": "active"
+              },
+              {
+                "value": "4",
+                "state": "active"
+              }
+            ],
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "highlight"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0",
+            "1",
+            "2"
+          ],
+          "colLabels": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dp[1][1] = 1+1 = 2",
+              "kind": "swap"
+            },
+            {
+              "text": "dp[1][2] = 1+2 = 3",
+              "kind": "swap"
+            },
+            {
+              "text": "dp[1][3] = 1+3 = 4",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Fill row 2: dp[2][1]=1+2=3, dp[2][2]=3+3=6, dp[2][3]=4+6=10. Answer: 10 unique paths to bottom-right!",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[][] Complete!",
+          "cells": [
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "1",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "2",
+                "state": "done"
+              },
+              {
+                "value": "3",
+                "state": "done"
+              },
+              {
+                "value": "4",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "1",
+                "state": "done"
+              },
+              {
+                "value": "3",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "10",
+                "state": "highlight"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0",
+            "1",
+            "2"
+          ],
+          "colLabels": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-ans",
+          "name": "answer",
+          "value": "10",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dp[2][1]=3, dp[2][2]=6, dp[2][3]=10",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ 10 unique paths in 3×4 grid",
+              "kind": "return"
+            },
+            {
+              "text": "O(m×n) time and space. Classic 2D DP!",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

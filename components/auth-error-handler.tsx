@@ -13,7 +13,6 @@ export default function AuthErrorHandler() {
         event.error?.message?.includes("next-auth") ||
         event.error?.stack?.includes("next-auth")
       ) {
-        console.log("NextAuth error detected, redirecting to signin page");
         // Redirect to signin page on NextAuth errors
         router.push("/auth/signin");
       }

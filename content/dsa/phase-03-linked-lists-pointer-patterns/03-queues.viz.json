@@ -1,0 +1,194 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Queue is FIFO: First In, First Out. Like a line at a store. enqueue adds to back, dequeue removes from front.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "q",
+          "label": "Queue (front → back)",
+          "items": []
+        },
+        {
+          "type": "variable",
+          "id": "v-front",
+          "name": "front",
+          "value": "0",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-rear",
+          "name": "rear",
+          "value": "-1",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Queue created — empty",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "enqueue(10), enqueue(20), enqueue(30). Elements enter at the back. Front of queue is 10.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "q",
+          "label": "Queue (front → back)",
+          "items": [
+            {
+              "value": "10",
+              "state": "active"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "30",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-front",
+          "name": "front",
+          "value": "10",
+          "state": "active",
+          "description": "next out"
+        },
+        {
+          "type": "variable",
+          "id": "v-rear",
+          "name": "rear",
+          "value": "30",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "enqueue(10), enqueue(20), enqueue(30)",
+              "kind": "call"
+            },
+            {
+              "text": "Queue: [10, 20, 30]. Front=10",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "dequeue() returns 10 (front). FIFO: whoever entered first leaves first. Now front=20.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "q",
+          "label": "Queue (front → back)",
+          "items": [
+            {
+              "value": "20",
+              "state": "active"
+            },
+            {
+              "value": "30",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-front",
+          "name": "front",
+          "value": "20",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-dequeued",
+          "name": "dequeued",
+          "value": "10",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dequeue() → 10. Queue: [20, 30]",
+              "kind": "return"
+            },
+            {
+              "text": "enqueue/dequeue both O(1) with linked list",
+              "kind": "info"
+            },
+            {
+              "text": "⚠ With array: dequeue is O(n) due to shifting!",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "enqueue(40), dequeue() returns 20. Queue: [30, 40]. Queue is essential for BFS — it ensures level-by-level exploration.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "q",
+          "label": "Queue (front → back)",
+          "items": [
+            {
+              "value": "30",
+              "state": "active"
+            },
+            {
+              "value": "40",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-front",
+          "name": "front",
+          "value": "30",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-dequeued",
+          "name": "dequeued",
+          "value": "20",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "enqueue(40), dequeue() → 20",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Queue: [30, 40]. Used in BFS, scheduling",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

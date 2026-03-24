@@ -1,0 +1,332 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Union-Find: track connected components. Initially 5 separate nodes, each is its own root (parent[i] = i). rank[i] = 0.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "uf",
+          "label": "Union-Find Forest",
+          "nodes": [
+            {
+              "id": "0",
+              "value": "0",
+              "state": "active",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "1",
+              "value": "1",
+              "state": "active",
+              "x": 100,
+              "y": 0
+            },
+            {
+              "id": "2",
+              "value": "2",
+              "state": "active",
+              "x": 200,
+              "y": 0
+            },
+            {
+              "id": "3",
+              "value": "3",
+              "state": "active",
+              "x": 300,
+              "y": 0
+            },
+            {
+              "id": "4",
+              "value": "4",
+              "state": "active",
+              "x": 400,
+              "y": 0
+            }
+          ],
+          "edges": []
+        },
+        {
+          "type": "array",
+          "id": "parent",
+          "label": "parent[]",
+          "items": [
+            {
+              "value": "0",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "4",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-comp",
+          "name": "components",
+          "value": "5",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Each node is its own root. 5 components.",
+              "kind": "info"
+            },
+            {
+              "text": "Union(0, 1)...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Union(0, 1): find(0)=0, find(1)=1. Different roots → merge! Attach 1 under 0 (by rank). parent[1] = 0. Components: 4.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "uf",
+          "label": "After Union(0,1)",
+          "nodes": [
+            {
+              "id": "0",
+              "value": "0",
+              "state": "highlight",
+              "x": 50,
+              "y": 0
+            },
+            {
+              "id": "1",
+              "value": "1",
+              "state": "done",
+              "x": 50,
+              "y": 80
+            },
+            {
+              "id": "2",
+              "value": "2",
+              "state": "active",
+              "x": 200,
+              "y": 0
+            },
+            {
+              "id": "3",
+              "value": "3",
+              "state": "active",
+              "x": 300,
+              "y": 0
+            },
+            {
+              "id": "4",
+              "value": "4",
+              "state": "active",
+              "x": 400,
+              "y": 0
+            }
+          ],
+          "edges": [
+            {
+              "source": "1",
+              "target": "0",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "parent",
+          "label": "parent[]",
+          "items": [
+            {
+              "value": "0",
+              "state": "highlight"
+            },
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "4",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-comp",
+          "name": "components",
+          "value": "4",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Union(0,1): merge tree(1) under tree(0)",
+              "kind": "swap"
+            },
+            {
+              "text": "parent[1] = 0. Components: 4",
+              "kind": "info"
+            },
+            {
+              "text": "Union(2, 3), then Union(0, 2)...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Union(2,3): attach 3 under 2. Union(0,2): find(0)=0, find(2)=2. Attach smaller tree under larger. Now {0,1,2,3} is one component.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "uf",
+          "label": "After Union(0,2)",
+          "nodes": [
+            {
+              "id": "0",
+              "value": "0",
+              "state": "highlight",
+              "x": 150,
+              "y": 0
+            },
+            {
+              "id": "1",
+              "value": "1",
+              "state": "done",
+              "x": 75,
+              "y": 80
+            },
+            {
+              "id": "2",
+              "value": "2",
+              "state": "done",
+              "x": 225,
+              "y": 80
+            },
+            {
+              "id": "3",
+              "value": "3",
+              "state": "done",
+              "x": 225,
+              "y": 160
+            },
+            {
+              "id": "4",
+              "value": "4",
+              "state": "active",
+              "x": 400,
+              "y": 0
+            }
+          ],
+          "edges": [
+            {
+              "source": "1",
+              "target": "0",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "2",
+              "target": "0",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "3",
+              "target": "2",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "parent",
+          "label": "parent[]",
+          "items": [
+            {
+              "value": "0",
+              "state": "highlight"
+            },
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "4",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-comp",
+          "name": "components",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Union(2,3): parent[3] = 2",
+              "kind": "swap"
+            },
+            {
+              "text": "Union(0,2): parent[2] = 0 (union by rank)",
+              "kind": "swap"
+            },
+            {
+              "text": "Path compression: find(3) → 3→2→0, compress to 3→0",
+              "kind": "info"
+            },
+            {
+              "text": "✅ Nearly O(1) per op with path compression + rank",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

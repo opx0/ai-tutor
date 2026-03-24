@@ -87,6 +87,13 @@ export async function GET(req: NextRequest) {
         );
       }
 
+      if (module.courseId !== courseId) {
+        return NextResponse.json(
+          { error: "Module does not belong to the requested course" },
+          { status: 400 }
+        );
+      }
+
       const hasAccess = hasModuleAccess(user, courseId, module.order);
 
       return NextResponse.json({

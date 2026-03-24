@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { Loader2, Save, Trash } from "lucide-react"
+import { LoaderCircle, Save, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -166,68 +166,58 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
 
   if (status === "loading" || isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Notes</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center py-6">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </CardContent>
-      </Card>
+      <div className="flex flex-col h-full mt-4">
+        <h3 className="text-lg font-semibold mb-4 text-foreground">Notes</h3>
+        <div className="flex justify-center py-12 flex-1">
+          <LoaderCircle className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      </div>
     )
   }
 
   if (status === "unauthenticated") {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Notes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center text-muted-foreground">Sign in to take notes for this lesson</p>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col h-full mt-4">
+        <h3 className="text-lg font-semibold mb-4 text-foreground">Notes</h3>
+        <div className="flex-1">
+          <p className="text-center text-muted-foreground mt-8">Sign in to take notes for this lesson</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Notes</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="flex flex-col h-full mt-4">
+      <h3 className="text-lg font-semibold mb-4 text-foreground">Notes</h3>
+      <div className="flex-1 flex flex-col mb-4">
         <Textarea
           placeholder="Take notes for this lesson..."
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="min-h-[150px] resize-none"
+          className="flex-1 min-h-[300px] resize-y rounded-xl focus-visible:ring-primary/50"
         />
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        {noteId && (
-          <Button variant="outline" size="sm" onClick={deleteNote} disabled={isDeleting || isSaving}>
+      </div>
+      <div className="flex justify-between items-center mt-auto pb-4 gap-3">
+        {noteId ? (
+          <Button variant="outline" size="sm" onClick={deleteNote} disabled={isDeleting || isSaving} className="text-destructive hover:bg-destructive/10 hover:text-destructive">
             {isDeleting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Deleting...
-              </>
+              <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (
-              <>
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
-              </>
+              <Trash className="h-4 w-4" />
             )}
+            <span className="sr-only">Delete</span>
           </Button>
-        )}
+        ) : <div />}
         <Button
           size="sm"
           onClick={saveNote}
           disabled={!note.trim() || isSaving || isDeleting}
-          className={noteId ? "ml-auto" : "w-full"}
+          className="flex-1 font-medium bg-primary/10 text-primary hover:bg-primary/20"
+          variant="secondary"
         >
           {isSaving ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
               Saving...
             </>
           ) : (
@@ -237,8 +227,8 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
             </>
           )}
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
 

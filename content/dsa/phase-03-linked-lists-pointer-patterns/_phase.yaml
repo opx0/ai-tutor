@@ -1,0 +1,38 @@
+---
+id: phase-3
+phase: 3
+title: Linked Lists + Pointer Patterns
+goal: >-
+  Master pointer-based thinking. The fast/slow pointer trick is one of the most
+  elegant patterns in DSA.
+bossChallenge: Reverse a singly linked list iteratively AND recursively from memory.
+leetcode:
+  - id: 206
+    title: Reverse Linked List
+    url: 'https://leetcode.com/problems/reverse-linked-list/'
+    tag: Linked List
+  - id: 21
+    title: Merge Two Sorted Lists
+    url: 'https://leetcode.com/problems/merge-two-sorted-lists/'
+    tag: Linked List
+  - id: 143
+    title: Reorder List
+    url: 'https://leetcode.com/problems/reorder-list/'
+    tag: Linked List
+  - id: 141
+    title: Linked List Cycle
+    url: 'https://leetcode.com/problems/linked-list-cycle/'
+    tag: Fast/Slow
+  - id: 19
+    title: Remove Nth Node From End
+    url: 'https://leetcode.com/problems/remove-nth-node-from-end-of-list/'
+    tag: Two Pointers
+  - id: 876
+    title: Middle of Linked List
+    url: 'https://leetcode.com/problems/middle-of-the-linked-list/'
+    tag: Fast/Slow
+  - id: 146
+    title: LRU Cache
+    url: 'https://leetcode.com/problems/lru-cache/'
+    tag: DLL + Hash Map
+---

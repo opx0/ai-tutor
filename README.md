@@ -1,6 +1,6 @@
-# AI Tutor
+# LearnLM
 
-AI Tutor is a full-stack, AI-powered learning platform that lets users generate and study personalized courses on any topic. It uses Google's Gemini AI to produce structured course content, interactive knowledge tests, and a per-lesson Teaching Assistant, while Razorpay handles premium subscription billing.
+LearnLM is a full-stack, AI-powered learning platform that lets users generate and study personalized courses on any topic. It uses Google's Gemini AI to produce structured course content, interactive knowledge tests, and a per-lesson Teaching Assistant, while Razorpay handles premium subscription billing.
 
 ## Features
 
@@ -105,8 +105,8 @@ Key models:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/ai-tutor.git
-cd ai-tutor
+git clone https://github.com/yourusername/learnlm.git
+cd learnlm
 ```
 
 2. Install dependencies:
@@ -209,8 +209,8 @@ All API routes are served from the Next.js backend at `/api/*`.
 ### VPS / Self-hosted
 
 ```bash
-git clone https://github.com/yourusername/ai-tutor.git
-cd ai-tutor
+git clone https://github.com/yourusername/learnlm.git
+cd learnlm
 bun install
 bunx prisma migrate deploy
 bun run build
@@ -221,14 +221,14 @@ Use a process manager like [PM2](https://pm2.keymetrics.io) or tmux to keep the 
 
 ```bash
 # Using tmux
-tmux new-session -d -s ai-tutor 'bun run start'
+tmux new-session -d -s learnlm 'bun run start'
 ```
 
 ### Docker
 
 ```bash
-docker build -t ai-tutor .
-docker run -p 3000:3000 --env-file .env ai-tutor
+docker build -t learnlm .
+docker run -p 3000:3000 --env-file .env learnlm
 ```
 
 ## Contributing

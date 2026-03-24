@@ -1,0 +1,22 @@
+---
+id: phase-9
+phase: 9
+title: Heaps & Priority Queues
+goal: 'Master the heap for "top K", "running median", and scheduling problems.'
+bossChallenge: >-
+  Implement a min-heap class from scratch with push, pop, and peek. Then solve
+  "K Closest Points to Origin" (LC 973).
+leetcode:
+  - id: 215
+    title: Kth Largest Element
+    url: 'https://leetcode.com/problems/kth-largest-element-in-an-array/'
+    tag: Heap
+  - id: 295
+    title: Find Median from Data Stream
+    url: 'https://leetcode.com/problems/find-median-from-data-stream/'
+    tag: Two Heaps
+  - id: 973
+    title: K Closest Points to Origin
+    url: 'https://leetcode.com/problems/k-closest-points-to-origin/'
+    tag: Heap
+---

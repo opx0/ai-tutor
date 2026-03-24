@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Code2 } from "lucide-react";
+import { Search, CodeXml } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,78 +10,23 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 // CourseButton import removed
+import useSWR from "swr";
 import type { Course } from "@prisma/client";
-// Assuming you have a SessionProvider or similar if courses depend on user session
 
 type CourseWithLessonCount = Course & {
   _count: {
     lessons: number;
   };
-  progress: number | null; // Allow progress to be null if not set
+  progress: number | null;
 };
 
 export default function CourseList() {
-  const [courses, setCourses] = useState<CourseWithLessonCount[]>([]);
-  const [filteredCourses, setFilteredCourses] = useState<
-    CourseWithLessonCount[]
-  >([]);
+  const { data: courses, error: fetchError, isLoading } = useSWR<CourseWithLessonCount[]>("/api/courses");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null); // Add error state
+  const [filteredCourses, setFilteredCourses] = useState<CourseWithLessonCount[]>([]);
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      setIsLoading(true); // Set loading true at the start
-      setError(null); // Reset error state
-      try {
-        const response = await fetch("/api/courses");
-
-        // --- Check 1: Was the HTTP request successful? ---
-        if (!response.ok) {
-          // Throw an error with status text or a custom message
-          throw new Error(
-            `API Error: ${response.status} ${
-              response.statusText || "Failed to fetch courses"
-            }`
-          );
-        }
-
-        const data = await response.json();
-
-        // --- Check 2: Is the received data actually an array? ---
-        if (Array.isArray(data)) {
-          // Ensure progress is handled correctly (default to 0 if null/undefined)
-          const coursesWithDefaultProgress = data.map((course) => ({
-            ...course,
-            progress: course.progress ?? 0,
-          }));
-          setCourses(coursesWithDefaultProgress);
-          setFilteredCourses(coursesWithDefaultProgress);
-        } else {
-          // Log the unexpected data structure and throw an error
-          console.error("API did not return an array:", data);
-          throw new Error("Received invalid data format from server.");
-        }
-      } catch (err) {
-        console.error("Error fetching courses:", err);
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
-        // Set to empty arrays on error to prevent .map failures
-        setCourses([]);
-        setFilteredCourses([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, []); // Dependency array is empty, runs once on mount
-
-  // Filter logic effect remains the same
-  useEffect(() => {
-    if (!isLoading && !error) {
-      // Only filter if not loading and no error
+    if (courses) {
       if (searchQuery.trim() === "") {
         setFilteredCourses(courses);
       } else {
@@ -93,7 +38,24 @@ export default function CourseList() {
         setFilteredCourses(filtered);
       }
     }
-  }, [searchQuery, courses, isLoading, error]); // Add isLoading and error dependencies
+  }, [searchQuery, courses]);
+
+  // Filter logic effect remains the same
+  useEffect(() => {
+    if (!isLoading && !fetchError) {
+      // Only filter if not loading and no error
+      if (searchQuery.trim() === "") {
+        setFilteredCourses(courses || []);
+      } else {
+        const filtered = (courses || []).filter(
+          (course) =>
+            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.topic.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredCourses(filtered);
+      }
+    }
+  }, [searchQuery, courses, isLoading, fetchError]); // Add isLoading and fetchError dependencies
 
   // --- Render Loading State ---
   if (isLoading) {
@@ -126,10 +88,10 @@ export default function CourseList() {
   }
 
   // --- Render Error State ---
-  if (error) {
+  if (fetchError) {
     return (
       <div className="text-center py-12 text-red-600">
-        <p>Failed to load courses: {error}</p>
+        <p>Failed to load courses: {fetchError.message || "Unknown error"}</p>
       </div>
     );
   }
@@ -166,9 +128,9 @@ export default function CourseList() {
                   <Link href="/courses?tab=create">Create a Course</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/dsa-demo" className="flex items-center gap-2">
-                    <Code2 className="h-4 w-4" />
-                    Try DSA Demo Course
+                  <Link href="/courses/dsa-mastery" className="flex items-center gap-2">
+                    <CodeXml className="h-4 w-4" />
+                    Try DSA Mastery Course
                   </Link>
                 </Button>
               </div>
@@ -178,8 +140,9 @@ export default function CourseList() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCourses.map((course) => (
-            <Card key={course.id} className="overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-4 flex-grow">
+            <Card key={course.id} className="overflow-hidden flex flex-col group hover:-translate-y-1 shadow-sm hover:shadow-md transition-all bg-card/40 backdrop-blur-xl border border-border/40 rounded-3xl relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-chart-2/0 via-transparent to-chart-2/0 group-hover:from-chart-2/5 transition-colors pointer-events-none" />
+              <CardContent className="p-5 flex-grow relative z-10">
                 <Badge variant="outline" className="mb-2 px-2 py-0.5 text-xs">
                   {course.difficulty}
                 </Badge>
@@ -194,9 +157,9 @@ export default function CourseList() {
                   {course.progress || 0}% complete
                 </div>
               </CardContent>
-              <CardFooter className="bg-muted/50 px-4 py-3 border-t">
+              <CardFooter className="bg-muted/20 px-5 py-4 border-t border-border/30 relative z-10">
                 <Button
-                  className="w-full py-1.5 text-sm h-auto"
+                  className="w-full py-2 text-sm h-auto rounded-xl font-bold bg-background hover:bg-muted border border-border/50 text-foreground group-hover:border-chart-2/40 group-hover:text-chart-2 transition-colors"
                   asChild
                 >
                   <Link href={`/courses/${course.id}`}>

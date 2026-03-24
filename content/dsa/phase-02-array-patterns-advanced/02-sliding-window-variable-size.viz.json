@@ -1,0 +1,405 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Find longest substring without repeating characters in \"abcabcbb\". Two pointers: left and right. A hash set tracks chars in the window.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "String",
+          "items": [
+            {
+              "value": "a",
+              "state": "active"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "c",
+              "state": "default"
+            },
+            {
+              "value": "a",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "c",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-best",
+          "name": "best",
+          "value": "0",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Variable window: expand right, shrink left when invalid",
+              "kind": "info"
+            },
+            {
+              "text": "Set = {}, expand right...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Expand: right moves to 2. Window = \"abc\", all unique. Set = {a,b,c}. best = 3.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "String",
+          "items": [
+            {
+              "value": "a",
+              "state": "active"
+            },
+            {
+              "value": "b",
+              "state": "active"
+            },
+            {
+              "value": "c",
+              "state": "active"
+            },
+            {
+              "value": "a",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "c",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-best",
+          "name": "best",
+          "value": "3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Window \"abc\" — all unique, best = 3",
+              "kind": "compare"
+            },
+            {
+              "text": "Set = {a, b, c}",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "right=3, char \"a\" already in set! Window invalid. SHRINK: remove s[left]=\"a\", left=1. Now \"bca\" is valid again.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "String",
+          "items": [
+            {
+              "value": "a",
+              "state": "error"
+            },
+            {
+              "value": "b",
+              "state": "active"
+            },
+            {
+              "value": "c",
+              "state": "active"
+            },
+            {
+              "value": "a",
+              "state": "comparing"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "c",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-best",
+          "name": "best",
+          "value": "3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "right=3: \"a\" in set! → SHRINK",
+              "kind": "compare"
+            },
+            {
+              "text": "Remove s[0]=\"a\", left=1. Window = \"bca\"",
+              "kind": "swap"
+            },
+            {
+              "text": "Set = {b, c, a}. best still 3",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Continue expanding. right=4: \"b\" in set → shrink left to 2. right=5: \"c\" in set → shrink left to 3. Window = \"abc\" [3..5], best stays 3.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "String",
+          "items": [
+            {
+              "value": "a",
+              "state": "visited"
+            },
+            {
+              "value": "b",
+              "state": "visited"
+            },
+            {
+              "value": "c",
+              "state": "visited"
+            },
+            {
+              "value": "a",
+              "state": "active"
+            },
+            {
+              "value": "b",
+              "state": "active"
+            },
+            {
+              "value": "c",
+              "state": "active"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            },
+            {
+              "value": "b",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "5",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-best",
+          "name": "best",
+          "value": "3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "right=4: \"b\" dup → shrink. right=5: \"c\" dup → shrink",
+              "kind": "swap"
+            },
+            {
+              "text": "Window [3..5] = \"abc\", best = 3",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "right=6: \"b\" dup. Shrink past it. right=7: \"b\" dup again. Done! Answer = 3 (\"abc\"). O(n): each char enters and leaves window at most once.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "String",
+          "items": [
+            {
+              "value": "a",
+              "state": "visited"
+            },
+            {
+              "value": "b",
+              "state": "visited"
+            },
+            {
+              "value": "c",
+              "state": "visited"
+            },
+            {
+              "value": "a",
+              "state": "visited"
+            },
+            {
+              "value": "b",
+              "state": "visited"
+            },
+            {
+              "value": "c",
+              "state": "visited"
+            },
+            {
+              "value": "b",
+              "state": "done"
+            },
+            {
+              "value": "b",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "7",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "7",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-best",
+          "name": "best",
+          "value": "3",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "✅ Longest substring without repeating = 3",
+              "kind": "return"
+            },
+            {
+              "text": "O(n): left never goes backward, each char processed 2x max",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

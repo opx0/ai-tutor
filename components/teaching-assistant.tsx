@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, GraduationCap, Send, Sparkles } from "lucide-react"
+import { ArrowLeft, GraduationCap, Send, Sparkles, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 // Markdown components
 import "highlight.js/styles/github-dark.css"
@@ -39,7 +40,6 @@ type TeachingAssistantProps = {
 import { TypingEffect } from "./typing-effect"
 
 export default function TeachingAssistant({ courseId, lessonId, moduleName, lessonName }: TeachingAssistantProps) {
-  console.log("TeachingAssistant rendered:", { courseId, lessonId, moduleName, lessonName });
   const [isMinimized, setIsMinimized] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [isOverlayOpen, setIsOverlayOpen] = useState(false)
@@ -366,85 +366,115 @@ export default function TeachingAssistant({ courseId, lessonId, moduleName, less
         </Button>
       </div>
 
-      {/* Full-screen Overlay */}
-      {isOverlayOpen && (
-        <div
-          className="ta-overlay"
-          ref={overlayRef}
-        >
-          <div className="h-full flex flex-col w-full pt-5 pb-6 px-8">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-5 pb-4 border-b">
-              <div className="flex items-center gap-3">
-                <Button variant="outline" size="icon" onClick={toggleOverlay}>
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2.5 rounded-full">
-                    <GraduationCap className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-medium flex items-center gap-2">
-                      Teaching Assistant <Badge className="text-xs">Gemini 2.5 Pro</Badge>
-                    </h2>
-                    <p className="text-sm text-muted-foreground">{lessonName}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Chat Area */}
-            <ScrollArea className="flex-1 pr-5 -mr-5">
-              <div className="space-y-6 pb-5 px-1 max-w-none">
-                {messages.map((message, index) => (
-                  <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div
-                      className={`max-w-[95%] rounded-xl p-5 ${message.role === "user"
-                        ? "bg-primary text-primary-foreground border-blue-500 border-2"
-                        : "bg-muted dark:bg-zinc-800 border-green-500 border-2"
-                      }`}
-                    >
-                      <div className="flex items-start">
-                        <div className="markdown-content w-full">
-                          {renderMessageContent(message, index)}
-                        </div>
-                      </div>
+      {/* Sidebar Sidebar Overlay */}
+      <AnimatePresence>
+        {isOverlayOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={toggleOverlay}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99]"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-full max-w-md bg-background/95 backdrop-blur-md border-l shadow-2xl z-[100] flex flex-col"
+            >
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                      <GraduationCap className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <h2 className="text-sm font-bold flex items-center gap-2">
+                        LearnLM <Badge variant="secondary" className="text-[10px] h-4">PRO</Badge>
+                      </h2>
+                      <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">{lessonName}</p>
                     </div>
                   </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={toggleOverlay}>
+                    <ArrowLeft className="h-4 w-4 rotate-180" />
+                  </Button>
+                </div>
 
-            {/* Input Area */}
-            <div className="mt-5 pt-5 border-t">
-              <div className="flex items-center gap-4">
-                <Textarea
-                  placeholder="Ask your Teaching Assistant anything about this lesson..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="min-h-14 flex-1 p-4 resize-none text-base rounded-xl"
-                  rows={1}
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={isLoading || !input.trim()}
-                  size="lg"
-                  className="h-14 px-5 rounded-xl"
-                >
-                  {isLoading ? (
-                    <Sparkles className="h-5 w-5 mr-2 animate-pulse" />
-                  ) : (
-                    <Send className="h-5 w-5 mr-2" />
-                  )}
-                  Ask TA
-                </Button>
+                {/* Chat Area */}
+                <ScrollArea className="flex-1 p-4">
+                  <div className="space-y-4 pb-4">
+                    {messages.map((message, index) => (
+                      <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                        <div
+                          className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm ${message.role === "user"
+                            ? "bg-primary text-primary-foreground rounded-tr-none"
+                            : "bg-muted dark:bg-zinc-800 rounded-tl-none border border-border/50"
+                          }`}
+                        >
+                          <div className="markdown-content prose prose-sm dark:prose-invert max-w-none">
+                            {renderMessageContent(message, index)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </ScrollArea>
+
+                {/* Suggested Questions */}
+                {!isLoading && messages.length < 3 && (
+                  <div className="px-4 py-2 border-t bg-muted/30">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 px-1">Suggested</p>
+                    <div className="flex flex-wrap gap-2">
+                      {suggestedQuestions.map((q, i) => (
+                        <button
+                          key={i}
+                          onClick={() => { setInput(q); }}
+                          className="text-xs text-left px-3 py-1.5 rounded-full bg-background border hover:border-primary/50 hover:bg-primary/5 transition-all"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Input Area */}
+                <div className="p-4 border-t bg-background">
+                  <div className="relative group">
+                    <Textarea
+                      placeholder="Ask LearnLM..."
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      className="min-h-[60px] max-h-[160px] pr-12 py-3 px-4 resize-none text-sm rounded-2xl bg-muted/30 border-none focus-visible:ring-1 focus-visible:ring-primary shadow-inner"
+                      rows={1}
+                    />
+                    <Button
+                      onClick={handleSendMessage}
+                      disabled={isLoading || !input.trim()}
+                      size="icon"
+                      className="absolute right-2 bottom-2 rounded-xl h-8 w-8 transition-transform active:scale-95"
+                    >
+                      {isLoading ? (
+                        <Sparkles className="h-4 w-4 animate-pulse" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-[9px] text-center text-muted-foreground mt-3">
+                    Powered by Google Gemini 2.5 Pro. Use responsibly.
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   )
 }

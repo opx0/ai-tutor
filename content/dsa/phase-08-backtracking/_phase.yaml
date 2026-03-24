@@ -1,0 +1,34 @@
+---
+id: phase-8
+phase: 8
+title: Backtracking
+goal: Systematically explore all possibilities using choose → explore → un-choose.
+bossChallenge: >-
+  Solve N-Queens for N=4 on paper, drawing the decision tree. Then code it
+  without looking at the template.
+leetcode:
+  - id: 78
+    title: Subsets
+    url: 'https://leetcode.com/problems/subsets/'
+    tag: Backtracking
+  - id: 46
+    title: Permutations
+    url: 'https://leetcode.com/problems/permutations/'
+    tag: Backtracking
+  - id: 51
+    title: N-Queens
+    url: 'https://leetcode.com/problems/n-queens/'
+    tag: Backtracking
+  - id: 39
+    title: Combination Sum
+    url: 'https://leetcode.com/problems/combination-sum/'
+    tag: Backtracking
+  - id: 79
+    title: Word Search
+    url: 'https://leetcode.com/problems/word-search/'
+    tag: Backtracking
+  - id: 131
+    title: Palindrome Partitioning
+    url: 'https://leetcode.com/problems/palindrome-partitioning/'
+    tag: Backtracking
+---

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { Loader2 } from "lucide-react"
+import { LoaderCircle } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
@@ -80,7 +80,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
           <CardTitle>Course Progress</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center py-6">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <LoaderCircle className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     )

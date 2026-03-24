@@ -1,11 +1,20 @@
 'use client'
 
 import type { SceneElement as SceneElementType } from '@/lib/visualization/types'
+import dynamic from 'next/dynamic'
 import ArrayStrip from './ArrayStrip'
 import Grid2D from './Grid2D'
 import LogPanel from './LogPanel'
-import NodeGraph from './NodeGraph'
 import VariableBox from './VariableBox'
+
+const NodeGraph = dynamic(() => import('./NodeGraph'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-[400px] border rounded-lg bg-muted/30">
+      <span className="text-sm text-muted-foreground">Loading graph...</span>
+    </div>
+  ),
+})
 
 type SceneElementProps = {
   element: SceneElementType

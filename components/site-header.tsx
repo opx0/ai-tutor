@@ -2,28 +2,53 @@
 
 import {
     Bookmark,
-    Code2,
+    BookOpen,
     CreditCard,
-    GraduationCap,
     LayoutDashboard,
     LogOut,
+    Map,
     StickyNote,
+    Flame,
+    Orbit,
 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ExpandableTabs } from "@/components/ui/expandable-tabs";
 
+function StreakIndicator() {
+  const { data: session } = useSession();
+  const [streak, setStreak] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetch("/api/user/streak")
+        .then((res) => res.json())
+        .then((data) => setStreak(data.streak))
+        .catch(console.error);
+    }
+  }, [session?.user?.email]);
+
+  if (streak === null || streak < 1) return null;
+
+  return (
+    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-bold text-sm shadow-sm cursor-help transition-all hover:bg-orange-500/15" title={`${streak} day streak`}>
+      <Flame className="w-4 h-4 fill-current" suppressHydrationWarning />
+      <span>{streak}</span>
+    </div>
+  );
+}
+
 const navTabs = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { title: "Courses", icon: GraduationCap, href: "/courses" },
-  { title: "DSA Demo", icon: Code2, href: "/dsa-demo" },
+  { title: "Learn", icon: Map, href: "/courses" },
+  { title: "DSA Studio", icon: Orbit, href: "/playground" },
   { type: "separator" as const },
   { title: "Bookmarks", icon: Bookmark, href: "/bookmarks" },
   { title: "Notes", icon: StickyNote, href: "/notes" },
@@ -46,13 +71,29 @@ export function SiteHeader() {
     []
   );
 
-  // Find the active index based strictly on the current pathname
+  // Find the active index: exact match first, then best prefix match.
+  // "/courses/[slug]" should still resolve to "Learn".
   const activeIndex = useMemo(() => {
     if (!pathname) return null;
-    const index = navTabs.findIndex(
+
+    // Exact match first
+    const exact = navTabs.findIndex(
       (tab) => "href" in tab && tab.href === pathname
     );
-    return index !== -1 ? index : null;
+    if (exact !== -1) return exact;
+
+    // Prefix match: find the longest matching href (most specific)
+    let bestIndex = -1;
+    let bestLen = 0;
+    navTabs.forEach((tab, i) => {
+      if ("href" in tab && tab.href && pathname.startsWith(tab.href)) {
+        if (tab.href.length > bestLen) {
+          bestLen = tab.href.length;
+          bestIndex = i;
+        }
+      }
+    });
+    return bestIndex !== -1 ? bestIndex : null;
   }, [pathname]);
 
   const handleTabChange = useCallback(
@@ -66,56 +107,55 @@ export function SiteHeader() {
     [router]
   );
 
-  if (pathname?.startsWith("/auth")) return null;
+  const isCoursePage = pathname && pathname.split('/').length >= 3 && pathname.startsWith('/courses/');
+  if (pathname?.startsWith("/auth") || pathname?.startsWith("/playground") || isCoursePage) return null;
 
   return (
-    <header className="sticky top-4 z-50 w-full mb-6">
-      {/*
-        Container for the centered dock.
-        Instead of a full-width header block, we use a max-width container
-        with extreme margin auto to center the entire navigation.
-      */}
-      <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl relative h-16">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none mt-4 px-4">
+      <header className="pointer-events-auto w-full max-w-7xl flex justify-between items-center relative h-14 bg-background/30 dark:bg-black/30 backdrop-blur-3xl border border-white/10 dark:border-white/5 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.02)] px-4">
 
-        {/* Logo - Absolute Left */}
-        <div className="absolute left-4">
+
+        {/* Logo - Fixed Left */}
+        <div className="flex-shrink-0 flex items-center">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="relative overflow-hidden rounded-xl border border-border/50 shadow-sm transition-transform group-hover:scale-105">
               <Image
                 src="/logo.svg"
-                alt="AI Tutor"
+                alt="LearnLM"
                 width={36}
                 height={36}
                 className="bg-background"
                 priority
+                suppressHydrationWarning
               />
             </div>
             <span className="font-bold text-lg hidden sm:inline-block tracking-tight text-foreground transition-colors group-hover:text-primary">
-              AI Tutor
+              LearnLM
             </span>
           </Link>
         </div>
 
         {/* Main Navigation - Absolute Center Dock */}
-        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center">
           <ExpandableTabs
             tabs={tabs}
             activeIndex={activeIndex}
             onChange={handleTabChange}
             activeColor="text-primary"
-            className="shadow-md shadow-black/5" // Extra pop for the centered dock
+            className="bg-transparent border-none shadow-none"
           />
         </nav>
 
-        {/* Right side controls - Absolute Right */}
-        <div className="absolute right-4 flex items-center gap-3">
+        {/* Right side controls - Fixed Right */}
+        <div className="flex-shrink-0 flex items-center gap-3">
           <ModeToggle />
 
           {status === "loading" ? (
             <div className="h-9 w-9 rounded-full bg-muted animate-pulse"></div>
           ) : status === "authenticated" ? (
             <div className="flex items-center gap-2 bg-background/50 backdrop-blur-xl border border-border/50 p-1 rounded-full shadow-sm">
-              <Link href="/profile" className="rounded-full ring-2 ring-transparent transition-all hover:ring-primary/50">
+              <StreakIndicator /> {/* Added StreakFlame component */}
+              <Link href="/profile" className="rounded-full ring-2 ring-transparent transition-all hover:ring-primary/50 hover:shadow-[0_0_15px_hsl(var(--primary)/0.5)]">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
                     src={session?.user?.image || ""}
@@ -136,7 +176,7 @@ export function SiteHeader() {
                 className="h-8 w-8 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                 aria-label="Sign out"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4" suppressHydrationWarning />
               </Button>
             </div>
           ) : (
@@ -159,7 +199,7 @@ export function SiteHeader() {
             </div>
           )}
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }

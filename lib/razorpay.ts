@@ -172,15 +172,36 @@ export async function getSubscription(subscriptionId: string) {
   }
 }
 
+type AccessUser = {
+  subscriptionStatus?: string | null;
+  freeCoursesUsed?: number | null;
+};
+
+function normalizeSubscriptionStatus(status: string | null | undefined) {
+  if (!status) return null;
+  const normalized = status.toUpperCase();
+  if (
+    normalized === "FREE" ||
+    normalized === "PREMIUM" ||
+    normalized === "CANCELLED"
+  ) {
+    return normalized;
+  }
+  return null;
+}
+
 // Check if a user has access to a full course
-export function hasFullCourseAccess(user: any, courseId: string) {
+export function hasFullCourseAccess(user: AccessUser, _courseId: string) {
+  const status = normalizeSubscriptionStatus(user.subscriptionStatus);
+  const freeCoursesUsed = user.freeCoursesUsed ?? 0;
+
   // Premium users have access to all courses
-  if (user.subscriptionStatus === "premium") {
+  if (status === "PREMIUM") {
     return true;
   }
 
   // Free users can access one full course
-  if (user.subscriptionStatus === "free" && user.freeCoursesUsed === 0) {
+  if (status === "FREE" && freeCoursesUsed === 0) {
     return true;
   }
 
@@ -189,19 +210,22 @@ export function hasFullCourseAccess(user: any, courseId: string) {
 
 // Check if a user has access to a specific module
 export function hasModuleAccess(
-  user: any,
-  courseId: string, // courseId is used for future implementation
+  user: AccessUser,
+  _courseId: string, // kept for compatibility with call sites
   moduleOrder: number
 ) {
+  const status = normalizeSubscriptionStatus(user.subscriptionStatus);
+  const freeCoursesUsed = user.freeCoursesUsed ?? 0;
+
   // Premium users have access to all modules
-  if (user.subscriptionStatus === "premium") {
+  if (status === "PREMIUM") {
     return true;
   }
 
   // Free users can access up to 3 modules per course (except their first course)
-  if (user.subscriptionStatus === "free") {
+  if (status === "FREE") {
     // If this is their first course, they can access all modules
-    if (user.freeCoursesUsed === 0) {
+    if (freeCoursesUsed === 0) {
       return true;
     }
 

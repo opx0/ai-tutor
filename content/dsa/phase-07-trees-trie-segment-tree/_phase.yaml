@@ -1,0 +1,50 @@
+---
+id: phase-7
+phase: 7
+title: 'Trees, Trie & Segment Tree'
+goal: >-
+  Trees are the backbone of 30% of interview problems. Master DFS, BFS, and
+  specialized tree structures.
+bossChallenge: >-
+  Implement DFS inorder, preorder, and postorder iteratively (without recursion,
+  using an explicit stack). Then implement BFS level-order.
+leetcode:
+  - id: 226
+    title: Invert Binary Tree
+    url: 'https://leetcode.com/problems/invert-binary-tree/'
+    tag: DFS
+  - id: 104
+    title: Maximum Depth of Binary Tree
+    url: 'https://leetcode.com/problems/maximum-depth-of-binary-tree/'
+    tag: DFS
+  - id: 102
+    title: Binary Tree Level Order Traversal
+    url: 'https://leetcode.com/problems/binary-tree-level-order-traversal/'
+    tag: BFS
+  - id: 208
+    title: Implement Trie
+    url: 'https://leetcode.com/problems/implement-trie-prefix-tree/'
+    tag: Trie
+  - id: 98
+    title: Validate BST
+    url: 'https://leetcode.com/problems/validate-binary-search-tree/'
+    tag: BST
+  - id: 230
+    title: Kth Smallest Element in BST
+    url: 'https://leetcode.com/problems/kth-smallest-element-in-a-bst/'
+    tag: BST
+  - id: 105
+    title: Build Tree from Pre/Inorder
+    url: >-
+      https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+    tag: Tree
+  - id: 124
+    title: Binary Tree Max Path Sum
+    url: 'https://leetcode.com/problems/binary-tree-maximum-path-sum/'
+    tag: DFS Hard
+  - id: 297
+    title: Serialize/Deserialize Binary Tree
+    url: 'https://leetcode.com/problems/serialize-and-deserialize-binary-tree/'
+    tag: Tree Hard
+keystone: true
+---

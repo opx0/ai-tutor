@@ -1,0 +1,261 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Find FIRST occurrence of 5 in [1, 3, 5, 5, 5, 8, 9]. Standard binary search would find index 3. But 2 is earlier!",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "comparing"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "value": "9",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-lo",
+          "name": "lo",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-hi",
+          "name": "hi",
+          "value": "6",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-mid",
+          "name": "mid",
+          "value": "3",
+          "state": "comparing"
+        },
+        {
+          "type": "variable",
+          "id": "v-result",
+          "name": "result",
+          "value": "-1",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "mid=3, arr[3]=5 == target. Found one!",
+              "kind": "compare"
+            },
+            {
+              "text": "But DON'T STOP — save result, search LEFT for earlier",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Found 5 at index 3. Save result=3. But there might be an earlier 5! Set hi=mid-1=2 to keep searching LEFT.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "visited"
+            },
+            {
+              "value": "8",
+              "state": "visited"
+            },
+            {
+              "value": "9",
+              "state": "visited"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-lo",
+          "name": "lo",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-hi",
+          "name": "hi",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-mid",
+          "name": "mid",
+          "value": "1",
+          "state": "comparing"
+        },
+        {
+          "type": "variable",
+          "id": "v-result",
+          "name": "result",
+          "value": "3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "result=3, hi=2. Search left half.",
+              "kind": "swap"
+            },
+            {
+              "text": "mid=1, arr[1]=3 < 5 → go RIGHT, lo=2",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "lo=2, hi=2, mid=2. arr[2]=5 == target! Save result=2. Set hi=1. Now lo>hi → stop. First occurrence = index 2!",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "visited"
+            },
+            {
+              "value": "3",
+              "state": "visited"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "visited"
+            },
+            {
+              "value": "8",
+              "state": "visited"
+            },
+            {
+              "value": "9",
+              "state": "visited"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-lo",
+          "name": "lo",
+          "value": "2",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-hi",
+          "name": "hi",
+          "value": "1",
+          "state": "done",
+          "description": "lo > hi = DONE"
+        },
+        {
+          "type": "variable",
+          "id": "v-mid",
+          "name": "mid",
+          "value": "2",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-result",
+          "name": "result",
+          "value": "2",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "arr[2]=5 == target → result=2, hi=1",
+              "kind": "return"
+            },
+            {
+              "text": "lo(2) > hi(1) → STOP",
+              "kind": "info"
+            },
+            {
+              "text": "✅ First occurrence at index 2. O(log n)",
+              "kind": "return"
+            },
+            {
+              "text": "Key trick: when found, save & keep searching left",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

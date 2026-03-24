@@ -1,0 +1,260 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Problem: Given arr = [3, 1, 4, 1, 5], answer many range-sum queries. Brute force: O(n) per query. With prefix sums: O(1) per query after O(n) preprocessing.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Original Array",
+          "items": [
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "pfx",
+          "label": "Prefix Sum (building...)",
+          "items": [
+            {
+              "value": "0",
+              "state": "active"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "prefix[i] = sum of arr[0..i-1]. prefix[0] = 0 always.",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Build prefix: prefix[1]=0+3=3, prefix[2]=3+1=4, prefix[3]=4+4=8, prefix[4]=8+1=9, prefix[5]=9+5=14. Each prefix[i] = sum of all elements before index i.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Original Array",
+          "items": [
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "4",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "pfx",
+          "label": "Prefix Sum (complete)",
+          "items": [
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "4",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "9",
+              "state": "done"
+            },
+            {
+              "value": "14",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "prefix[0] = 0",
+              "kind": "info"
+            },
+            {
+              "text": "prefix[1] = 0+3 = 3",
+              "kind": "swap"
+            },
+            {
+              "text": "prefix[2] = 3+1 = 4",
+              "kind": "swap"
+            },
+            {
+              "text": "prefix[3] = 4+4 = 8",
+              "kind": "swap"
+            },
+            {
+              "text": "prefix[4] = 8+1 = 9",
+              "kind": "swap"
+            },
+            {
+              "text": "prefix[5] = 9+5 = 14",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Query: sum(1..3) = sum of arr[1]+arr[2]+arr[3] = 1+4+1 = 6. Using prefix: prefix[4] - prefix[1] = 9 - 3 = 6. O(1)!",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Original Array",
+          "items": [
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "highlight"
+            },
+            {
+              "value": "4",
+              "state": "highlight"
+            },
+            {
+              "value": "1",
+              "state": "highlight"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "pfx",
+          "label": "Prefix Sum",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "comparing"
+            },
+            {
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "value": "9",
+              "state": "comparing"
+            },
+            {
+              "value": "14",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-ans",
+          "name": "answer",
+          "value": "9-3=6",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Query: sum(1..3) = prefix[4] - prefix[1]",
+              "kind": "compare"
+            },
+            {
+              "text": "= 9 - 3 = 6 ✅",
+              "kind": "return"
+            },
+            {
+              "text": "Formula: sum(l..r) = prefix[r+1] - prefix[l]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+---
+id: phase-5
+phase: 5
+title: Sorting
+goal: Understand sorting as applied recursion. Merge Sort is your Phase 4 payoff.
+bossChallenge: >-
+  Implement Merge Sort completely from memory. If you can write merge() and
+  mergeSort() without help, recursion has truly clicked.
+leetcode:
+  - id: 912
+    title: Sort an Array
+    url: 'https://leetcode.com/problems/sort-an-array/'
+    tag: Sorting
+  - id: 75
+    title: Sort Colors
+    url: 'https://leetcode.com/problems/sort-colors/'
+    tag: Sorting
+  - id: 148
+    title: Sort List
+    url: 'https://leetcode.com/problems/sort-list/'
+    tag: Merge Sort
+  - id: 215
+    title: Kth Largest Element
+    url: 'https://leetcode.com/problems/kth-largest-element-in-an-array/'
+    tag: Quick Select
+  - id: 347
+    title: Top K Frequent Elements
+    url: 'https://leetcode.com/problems/top-k-frequent-elements/'
+    tag: Bucket Sort
+---

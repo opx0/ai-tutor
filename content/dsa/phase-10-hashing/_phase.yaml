@@ -1,0 +1,24 @@
+---
+id: phase-10
+phase: 10
+title: Hashing
+goal: >-
+  Understand hash maps deeply — collisions, load factors, and the patterns they
+  unlock.
+bossChallenge: >-
+  Implement a hash map from scratch (array + chaining) with get, put, and
+  remove. Then solve Group Anagrams (LC 49).
+leetcode:
+  - id: 1
+    title: Two Sum
+    url: 'https://leetcode.com/problems/two-sum/'
+    tag: Hash Map
+  - id: 49
+    title: Group Anagrams
+    url: 'https://leetcode.com/problems/group-anagrams/'
+    tag: Hashing
+  - id: 128
+    title: Longest Consecutive Sequence
+    url: 'https://leetcode.com/problems/longest-consecutive-sequence/'
+    tag: Hash Set
+---

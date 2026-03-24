@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ChevronRight, CheckCircle2, Circle, FileText, Map } from "lucide-react"
+import { ChevronRight, CircleCheck, Circle, FileText, Map } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -72,7 +72,7 @@ export default function CourseDetail({ course, progress, lastLessonId }: CourseD
                         >
                           <div className="flex-shrink-0">
                             {lastLessonId === lesson.id ? (
-                              <CheckCircle2 className="h-5 w-5 text-green-500" />
+                              <CircleCheck className="h-5 w-5 text-green-500" />
                             ) : (
                               <Circle className="h-5 w-5 text-muted-foreground" />
                             )}
@@ -123,7 +123,7 @@ export default function CourseDetail({ course, progress, lastLessonId }: CourseD
                         <div className="flex-grow">
                           <h5 className="font-medium">{lesson.title}</h5>
                         </div>
-                        {lastLessonId === lesson.id && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
+                        {lastLessonId === lesson.id && <CircleCheck className="h-4 w-4 text-green-500 ml-auto" />}
                       </Link>
                     ))}
                   </div>

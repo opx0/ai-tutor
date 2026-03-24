@@ -26,17 +26,27 @@ const LOG_LEVEL_NAMES: Record<LogLevel, string> = {
 // Get the configured log level from environment or use default
 const configuredLogLevel = process.env.NEXTJS_LOG_LEVEL || 'INFO';
 const currentLogLevel = getLogLevelValue(configuredLogLevel);
+const fileLoggingEnabled = process.env.ENABLE_FILE_LOGGING === "true";
 
-// Ensure logs directory exists
 const logDir = path.join(process.cwd(), 'logs');
-if (!fs.existsSync(logDir)) {
+const logFile = path.join(logDir, 'nextjs-backend.log');
+let didInitLogDir = false;
+
+function ensureLogDirectory(): boolean {
+  if (!fileLoggingEnabled) return false;
+  if (didInitLogDir) return true;
+
   try {
-    fs.mkdirSync(logDir, { recursive: true });
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+    didInitLogDir = true;
+    return true;
   } catch (error) {
     console.error('Failed to create logs directory:', error);
+    return false;
   }
 }
-const logFile = path.join(logDir, 'nextjs-backend.log');
 
 /**
  * Convert log level string to numeric value
@@ -90,11 +100,11 @@ export function logMessage(
   // Format log entry
   const logEntry = `[${timestamp}] [${levelName}] [${requestId}] [${requestMethod} ${requestPath}] [${requestIp}] [${userId}] ${message}${contextStr}\n`;
 
-  // Write to log file
-  try {
-    fs.appendFileSync(logFile, logEntry);
-  } catch (error) {
-    console.error('Failed to write to log file:', error);
+  // Write to log file only when explicitly enabled.
+  if (ensureLogDirectory()) {
+    void fs.promises.appendFile(logFile, logEntry).catch((error) => {
+      console.error('Failed to write to log file:', error);
+    });
   }
 
   // Also log to console
@@ -205,5 +215,6 @@ export function logApiResponse(
 // Initialize logging
 logInfo('Next.js Backend Logger initialized', {
   logLevel: configuredLogLevel,
-  logFile,
+  fileLoggingEnabled,
+  ...(fileLoggingEnabled ? { logFile } : {}),
 });

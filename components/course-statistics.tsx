@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { Loader2, Users, BookOpen, BookMarked, FileText } from "lucide-react"
+import { LoaderCircle, Users, BookOpen, BookMarked, FileText } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
@@ -98,7 +98,7 @@ export default function CourseStatistics({ courseId }: CourseStatisticsProps) {
       <div className="space-y-4">
         <h2 className="text-xl font-bold">{courseId ? "Course Statistics" : "Learning Statistics"}</h2>
         <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <LoaderCircle className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       </div>
     )

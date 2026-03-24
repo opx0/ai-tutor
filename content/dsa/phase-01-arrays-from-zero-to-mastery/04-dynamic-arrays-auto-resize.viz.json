@@ -1,0 +1,375 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Dynamic array starts with capacity 2, size 0. The array owns a fixed block of memory, but tracks how much is actually used.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Dynamic Array",
+          "items": [
+            {
+              "value": "_",
+              "state": "default"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "0",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "2",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Created dynamic array — capacity=2, size=0",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "push(5): Place 5 at index 0 (= size). Increment size to 1. Room left — no resize needed.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Dynamic Array",
+          "items": [
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "2",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Created dynamic array — capacity=2, size=0",
+              "kind": "info"
+            },
+            {
+              "text": "push(5) → arr[0] = 5, size = 1",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "push(8): Place 8 at index 1. size=2 now equals capacity=2. The array is FULL. Next push will trigger a resize.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Dynamic Array",
+          "items": [
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "2",
+          "state": "error"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "2",
+          "state": "error",
+          "description": "FULL!"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "push(5) → arr[0] = 5, size = 1",
+              "kind": "swap"
+            },
+            {
+              "text": "push(8) → arr[1] = 8, size = 2",
+              "kind": "swap"
+            },
+            {
+              "text": "⚠ size == capacity — array is full!",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "push(3): size == capacity! Allocate NEW array with 2x capacity (4). Copy all elements over. This is O(n) but happens rarely.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "old",
+          "label": "Old Array (being copied)",
+          "items": [
+            {
+              "value": "5",
+              "state": "comparing"
+            },
+            {
+              "value": "8",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "New Array (capacity 4)",
+          "items": [
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "2",
+          "state": "comparing"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "2→4",
+          "state": "highlight",
+          "description": "DOUBLED!"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "⚠ size == capacity — array is full!",
+              "kind": "compare"
+            },
+            {
+              "text": "RESIZE: allocate new array of capacity 4",
+              "kind": "call"
+            },
+            {
+              "text": "COPY: old[0..1] → new[0..1]",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Now place 3 at index 2 in the new array. size=3, capacity=4. The old array is freed. Amortized O(1) per push because doubling halves the resize frequency.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Dynamic Array (capacity 4)",
+          "items": [
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "4",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "RESIZE: allocate new array of capacity 4",
+              "kind": "call"
+            },
+            {
+              "text": "COPY: old[0..1] → new[0..1]",
+              "kind": "swap"
+            },
+            {
+              "text": "push(3) → arr[2] = 3, size = 3",
+              "kind": "swap"
+            },
+            {
+              "text": "Amortized O(1): resize cost spread over many pushes",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "push(7), push(1): size reaches 5 > capacity 4 → double again to 8. Pattern: 2→4→8→16→... Each doubling copies n items but then gets n free pushes.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Dynamic Array (capacity 8)",
+          "items": [
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "7",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "5",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "8",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "push(7) → arr[3] = 7, size = 4 (full again!)",
+              "kind": "swap"
+            },
+            {
+              "text": "RESIZE: capacity 4 → 8",
+              "kind": "call"
+            },
+            {
+              "text": "push(1) → arr[4] = 1, size = 5",
+              "kind": "swap"
+            },
+            {
+              "text": "Total: 5 pushes, 2 resizes (copied 2 + 4 = 6 items)",
+              "kind": "info"
+            },
+            {
+              "text": "Amortized cost per push ≈ 6/5 = O(1)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

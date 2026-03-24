@@ -1,0 +1,373 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Problem: Find max sum of any k=3 consecutive elements in [2, 1, 5, 1, 3, 2]. Brute force: O(n*k) — recalculate sum for every window. Can we do O(n)?",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-k",
+          "name": "k",
+          "value": "3",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "windowSum",
+          "value": "—",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-max",
+          "name": "maxSum",
+          "value": "—",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Sliding Window: instead of recalculating, SLIDE the window right",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "First window [0..2]: sum = 2+1+5 = 8. This is our initial maxSum.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-k",
+          "name": "k",
+          "value": "3",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "windowSum",
+          "value": "8",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-max",
+          "name": "maxSum",
+          "value": "8",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Sliding Window: instead of recalculating, SLIDE the window right",
+              "kind": "info"
+            },
+            {
+              "text": "Window [0..2]: 2+1+5 = 8, maxSum = 8",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Slide right: subtract arr[0]=2 (leaves window), add arr[3]=1 (enters window). sum = 8-2+1 = 7. No new max.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "2",
+              "state": "error"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "comparing"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-k",
+          "name": "k",
+          "value": "3",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "windowSum",
+          "value": "7",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-max",
+          "name": "maxSum",
+          "value": "8",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Window [0..2]: 2+1+5 = 8, maxSum = 8",
+              "kind": "compare"
+            },
+            {
+              "text": "Slide: -arr[0](2) +arr[3](1) → sum = 7",
+              "kind": "swap"
+            },
+            {
+              "text": "7 < 8 → maxSum stays 8",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Slide again: subtract arr[1]=1, add arr[4]=3. sum = 7-1+3 = 9. New max! maxSum = 9.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "error"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "comparing"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-k",
+          "name": "k",
+          "value": "3",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "windowSum",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "variable",
+          "id": "v-max",
+          "name": "maxSum",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Slide: -arr[0](2) +arr[3](1) → sum = 7",
+              "kind": "swap"
+            },
+            {
+              "text": "Slide: -arr[1](1) +arr[4](3) → sum = 9",
+              "kind": "swap"
+            },
+            {
+              "text": "9 > 8 → NEW maxSum = 9 ✓",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Final slide: subtract arr[2]=5, add arr[5]=2. sum = 9-5+2 = 6. Done! maxSum = 9 from window [2,3,4] = [5,1,3]. Total: O(n) with one pass.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "error"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "2",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-k",
+          "name": "k",
+          "value": "3",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "windowSum",
+          "value": "6",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-max",
+          "name": "maxSum",
+          "value": "9",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Slide: -arr[1](1) +arr[4](3) → sum = 9",
+              "kind": "swap"
+            },
+            {
+              "text": "Slide: -arr[2](5) +arr[5](2) → sum = 6",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Done! maxSum = 9 from subarray [5,1,3]",
+              "kind": "info"
+            },
+            {
+              "text": "O(n) — each element enters and leaves the window exactly once",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

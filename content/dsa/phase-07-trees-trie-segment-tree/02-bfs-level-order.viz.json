@@ -1,0 +1,497 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "BFS (Breadth-First Search) explores the tree level by level using a QUEUE. Start by enqueuing the root.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree — BFS",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "id": "l",
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "id": "r2",
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "id": "ll",
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "id": "lr",
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "id": "rl",
+              "value": "6",
+              "state": "default"
+            },
+            {
+              "id": "rr",
+              "value": "7",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "queue",
+          "label": "Queue",
+          "items": [
+            {
+              "value": "1",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-level",
+          "name": "level",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "BFS uses a queue: dequeue front, enqueue children",
+              "kind": "info"
+            },
+            {
+              "text": "Enqueue root (1). Queue: [1]",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Dequeue 1 (level 0). Enqueue its children: 2, 3. Queue now holds the entire next level.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree — BFS",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "id": "l",
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "id": "r2",
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "id": "ll",
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "id": "lr",
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "id": "rl",
+              "value": "6",
+              "state": "default"
+            },
+            {
+              "id": "rr",
+              "value": "7",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "queue",
+          "label": "Queue",
+          "items": [
+            {
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-level",
+          "name": "level",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Dequeue 1 → visit. Enqueue children: 2, 3",
+              "kind": "swap"
+            },
+            {
+              "text": "Level 0 done: [1]. Queue: [2, 3]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Dequeue 2 → enqueue 4, 5. Dequeue 3 → enqueue 6, 7. Level 1 complete: [2, 3].",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree — BFS",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "id": "l",
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "id": "r2",
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "id": "ll",
+              "value": "4",
+              "state": "active"
+            },
+            {
+              "id": "lr",
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "id": "rl",
+              "value": "6",
+              "state": "active"
+            },
+            {
+              "id": "rr",
+              "value": "7",
+              "state": "active"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "active",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "queue",
+          "label": "Queue",
+          "items": [
+            {
+              "value": "4",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "6",
+              "state": "active"
+            },
+            {
+              "value": "7",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-level",
+          "name": "level",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Dequeue 2 → enqueue 4, 5",
+              "kind": "swap"
+            },
+            {
+              "text": "Dequeue 3 → enqueue 6, 7",
+              "kind": "swap"
+            },
+            {
+              "text": "Level 1: [2, 3]. Queue: [4, 5, 6, 7]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Dequeue 4, 5, 6, 7. All are leaves — no children to enqueue. Queue empty. BFS complete: [1, 2, 3, 4, 5, 6, 7].",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "BFS Complete!",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "id": "l",
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "id": "r2",
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "id": "ll",
+              "value": "4",
+              "state": "done"
+            },
+            {
+              "id": "lr",
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "id": "rl",
+              "value": "6",
+              "state": "done"
+            },
+            {
+              "id": "rr",
+              "value": "7",
+              "state": "done"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "queue",
+          "label": "Queue (empty)",
+          "items": []
+        },
+        {
+          "type": "variable",
+          "id": "v-level",
+          "name": "level",
+          "value": "2",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Level 2: [4, 5, 6, 7]. No children.",
+              "kind": "info"
+            },
+            {
+              "text": "✅ BFS order: [1, 2, 3, 4, 5, 6, 7]",
+              "kind": "return"
+            },
+            {
+              "text": "O(n) time, O(w) space where w = max width",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

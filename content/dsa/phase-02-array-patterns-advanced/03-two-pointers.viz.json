@@ -1,0 +1,412 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Two Sum II: In sorted array [1, 3, 4, 5, 7, 11], find two numbers that sum to 9. Left pointer at start, right pointer at end.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "7",
+              "state": "default"
+            },
+            {
+              "value": "11",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "5",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "sum",
+          "value": "12",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-target",
+          "name": "target",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "arr[0]+arr[5] = 1+11 = 12",
+              "kind": "compare"
+            },
+            {
+              "text": "12 > 9 → sum too big, move right pointer LEFT",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "sum=12 > target=9. Too big! Since array is sorted, moving right pointer left decreases the sum. right: 5→4.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "7",
+              "state": "active"
+            },
+            {
+              "value": "11",
+              "state": "visited"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "4",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "sum",
+          "value": "8",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-target",
+          "name": "target",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "12 > 9 → move right LEFT",
+              "kind": "info"
+            },
+            {
+              "text": "arr[0]+arr[4] = 1+7 = 8",
+              "kind": "compare"
+            },
+            {
+              "text": "8 < 9 → sum too small, move left pointer RIGHT",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "sum=8 < target=9. Too small! Move left pointer right to increase the sum. left: 0→1.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "visited"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "7",
+              "state": "active"
+            },
+            {
+              "value": "11",
+              "state": "visited"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "4",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "sum",
+          "value": "10",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-target",
+          "name": "target",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "8 < 9 → move left RIGHT",
+              "kind": "info"
+            },
+            {
+              "text": "arr[1]+arr[4] = 3+7 = 10",
+              "kind": "compare"
+            },
+            {
+              "text": "10 > 9 → sum too big, move right LEFT",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "sum=10 > 9. Move right left. right: 4→3. arr[1]+arr[3] = 3+5 = 8 < 9. Move left right.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "visited"
+            },
+            {
+              "value": "3",
+              "state": "visited"
+            },
+            {
+              "value": "4",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            },
+            {
+              "value": "7",
+              "state": "visited"
+            },
+            {
+              "value": "11",
+              "state": "visited"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "sum",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "variable",
+          "id": "v-target",
+          "name": "target",
+          "value": "9",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "10 > 9 → move right LEFT",
+              "kind": "info"
+            },
+            {
+              "text": "arr[1]+arr[3] = 3+5 = 8 < 9 → move left RIGHT",
+              "kind": "compare"
+            },
+            {
+              "text": "arr[2]+arr[3] = 4+5 = 9 ✅ FOUND!",
+              "kind": "return"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Found it! arr[2]+arr[3] = 4+5 = 9. O(n) with two pointers vs O(n²) brute force. The key insight: sorted array lets us decide which pointer to move.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Sorted Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "visited"
+            },
+            {
+              "value": "3",
+              "state": "visited"
+            },
+            {
+              "value": "4",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "7",
+              "state": "visited"
+            },
+            {
+              "value": "11",
+              "state": "visited"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-l",
+          "name": "left",
+          "value": "2",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-r",
+          "name": "right",
+          "value": "3",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-sum",
+          "name": "sum",
+          "value": "9",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-target",
+          "name": "target",
+          "value": "9",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "arr[2]+arr[3] = 4+5 = 9 ✅ FOUND!",
+              "kind": "return"
+            },
+            {
+              "text": "O(n) time, O(1) space — just two pointers",
+              "kind": "info"
+            },
+            {
+              "text": "Pattern: too big→move right, too small→move left",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

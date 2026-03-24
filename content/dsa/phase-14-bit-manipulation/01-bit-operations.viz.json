@@ -1,0 +1,287 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Bit Manipulation: computers store everything as binary. Let's see AND, OR, XOR on 5 (0101) and 3 (0011).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a",
+          "label": "5 in binary",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b",
+          "label": "3 in binary",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-a",
+          "name": "a",
+          "value": "5 (0101)",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-b",
+          "name": "b",
+          "value": "3 (0011)",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "5 = 0101, 3 = 0011",
+              "kind": "info"
+            },
+            {
+              "text": "AND: both bits 1 → 1. OR: either bit 1 → 1. XOR: different → 1",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "AND (5 & 3): 0101 & 0011 = 0001 = 1. Only position 0 has both bits set. AND is useful for masking — extracting specific bits.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a",
+          "label": "5 = 0101",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "comparing"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b",
+          "label": "3 = 0011",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "comparing"
+            },
+            {
+              "value": "1",
+              "state": "comparing"
+            },
+            {
+              "value": "1",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "res",
+          "label": "5 & 3 = 0001",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "error"
+            },
+            {
+              "value": "0",
+              "state": "error"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-res",
+          "name": "5 & 3",
+          "value": "1",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "0&0=0, 1&0=0, 0&1=0, 1&1=1",
+              "kind": "compare"
+            },
+            {
+              "text": "AND = 0001 = 1",
+              "kind": "return"
+            },
+            {
+              "text": "Use: check if bit is set: n & (1 << k)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "XOR (5 ^ 3): 0101 ^ 0011 = 0110 = 6. XOR is 1 where bits DIFFER. Key property: a ^ a = 0, a ^ 0 = a. This finds the single unique number!",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a",
+          "label": "5 = 0101",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "highlight"
+            },
+            {
+              "value": "0",
+              "state": "highlight"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b",
+          "label": "3 = 0011",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "highlight"
+            },
+            {
+              "value": "1",
+              "state": "highlight"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "res",
+          "label": "5 ^ 3 = 0110",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-res",
+          "name": "5 ^ 3",
+          "value": "6",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "0^0=0, 1^0=1, 0^1=1, 1^1=0",
+              "kind": "compare"
+            },
+            {
+              "text": "XOR = 0110 = 6",
+              "kind": "return"
+            },
+            {
+              "text": "Magic: XOR all elements in [2,3,2] → 2^3^2 = 3. Duplicates cancel!",
+              "kind": "info"
+            },
+            {
+              "text": "LC 136 \"Single Number\" — XOR everything → O(n), O(1)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

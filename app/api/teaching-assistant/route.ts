@@ -1,11 +1,52 @@
 import { streamTAResponse } from "@/lib/ai-router";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
+import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Unauthorized. Please sign in." },
+        { status: 401 }
+      );
+    }
+
+    const clientId = getClientIdentifier(req, session.user.id);
+    const limit = consumeRateLimit(`ta:${session.user.id}:${clientId}`, {
+      max: 20,
+      windowMs: 60_000,
+    });
+    if (!limit.allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many assistant requests. Please try again shortly.",
+          retryAfterMs: limit.retryAfterMs,
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const { message, courseId, lessonId, moduleName, lessonName } = body;
+
+    if (!lessonId || typeof lessonId !== "string") {
+      return NextResponse.json({ error: "lessonId is required" }, { status: 400 });
+    }
+
+    if (!message || typeof message !== "string") {
+      return NextResponse.json({ error: "message is required" }, { status: 400 });
+    }
+
+    if (message.length > 4_000) {
+      return NextResponse.json(
+        { error: "Message is too long. Please keep it under 4000 characters." },
+        { status: 400 }
+      );
+    }
 
     // Get the lesson content
     const lesson = await prisma.lesson.findUnique({
@@ -22,6 +63,21 @@ export async function POST(req: NextRequest) {
     }
 
     const course = lesson.module.course;
+
+    if (courseId && typeof courseId === "string" && course.id !== courseId) {
+      return NextResponse.json(
+        { error: "lessonId does not match the provided courseId" },
+        { status: 400 }
+      );
+    }
+
+    // For private custom courses, only owner can use TA context.
+    if (!course.isPublic && course.type === "CUSTOM" && course.userId !== session.user.id) {
+      return NextResponse.json(
+        { error: "You do not have access to this lesson." },
+        { status: 403 }
+      );
+    }
 
     // Get sibling lessons for broader context
     const moduleWithLessons = await prisma.module.findUnique({

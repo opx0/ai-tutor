@@ -1,0 +1,40 @@
+---
+id: phase-12
+phase: 12
+title: 'Graphs, Dijkstra & Topo Sort'
+goal: >-
+  The final data structure frontier. Graph problems combine everything you've
+  learned.
+bossChallenge: >-
+  Implement Dijkstra's from memory using a min-heap. Then solve Course Schedule
+  II (LC 210) using topological sort.
+leetcode:
+  - id: 200
+    title: Number of Islands
+    url: 'https://leetcode.com/problems/number-of-islands/'
+    tag: BFS/DFS
+  - id: 743
+    title: Network Delay Time
+    url: 'https://leetcode.com/problems/network-delay-time/'
+    tag: Dijkstra
+  - id: 210
+    title: Course Schedule II
+    url: 'https://leetcode.com/problems/course-schedule-ii/'
+    tag: Topo Sort
+  - id: 133
+    title: Clone Graph
+    url: 'https://leetcode.com/problems/clone-graph/'
+    tag: BFS/DFS
+  - id: 417
+    title: Pacific Atlantic Water Flow
+    url: 'https://leetcode.com/problems/pacific-atlantic-water-flow/'
+    tag: DFS
+  - id: 207
+    title: Course Schedule
+    url: 'https://leetcode.com/problems/course-schedule/'
+    tag: Topo Sort
+  - id: 269
+    title: Alien Dictionary
+    url: 'https://leetcode.com/problems/alien-dictionary/'
+    tag: Topo Sort Hard
+---

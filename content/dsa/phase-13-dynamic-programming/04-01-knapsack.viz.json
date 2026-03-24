@@ -1,0 +1,606 @@
+{
+  "type": "grid",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "0/1 Knapsack: Items [(weight=1, val=6), (w=2, v=10), (w=3, v=12)], capacity=5. dp[i][w] = max value using first i items with capacity w.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[items][capacity]",
+          "cells": [
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0 items",
+            "item1(1,6)",
+            "item2(2,10)",
+            "item3(3,12)"
+          ],
+          "colLabels": [
+            "cap=0",
+            "cap=1",
+            "cap=2",
+            "cap=3",
+            "cap=4",
+            "cap=5"
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "For each item, decide: INCLUDE it or EXCLUDE it",
+              "kind": "info"
+            },
+            {
+              "text": "dp[i][w] = max(dp[i-1][w], dp[i-1][w-wt] + val)",
+              "kind": "info"
+            },
+            {
+              "text": "Row 0 (no items) = all zeros",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Row 1 (item1: w=1, v=6): For cap≥1, we CAN take item1. dp[1][w] = max(skip=0, take=6). All caps ≥ 1 get value 6.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[items][capacity]",
+          "cells": [
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "active"
+              },
+              {
+                "value": "6",
+                "state": "active"
+              },
+              {
+                "value": "6",
+                "state": "active"
+              },
+              {
+                "value": "6",
+                "state": "active"
+              },
+              {
+                "value": "6",
+                "state": "active"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0 items",
+            "item1(1,6)",
+            "item2(2,10)",
+            "item3(3,12)"
+          ],
+          "colLabels": [
+            "cap=0",
+            "cap=1",
+            "cap=2",
+            "cap=3",
+            "cap=4",
+            "cap=5"
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Item1 (w=1,v=6): fits in all cap ≥ 1",
+              "kind": "compare"
+            },
+            {
+              "text": "dp[1][1] = max(skip=0, take=0+6) = 6",
+              "kind": "swap"
+            },
+            {
+              "text": "dp[1][2..5] = 6 (only 1 item available)",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Row 2 (item2: w=2, v=10): cap=1: can't fit, skip → 6. cap=2: max(skip=6, take=0+10) = 10. cap=3: max(6, 6+10=16) = 16! Both items fit.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[items][capacity]",
+          "cells": [
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "active"
+              },
+              {
+                "value": "10",
+                "state": "active"
+              },
+              {
+                "value": "16",
+                "state": "highlight"
+              },
+              {
+                "value": "16",
+                "state": "active"
+              },
+              {
+                "value": "16",
+                "state": "active"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              },
+              {
+                "value": "?",
+                "state": "default"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0 items",
+            "item1(1,6)",
+            "item2(2,10)",
+            "item3(3,12)"
+          ],
+          "colLabels": [
+            "cap=0",
+            "cap=1",
+            "cap=2",
+            "cap=3",
+            "cap=4",
+            "cap=5"
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dp[2][1]: can't fit item2 (w=2) → skip = 6",
+              "kind": "compare"
+            },
+            {
+              "text": "dp[2][2]: max(skip=6, take=dp[1][0]+10=10) = 10",
+              "kind": "swap"
+            },
+            {
+              "text": "dp[2][3]: max(6, dp[1][1]+10=16) = 16 ← both items!",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Row 3 (item3: w=3, v=12): dp[3][5] = max(skip=16, take=dp[2][2]+12=22) = 22. Take items 2+3 (w=2+3=5, v=10+12=22). Optimal!",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "dp",
+          "label": "dp[][] Complete!",
+          "cells": [
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "0",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "10",
+                "state": "done"
+              },
+              {
+                "value": "16",
+                "state": "done"
+              },
+              {
+                "value": "16",
+                "state": "done"
+              },
+              {
+                "value": "16",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "0",
+                "state": "done"
+              },
+              {
+                "value": "6",
+                "state": "done"
+              },
+              {
+                "value": "10",
+                "state": "done"
+              },
+              {
+                "value": "16",
+                "state": "done"
+              },
+              {
+                "value": "18",
+                "state": "done"
+              },
+              {
+                "value": "22",
+                "state": "highlight"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "0 items",
+            "item1(1,6)",
+            "item2(2,10)",
+            "item3(3,12)"
+          ],
+          "colLabels": [
+            "cap=0",
+            "cap=1",
+            "cap=2",
+            "cap=3",
+            "cap=4",
+            "cap=5"
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-ans",
+          "name": "maxValue",
+          "value": "22",
+          "state": "done",
+          "description": "items 2+3"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dp[3][5] = max(16, dp[2][2]+12) = max(16, 22) = 22",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Max value = 22 (items 2 & 3, weight 5)",
+              "kind": "return"
+            },
+            {
+              "text": "O(n×W) time/space. Pseudo-polynomial.",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

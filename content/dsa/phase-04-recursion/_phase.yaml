@@ -1,0 +1,33 @@
+---
+id: phase-4
+phase: 4
+title: Recursion
+goal: >-
+  This unlocks Merge Sort, all Trees, Backtracking, Graphs DFS, and DP. Spend 2x
+  the lesson time on practice here.
+bossChallenge: >-
+  Write all 3 from memory: factorial(n) recursively, fibonacci(n) with
+  memoization, and sum_linked_list(node) recursively.
+leetcode:
+  - id: 509
+    title: Fibonacci Number
+    url: 'https://leetcode.com/problems/fibonacci-number/'
+    tag: Recursion
+  - id: 70
+    title: Climbing Stairs
+    url: 'https://leetcode.com/problems/climbing-stairs/'
+    tag: Recursion/DP
+  - id: 344
+    title: Reverse String
+    url: 'https://leetcode.com/problems/reverse-string/'
+    tag: Recursion
+  - id: 779
+    title: K-th Symbol in Grammar
+    url: 'https://leetcode.com/problems/k-th-symbol-in-grammar/'
+    tag: Recursion
+  - id: 50
+    title: 'Pow(x, n)'
+    url: 'https://leetcode.com/problems/powx-n/'
+    tag: Recursion
+keystone: true
+---

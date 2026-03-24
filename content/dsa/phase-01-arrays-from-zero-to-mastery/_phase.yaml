@@ -1,0 +1,77 @@
+---
+id: phase-1
+phase: 1
+title: Arrays — From Zero to Mastery
+goal: >-
+  The most important data structure in all of computer science. Master arrays
+  from language basics to interview-winning techniques.
+bossChallenge: >-
+  Solve these 3 from memory without any notes: (1) Rotate Array by K
+  (three-reversal trick), (2) Product of Array Except Self, (3) Move Zeroes to
+  End in-place.
+leetcode:
+  - id: 1929
+    title: Concatenation of Array
+    url: 'https://leetcode.com/problems/concatenation-of-array/'
+    tag: Arrays Basics
+  - id: 217
+    title: Contains Duplicate
+    url: 'https://leetcode.com/problems/contains-duplicate/'
+    tag: Hash Set
+  - id: 238
+    title: Product of Array Except Self
+    url: 'https://leetcode.com/problems/product-of-array-except-self/'
+    tag: Two-Pass
+  - id: 283
+    title: Move Zeroes
+    url: 'https://leetcode.com/problems/move-zeroes/'
+    tag: In-Place
+  - id: 189
+    title: Rotate Array
+    url: 'https://leetcode.com/problems/rotate-array/'
+    tag: Reversal
+  - id: 53
+    title: Maximum Subarray
+    url: 'https://leetcode.com/problems/maximum-subarray/'
+    tag: Kadane's
+  - id: 75
+    title: Sort Colors
+    url: 'https://leetcode.com/problems/sort-colors/'
+    tag: Dutch Flag
+  - id: 48
+    title: Rotate Image
+    url: 'https://leetcode.com/problems/rotate-image/'
+    tag: 2D Array
+  - id: 54
+    title: Spiral Matrix
+    url: 'https://leetcode.com/problems/spiral-matrix/'
+    tag: 2D Traversal
+  - id: 560
+    title: Subarray Sum Equals K
+    url: 'https://leetcode.com/problems/subarray-sum-equals-k/'
+    tag: Prefix Sum
+  - id: 268
+    title: Missing Number
+    url: 'https://leetcode.com/problems/missing-number/'
+    tag: Cyclic Sort
+  - id: 442
+    title: Find All Duplicates
+    url: 'https://leetcode.com/problems/find-all-duplicates-in-an-array/'
+    tag: Cyclic Sort
+  - id: 41
+    title: First Missing Positive
+    url: 'https://leetcode.com/problems/first-missing-positive/'
+    tag: Cyclic Sort Hard
+  - id: 20
+    title: Valid Parentheses
+    url: 'https://leetcode.com/problems/valid-parentheses/'
+    tag: Stack
+  - id: 155
+    title: Min Stack
+    url: 'https://leetcode.com/problems/min-stack/'
+    tag: Stack
+  - id: 739
+    title: Daily Temperatures
+    url: 'https://leetcode.com/problems/daily-temperatures/'
+    tag: Monotonic Stack
+---

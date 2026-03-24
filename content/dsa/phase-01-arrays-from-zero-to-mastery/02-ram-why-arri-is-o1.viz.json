@@ -1,0 +1,277 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "RAM is a giant array of bytes. Each byte has an address (0, 1, 2...). Reading any address takes the same time — O(1). This is why arrays are fast.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "ram",
+          "label": "RAM (addresses 0-7)",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-addr",
+          "name": "address",
+          "value": "—",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "RAM: Random Access Memory — every address is O(1) to read",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Store the integer 42 at address 3. The CPU goes directly to address 3 — no scanning needed. This is the magic of random access.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "ram",
+          "label": "RAM (addresses 0-7)",
+          "items": [
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "42",
+              "state": "active"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-addr",
+          "name": "address",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "RAM: Random Access Memory — every address is O(1) to read",
+              "kind": "info"
+            },
+            {
+              "text": "WRITE ram[3] = 42",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Store more values. Integers typically use 4 bytes each. An array of 3 integers starting at address 0 uses addresses 0, 1, 2 (simplified to 1 slot per int here).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "ram",
+          "label": "RAM (addresses 0-7)",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "30",
+              "state": "done"
+            },
+            {
+              "value": "42",
+              "state": "active"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-addr",
+          "name": "address",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "WRITE ram[3] = 42",
+              "kind": "swap"
+            },
+            {
+              "text": "WRITE ram[0] = 10, ram[1] = 20, ram[2] = 30",
+              "kind": "swap"
+            },
+            {
+              "text": "Array at base=0: address = base + index",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "To read arr[2]: compute address = base(0) + index(2) = 2. One multiplication + one addition = O(1). This formula is why array access is instant.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "ram",
+          "label": "RAM (addresses 0-7)",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "30",
+              "state": "highlight"
+            },
+            {
+              "value": "42",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            },
+            {
+              "value": "0",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-addr",
+          "name": "address",
+          "value": "0+2=2",
+          "state": "highlight"
+        },
+        {
+          "type": "variable",
+          "id": "v-val",
+          "name": "value",
+          "value": "30",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Array at base=0: address = base + index",
+              "kind": "info"
+            },
+            {
+              "text": "READ arr[2] → address = 0 + 2 = 2 → value = 30",
+              "kind": "compare"
+            },
+            {
+              "text": "O(1) access — same speed for arr[0] or arr[1000000]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

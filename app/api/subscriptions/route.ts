@@ -65,7 +65,7 @@ export async function GET() {
       });
 
       return NextResponse.json({
-        subscriptionStatus: user?.subscriptionStatus || "free",
+        subscriptionStatus: user?.subscriptionStatus || "FREE",
         subscriptionExpiresAt: user?.subscriptionExpiresAt || null,
         freeCoursesUsed: user?.freeCoursesUsed || 0,
         plans: newPlans,
@@ -73,7 +73,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      subscriptionStatus: user?.subscriptionStatus || "free",
+      subscriptionStatus: user?.subscriptionStatus || "FREE",
       subscriptionExpiresAt: user?.subscriptionExpiresAt || null,
       freeCoursesUsed: user?.freeCoursesUsed || 0,
       plans: subscriptionPlans,

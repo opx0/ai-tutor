@@ -1,0 +1,181 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "A stack is LIFO: Last In, First Out. Think of a stack of plates — you can only add/remove from the top. Two operations: push (add to top) and pop (remove from top).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Stack (bottom → top)",
+          "items": [],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-top",
+          "name": "top",
+          "value": "-1",
+          "state": "default",
+          "description": "empty"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Stack created — empty, top = -1",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "push(10): Place 10 on top. top moves from -1 to 0.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Stack (bottom → top)",
+          "items": [
+            {
+              "value": "10",
+              "state": "active"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-top",
+          "name": "top",
+          "value": "0",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Stack created — empty, top = -1",
+              "kind": "info"
+            },
+            {
+              "text": "push(10) → top = 0",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "push(20), push(30): Each goes on top. 30 is now the top element. We can only see/remove 30.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Stack (bottom → top)",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "30",
+              "state": "active"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-top",
+          "name": "top",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "push(10) → top = 0",
+              "kind": "call"
+            },
+            {
+              "text": "push(20) → top = 1",
+              "kind": "call"
+            },
+            {
+              "text": "push(30) → top = 2",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "pop(): Remove 30 (the top). Returns 30. top decreases to 1. Now 20 is on top. Both push and pop are O(1).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Stack (bottom → top)",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "active"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-top",
+          "name": "top",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-popped",
+          "name": "popped",
+          "value": "30",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "push(20) → top = 1",
+              "kind": "call"
+            },
+            {
+              "text": "push(30) → top = 2",
+              "kind": "call"
+            },
+            {
+              "text": "pop() → returns 30, top = 1",
+              "kind": "return"
+            },
+            {
+              "text": "push/pop are O(1) — just move the top pointer",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

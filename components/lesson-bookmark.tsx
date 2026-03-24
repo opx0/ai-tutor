@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { Loader2, BookmarkPlus, BookmarkCheck } from "lucide-react"
+import { LoaderCircle, BookmarkPlus, BookmarkCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
@@ -156,7 +156,7 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
   if (isLoading) {
     return (
       <Button variant="outline" size="sm" disabled>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
         Loading...
       </Button>
     )
@@ -165,7 +165,7 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
   return (
     <Button variant={isBookmarked ? "default" : "outline"} size="sm" onClick={toggleBookmark} disabled={isToggling}>
       {isToggling ? (
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
       ) : isBookmarked ? (
         <BookmarkCheck className="mr-2 h-4 w-4" />
       ) : (

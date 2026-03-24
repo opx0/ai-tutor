@@ -1,0 +1,359 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Min-Heap: parent ≤ children. Stored as an array where parent(i) = floor((i-1)/2), left(i) = 2i+1, right(i) = 2i+2. Push 3, then 1.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "heap",
+          "label": "Min-Heap (tree view)",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "n0",
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "id": "n1",
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "id": "n2",
+              "value": "10",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n0",
+              "target": "n1",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n0",
+              "target": "n2",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Heap as Array",
+          "items": [
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "value": "10",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Heap property: parent ≤ both children",
+              "kind": "info"
+            },
+            {
+              "text": "Push 3: add to end, then sift UP",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Push 3: Add to end of array [5,8,10,3]. Node 3 at index 3. Parent = index 1 (value 8). 3 < 8 → swap! Sift up.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "heap",
+          "label": "Sifting 3 up...",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "n0",
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "id": "n1",
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "id": "n2",
+              "value": "10",
+              "state": "default"
+            },
+            {
+              "id": "n3",
+              "value": "8",
+              "state": "comparing"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n0",
+              "target": "n1",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "n0",
+              "target": "n2",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n1",
+              "target": "n3",
+              "state": "comparing",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Heap as Array",
+          "items": [
+            {
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "10",
+              "state": "default"
+            },
+            {
+              "value": "8",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Added 3 at index 3. Parent(3) = index 1, value 8",
+              "kind": "compare"
+            },
+            {
+              "text": "3 < 8 → SWAP positions. Sift up!",
+              "kind": "swap"
+            },
+            {
+              "text": "Now check: parent(1) = index 0, value 5",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "3 < 5 → swap again! 3 becomes the root. Heap: [3, 5, 10, 8]. Push done in O(log n) — at most height swaps.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "heap",
+          "label": "After push(3)",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "n0",
+              "value": "3",
+              "state": "highlight"
+            },
+            {
+              "id": "n1",
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "id": "n2",
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "id": "n3",
+              "value": "8",
+              "state": "done"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n0",
+              "target": "n1",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "n0",
+              "target": "n2",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "n1",
+              "target": "n3",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Heap as Array",
+          "items": [
+            {
+              "value": "3",
+              "state": "highlight"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "3 < 5 → swap! 3 is now root",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Push complete: [3, 5, 10, 8]",
+              "kind": "return"
+            },
+            {
+              "text": "Push = O(log n): add to end + sift up",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Pop min: Remove root (3). Move last element (8) to root. Sift DOWN: compare 8 with children 5 and 10. 5 < 8 → swap. Heap restored: [5, 8, 10].",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "heap",
+          "label": "After pop() — sifted down",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "n0",
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "id": "n1",
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "id": "n2",
+              "value": "10",
+              "state": "done"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n0",
+              "target": "n1",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "n0",
+              "target": "n2",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Heap as Array",
+          "items": [
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "10",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-popped",
+          "name": "popped",
+          "value": "3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Pop: remove root 3, move 8 to root",
+              "kind": "swap"
+            },
+            {
+              "text": "Sift down: 8 > min(5,10)=5 → swap with 5",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Pop = O(log n): swap root + sift down",
+              "kind": "return"
+            },
+            {
+              "text": "Heap = O(log n) push/pop, O(1) peek min",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

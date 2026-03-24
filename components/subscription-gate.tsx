@@ -3,7 +3,7 @@
 import { useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Loader2, Lock } from "lucide-react";
+import { LoaderCircle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -76,7 +76,7 @@ export default function SubscriptionGate({
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <LoaderCircle className="h-8 w-8 animate-spin mx-auto mb-4" />
           <p className="text-lg">Checking access...</p>
         </div>
       </div>

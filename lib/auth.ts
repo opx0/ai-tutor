@@ -60,6 +60,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           image: user.image,
+          role: user.role,
         };
       },
     }),
@@ -69,16 +70,26 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // On initial sign-in, user object is provided — store id in token
       if (user) {
         token.id = user.id;
+        // Credentials provider passes role directly; OAuth providers don't
+        if ("role" in user && user.role) {
+          token.role = user.role as string;
+        } else {
+          // Fetch role from DB for OAuth sign-ins
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { role: true },
+          });
+          token.role = dbUser?.role ?? "USER";
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      // Propagate id from JWT token to session (no DB hit)
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },
