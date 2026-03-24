@@ -1,0 +1,271 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Static array of size 5: [10, 20, 30, 40, _]. Size=4, capacity=5. Read/Write any index in O(1) via the address formula.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Static Array (capacity 5)",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "30",
+              "state": "done"
+            },
+            {
+              "value": "40",
+              "state": "done"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "4",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-cap",
+          "name": "capacity",
+          "value": "5",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "arr = [10, 20, 30, 40, _]. Read/Write O(1)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "INSERT 25 at index 2: Must shift elements [2..3] one position RIGHT to make room. This is O(n) — the costly part of arrays.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Before insert at index 2",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "30",
+              "state": "comparing"
+            },
+            {
+              "value": "40",
+              "state": "comparing"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-idx",
+          "name": "insertAt",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Insert 25 at index 2",
+              "kind": "call"
+            },
+            {
+              "text": "Must shift arr[2..3] → arr[3..4]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Shift right (work backwards!): arr[4]=arr[3]=40, arr[3]=arr[2]=30. Then arr[2]=25. Done! Shifted 2 elements.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "After insert",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            },
+            {
+              "value": "25",
+              "state": "highlight"
+            },
+            {
+              "value": "30",
+              "state": "active"
+            },
+            {
+              "value": "40",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "5",
+          "state": "error",
+          "description": "FULL!"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "arr[4]=40, arr[3]=30, arr[2]=25 ✓",
+              "kind": "swap"
+            },
+            {
+              "text": "Insert-in-middle: O(n) shifts",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Array is FULL (size==capacity==5). Cannot insert more — the static array limitation. Now DELETE index 1 (value 20)...",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Static Array — FULL",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "error"
+            },
+            {
+              "value": "25",
+              "state": "comparing"
+            },
+            {
+              "value": "30",
+              "state": "comparing"
+            },
+            {
+              "value": "40",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-idx",
+          "name": "deleteAt",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Delete arr[1]=20. Shift arr[2..4] LEFT",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Shift left: arr[1]=25, arr[2]=30, arr[3]=40. Size→4. Delete=O(n) worst, O(1) if last element.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "After delete",
+          "items": [
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "25",
+              "state": "active"
+            },
+            {
+              "value": "30",
+              "state": "active"
+            },
+            {
+              "value": "40",
+              "state": "active"
+            },
+            {
+              "value": "_",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-size",
+          "name": "size",
+          "value": "4",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Shifted 3 elements left ✓",
+              "kind": "swap"
+            },
+            {
+              "text": "Summary: Read/Write O(1), Insert/Delete O(n)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

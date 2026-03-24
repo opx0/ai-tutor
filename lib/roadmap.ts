@@ -14,13 +14,18 @@ export type CourseNodeData = {
   moduleCount: number
   lessonCount: number
   // User-specific
-  progress: number // 0-1
+  progress: number // 0-100
   status: "locked" | "available" | "in-progress" | "completed"
 }
 
 export type RoadmapData = {
   courses: (CourseNodeData & { x: number; y: number; group: string | null })[]
   edges: { source: string; target: string }[]
+}
+
+function normalizeProgress(progress: number | null | undefined) {
+  if (typeof progress !== "number" || Number.isNaN(progress)) return 0
+  return Math.max(0, Math.min(100, progress))
 }
 
 /**
@@ -67,8 +72,8 @@ export async function getRoadmapData(): Promise<RoadmapData> {
   const completedIds = new Set<string>()
   if (userId) {
     for (const course of courses) {
-      const progress = course.UserProgress?.[0]?.progress ?? 0
-      if (progress >= 1) completedIds.add(course.id)
+      const progress = normalizeProgress(course.UserProgress?.[0]?.progress ?? 0)
+      if (progress >= 100) completedIds.add(course.id)
     }
   }
 
@@ -76,7 +81,7 @@ export async function getRoadmapData(): Promise<RoadmapData> {
   const courseNodes = courses
     .filter((c) => c.roadmapNode) // Only show courses that have a roadmap position
     .map((course) => {
-      const progress = course.UserProgress?.[0]?.progress ?? 0
+      const progress = normalizeProgress(course.UserProgress?.[0]?.progress ?? 0)
       const moduleCount = course.modules.length
       const lessonCount = course.modules.reduce(
         (sum, m) => sum + m._count.lessons,
@@ -87,7 +92,7 @@ export async function getRoadmapData(): Promise<RoadmapData> {
       let status: CourseNodeData["status"] = "available"
       if (!userId) {
         status = "available" // Show all as available for non-logged-in users
-      } else if (progress >= 1) {
+      } else if (progress >= 100) {
         status = "completed"
       } else if (progress > 0) {
         status = "in-progress"

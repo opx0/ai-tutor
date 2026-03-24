@@ -1,0 +1,221 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "A singly linked list: each node stores a value + a \"next\" pointer to the following node. The last node points to null. Unlike arrays, nodes can be anywhere in RAM.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "Singly Linked List",
+          "layout": "linear",
+          "nodes": [
+            {
+              "id": "n1",
+              "value": "10",
+              "state": "default"
+            },
+            {
+              "id": "n2",
+              "value": "20",
+              "state": "default"
+            },
+            {
+              "id": "n3",
+              "value": "30",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n1",
+              "target": "n2",
+              "label": "next",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "n2",
+              "target": "n3",
+              "label": "next",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-head",
+          "name": "head",
+          "value": "n1",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "List: 10 → 20 → 30 → null",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Insert 15 after node 10: create new node, point new.next to node 20, then point node 10.next to new node. O(1) if we have a reference to the insertion point.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "Inserting 15 after 10",
+          "layout": "linear",
+          "nodes": [
+            {
+              "id": "n1",
+              "value": "10",
+              "state": "active"
+            },
+            {
+              "id": "new",
+              "value": "15",
+              "state": "highlight"
+            },
+            {
+              "id": "n2",
+              "value": "20",
+              "state": "default"
+            },
+            {
+              "id": "n3",
+              "value": "30",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n1",
+              "target": "new",
+              "label": "next",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "new",
+              "target": "n2",
+              "label": "next",
+              "state": "highlight",
+              "directed": true
+            },
+            {
+              "source": "n2",
+              "target": "n3",
+              "label": "next",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-head",
+          "name": "head",
+          "value": "n1",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Create node(15)",
+              "kind": "call"
+            },
+            {
+              "text": "node(15).next = node(20)",
+              "kind": "swap"
+            },
+            {
+              "text": "node(10).next = node(15)",
+              "kind": "swap"
+            },
+            {
+              "text": "Insert is O(1) — no shifting needed (unlike arrays!)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Delete node 20: point node 15.next to node 30, bypassing 20. Node 20 is now unreachable and gets garbage collected. O(1) delete.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "After deleting 20",
+          "layout": "linear",
+          "nodes": [
+            {
+              "id": "n1",
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "id": "new",
+              "value": "15",
+              "state": "active"
+            },
+            {
+              "id": "n3",
+              "value": "30",
+              "state": "done"
+            }
+          ],
+          "edges": [
+            {
+              "source": "n1",
+              "target": "new",
+              "label": "next",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "new",
+              "target": "n3",
+              "label": "next",
+              "state": "active",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-head",
+          "name": "head",
+          "value": "n1",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "node(15).next = node(30) — skip node(20)",
+              "kind": "swap"
+            },
+            {
+              "text": "Delete is O(1) — just re-wire pointers",
+              "kind": "info"
+            },
+            {
+              "text": "Trade-off: O(1) insert/delete but O(n) access (no index)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Unauthorized. Please sign in." },
         { status: 401 }
@@ -25,6 +25,54 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Get the transaction
+    const transaction = await prisma.subscriptionTransaction.findUnique({
+      where: {
+        id: transactionId,
+      },
+      include: {
+        subscription: true,
+        user: {
+          select: {
+            id: true,
+            subscriptionStatus: true,
+            subscriptionExpiresAt: true,
+          },
+        },
+      },
+    });
+
+    if (!transaction) {
+      return NextResponse.json(
+        { error: "Transaction not found" },
+        { status: 404 }
+      );
+    }
+
+    if (transaction.userId !== session.user.id) {
+      return NextResponse.json(
+        { error: "This transaction does not belong to the current user." },
+        { status: 403 }
+      );
+    }
+
+    if (!transaction.razorpayOrderId || transaction.razorpayOrderId !== razorpayOrderId) {
+      return NextResponse.json(
+        { error: "Order ID mismatch for this transaction." },
+        { status: 400 }
+      );
+    }
+
+    // Idempotent success: already captured.
+    if (transaction.status === "CAPTURED") {
+      return NextResponse.json({
+        success: true,
+        message: "Payment already verified",
+        subscriptionStatus: transaction.user.subscriptionStatus,
+        subscriptionExpiresAt: transaction.user.subscriptionExpiresAt,
+      });
+    }
+
     // Verify the payment signature
     const isValidSignature = verifyPaymentSignature(
       razorpayOrderId,
@@ -39,54 +87,43 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get the transaction
-    const transaction = await prisma.subscriptionTransaction.findUnique({
-      where: {
-        id: transactionId,
-      },
-      include: {
-        subscription: true,
-      },
-    });
-
-    if (!transaction) {
-      return NextResponse.json(
-        { error: "Transaction not found" },
-        { status: 404 }
-      );
-    }
-
-    // Update the transaction
-    await prisma.subscriptionTransaction.update({
-      where: {
-        id: transactionId,
-      },
-      data: {
-      status: "CAPTURED",
-        razorpayPaymentId,
-        razorpaySignature,
-      },
-    });
-
     // Calculate subscription expiry date
     const now = new Date();
-    let expiryDate = new Date();
+    const baseDate =
+      transaction.user.subscriptionExpiresAt &&
+      transaction.user.subscriptionExpiresAt > now
+        ? transaction.user.subscriptionExpiresAt
+        : now;
+    const expiryDate = new Date(baseDate);
     
     if (transaction.subscription.interval === "MONTHLY") {
-      expiryDate.setMonth(now.getMonth() + 1);
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
     } else if (transaction.subscription.interval === "YEARLY") {
-      expiryDate.setFullYear(now.getFullYear() + 1);
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     }
 
-    // Update user's subscription status
-    await prisma.user.update({
-      where: {
-        id: session.user.id,
-      },
-      data: {
-        subscriptionStatus: "PREMIUM",
-        subscriptionExpiresAt: expiryDate,
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.subscriptionTransaction.update({
+        where: {
+          id: transactionId,
+        },
+        data: {
+          status: "CAPTURED",
+          razorpayPaymentId,
+          razorpaySignature,
+        },
+      });
+
+      // Update user's subscription status
+      await tx.user.update({
+        where: {
+          id: session.user.id,
+        },
+        data: {
+          subscriptionStatus: "PREMIUM",
+          subscriptionExpiresAt: expiryDate,
+        },
+      });
     });
 
     return NextResponse.json({

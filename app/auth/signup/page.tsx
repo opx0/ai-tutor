@@ -141,7 +141,7 @@ function SignUpForm() {
               >
                 <div className="space-y-1">
                   <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
-                    Join AI Tutor
+                    Join LearnLM
                   </h1>
                   <p className="text-[1.2rem] text-white/70 font-light">
                     Create an account to start your learning journey

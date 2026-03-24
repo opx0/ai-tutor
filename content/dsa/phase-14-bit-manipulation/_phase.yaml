@@ -1,0 +1,28 @@
+---
+id: phase-14
+phase: 14
+title: Bit Manipulation
+goal: >-
+  Unlock O(1) space tricks and constant-time operations that impress
+  interviewers.
+bossChallenge: >-
+  Solve "Single Number" (LC 136) and "Number of 1 Bits" (LC 191) in under 2
+  minutes each. Then explain WHY n & (n-1) clears the lowest set bit.
+leetcode:
+  - id: 136
+    title: Single Number
+    url: 'https://leetcode.com/problems/single-number/'
+    tag: XOR
+  - id: 191
+    title: Number of 1 Bits
+    url: 'https://leetcode.com/problems/number-of-1-bits/'
+    tag: Bits
+  - id: 338
+    title: Counting Bits
+    url: 'https://leetcode.com/problems/counting-bits/'
+    tag: DP + Bits
+  - id: 371
+    title: Sum of Two Integers
+    url: 'https://leetcode.com/problems/sum-of-two-integers/'
+    tag: Bits
+---

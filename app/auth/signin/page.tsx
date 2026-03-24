@@ -244,10 +244,10 @@ function SignInForm() {
                             <FormMessage className="text-xs text-red-400 pl-4" />
                             <div className="flex justify-end pt-1 pr-4">
                               <Link
-                                href="/auth/forgot-password"
+                                href="/auth/signup"
                                 className="text-xs text-white/50 hover:text-white transition-colors"
                               >
-                                Forgot password?
+                                Need an account?
                               </Link>
                             </div>
                           </FormItem>

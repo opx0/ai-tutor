@@ -1,0 +1,257 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Merge Sort on [38, 27, 43, 3]. Step 1: DIVIDE — split the array in half repeatedly until each piece has 1 element (which is trivially sorted).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a0",
+          "label": "Original",
+          "items": [
+            {
+              "value": "38",
+              "state": "default"
+            },
+            {
+              "value": "27",
+              "state": "default"
+            },
+            {
+              "value": "43",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "mergeSort([38, 27, 43, 3])",
+              "kind": "call"
+            },
+            {
+              "text": "Split → [38, 27] and [43, 3]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Split further: [38, 27] → [38] and [27]. [43, 3] → [43] and [3]. Each has 1 element = already sorted. Now MERGE upward.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a1",
+          "label": "Left half",
+          "items": [
+            {
+              "value": "38",
+              "state": "active"
+            },
+            {
+              "value": "27",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "a2",
+          "label": "Right half",
+          "items": [
+            {
+              "value": "43",
+              "state": "comparing"
+            },
+            {
+              "value": "3",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "mergeSort([38, 27]) → split → [38], [27]",
+              "kind": "call"
+            },
+            {
+              "text": "mergeSort([43, 3]) → split → [43], [3]",
+              "kind": "call"
+            },
+            {
+              "text": "Base case: single elements are sorted",
+              "kind": "return"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "MERGE [38] and [27]: Compare 38 vs 27. 27 < 38 → take 27 first, then 38. Result: [27, 38].",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a1",
+          "label": "Merging left pair",
+          "items": [
+            {
+              "value": "27",
+              "state": "done"
+            },
+            {
+              "value": "38",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "a2",
+          "label": "Right half (waiting)",
+          "items": [
+            {
+              "value": "43",
+              "state": "default"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "merge([38], [27]): compare 38 vs 27",
+              "kind": "compare"
+            },
+            {
+              "text": "27 < 38 → take 27 first → [27, 38]",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "MERGE [43] and [3]: 3 < 43 → take 3 first. Result: [3, 43]. Now merge the two sorted halves.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a1",
+          "label": "Left sorted",
+          "items": [
+            {
+              "value": "27",
+              "state": "done"
+            },
+            {
+              "value": "38",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "a2",
+          "label": "Right sorted",
+          "items": [
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "43",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "merge([43], [3]): 3 < 43 → [3, 43]",
+              "kind": "swap"
+            },
+            {
+              "text": "Now merge [27,38] with [3,43]",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "FINAL MERGE: [27,38] vs [3,43]. Compare heads: 3<27→take 3. Then 27<43→take 27. Then 38<43→take 38. Then take 43. Result: [3, 27, 38, 43].",
+      "elements": [
+        {
+          "type": "array",
+          "id": "a0",
+          "label": "Final sorted array",
+          "items": [
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "27",
+              "state": "done"
+            },
+            {
+              "value": "38",
+              "state": "done"
+            },
+            {
+              "value": "43",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "merge([27,38], [3,43]):",
+              "kind": "call"
+            },
+            {
+              "text": "3 < 27 → take 3",
+              "kind": "compare"
+            },
+            {
+              "text": "27 < 43 → take 27",
+              "kind": "compare"
+            },
+            {
+              "text": "38 < 43 → take 38",
+              "kind": "compare"
+            },
+            {
+              "text": "take 43 → [3, 27, 38, 43]",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ O(n log n) always — divide in half (log n), merge in O(n)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

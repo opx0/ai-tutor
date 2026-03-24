@@ -1,0 +1,481 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Binary tree with root 10. DFS (Depth-First Search) explores as deep as possible before backtracking. Three orders: inorder, preorder, postorder.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "10",
+              "state": "default"
+            },
+            {
+              "id": "l",
+              "value": "5",
+              "state": "default"
+            },
+            {
+              "id": "r2",
+              "value": "15",
+              "state": "default"
+            },
+            {
+              "id": "ll",
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "id": "lr",
+              "value": "7",
+              "state": "default"
+            },
+            {
+              "id": "rl",
+              "value": "12",
+              "state": "default"
+            },
+            {
+              "id": "rr",
+              "value": "20",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "result",
+          "label": "Inorder Result",
+          "items": []
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Inorder DFS: left → node → right",
+              "kind": "info"
+            },
+            {
+              "text": "For a BST, inorder gives sorted output!",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Start at root 10. Go LEFT first. Recurse to 5, then go left again to 2. Node 2 has no children — it's a leaf. Visit 2.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "10",
+              "state": "comparing"
+            },
+            {
+              "id": "l",
+              "value": "5",
+              "state": "comparing"
+            },
+            {
+              "id": "r2",
+              "value": "15",
+              "state": "default"
+            },
+            {
+              "id": "ll",
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "id": "lr",
+              "value": "7",
+              "state": "default"
+            },
+            {
+              "id": "rl",
+              "value": "12",
+              "state": "default"
+            },
+            {
+              "id": "rr",
+              "value": "20",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "comparing",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "comparing",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "result",
+          "label": "Inorder Result",
+          "items": [
+            {
+              "value": "2",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dfs(10) → go LEFT → dfs(5) → go LEFT → dfs(2)",
+              "kind": "call"
+            },
+            {
+              "text": "2 is a leaf — visit it. Output: [2]",
+              "kind": "return"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Back to 5. Left done, visit 5, then go RIGHT to 7. Visit 7 (leaf). Left subtree of root done: [2, 5, 7].",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "10",
+              "state": "comparing"
+            },
+            {
+              "id": "l",
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "id": "r2",
+              "value": "15",
+              "state": "default"
+            },
+            {
+              "id": "ll",
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "id": "lr",
+              "value": "7",
+              "state": "active"
+            },
+            {
+              "id": "rl",
+              "value": "12",
+              "state": "default"
+            },
+            {
+              "id": "rr",
+              "value": "20",
+              "state": "default"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "result",
+          "label": "Inorder Result",
+          "items": [
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "7",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Back to 5: left done → visit 5 → go RIGHT → visit 7",
+              "kind": "return"
+            },
+            {
+              "text": "Left subtree complete: [2, 5, 7]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Visit root 10. Now go RIGHT to 15. Same pattern: left(12) → visit 15 → right(20). Final: [2, 5, 7, 10, 12, 15, 20] — sorted!",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "tree",
+          "label": "Binary Tree — Inorder Complete!",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "r",
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "id": "l",
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "id": "r2",
+              "value": "15",
+              "state": "done"
+            },
+            {
+              "id": "ll",
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "id": "lr",
+              "value": "7",
+              "state": "done"
+            },
+            {
+              "id": "rl",
+              "value": "12",
+              "state": "done"
+            },
+            {
+              "id": "rr",
+              "value": "20",
+              "state": "done"
+            }
+          ],
+          "edges": [
+            {
+              "source": "r",
+              "target": "l",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r",
+              "target": "r2",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "ll",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "l",
+              "target": "lr",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rl",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "r2",
+              "target": "rr",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "result",
+          "label": "Inorder Result (sorted!)",
+          "items": [
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "7",
+              "state": "done"
+            },
+            {
+              "value": "10",
+              "state": "done"
+            },
+            {
+              "value": "12",
+              "state": "done"
+            },
+            {
+              "value": "15",
+              "state": "done"
+            },
+            {
+              "value": "20",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Visit 10, then right subtree: 12 → 15 → 20",
+              "kind": "return"
+            },
+            {
+              "text": "✅ Inorder of BST = sorted! [2,5,7,10,12,15,20]",
+              "kind": "info"
+            },
+            {
+              "text": "DFS time: O(n), space: O(h) where h = tree height",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

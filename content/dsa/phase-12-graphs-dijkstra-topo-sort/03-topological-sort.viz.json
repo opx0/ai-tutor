@@ -1,0 +1,399 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Topological Sort: Order vertices of a DAG so every edge u→v has u before v. Use Kahn's BFS: start with nodes that have indegree 0.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "dag",
+          "label": "Course Prerequisites (DAG)",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "Math",
+              "state": "active",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "B",
+              "value": "CS101",
+              "state": "active",
+              "x": 0,
+              "y": 100
+            },
+            {
+              "id": "C",
+              "value": "CS201",
+              "state": "default",
+              "x": 150,
+              "y": 50
+            },
+            {
+              "id": "D",
+              "value": "CS301",
+              "state": "default",
+              "x": 300,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "CS401",
+              "state": "default",
+              "x": 300,
+              "y": 100
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "C",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "B",
+              "target": "C",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "C",
+              "target": "D",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "A",
+              "target": "D",
+              "state": "default",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "indeg",
+          "label": "Indegree",
+          "items": [
+            {
+              "value": "0",
+              "state": "active"
+            },
+            {
+              "value": "0",
+              "state": "active"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "order",
+          "label": "Topo Order",
+          "items": []
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Indegree: Math=0, CS101=0, CS201=2, CS301=2, CS401=1",
+              "kind": "info"
+            },
+            {
+              "text": "Queue nodes with indegree 0: [Math, CS101]",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Process Math: add to order, decrement indegree of CS201 (2→1) and CS301 (2→1). Process CS101: decrement CS201 (1→0). CS201 indegree=0 → enqueue!",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "dag",
+          "label": "Course Prerequisites",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "Math",
+              "state": "done",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "B",
+              "value": "CS101",
+              "state": "done",
+              "x": 0,
+              "y": 100
+            },
+            {
+              "id": "C",
+              "value": "CS201",
+              "state": "active",
+              "x": 150,
+              "y": 50
+            },
+            {
+              "id": "D",
+              "value": "CS301",
+              "state": "default",
+              "x": 300,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "CS401",
+              "state": "default",
+              "x": 300,
+              "y": 100
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "C",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "B",
+              "target": "C",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "C",
+              "target": "D",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "A",
+              "target": "D",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "indeg",
+          "label": "Indegree",
+          "items": [
+            {
+              "value": "—",
+              "state": "done"
+            },
+            {
+              "value": "—",
+              "state": "done"
+            },
+            {
+              "value": "0",
+              "state": "active"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "order",
+          "label": "Topo Order",
+          "items": [
+            {
+              "value": "Math",
+              "state": "done"
+            },
+            {
+              "value": "CS101",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Process Math: CS201 2→1, CS301 2→1",
+              "kind": "swap"
+            },
+            {
+              "text": "Process CS101: CS201 1→0 → enqueue!",
+              "kind": "swap"
+            },
+            {
+              "text": "Order so far: [Math, CS101]",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Process CS201: CS301 (1→0), CS401 (1→0). Both enqueue. Process CS301, CS401. Done! Order: Math → CS101 → CS201 → CS301 → CS401.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "dag",
+          "label": "Topological Order Found!",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "Math",
+              "state": "done",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "B",
+              "value": "CS101",
+              "state": "done",
+              "x": 0,
+              "y": 100
+            },
+            {
+              "id": "C",
+              "value": "CS201",
+              "state": "done",
+              "x": 150,
+              "y": 50
+            },
+            {
+              "id": "D",
+              "value": "CS301",
+              "state": "done",
+              "x": 300,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "CS401",
+              "state": "done",
+              "x": 300,
+              "y": 100
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "C",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "B",
+              "target": "C",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "C",
+              "target": "D",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "A",
+              "target": "D",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "order",
+          "label": "Topo Order (complete!)",
+          "items": [
+            {
+              "value": "Math",
+              "state": "done"
+            },
+            {
+              "value": "CS101",
+              "state": "done"
+            },
+            {
+              "value": "CS201",
+              "state": "done"
+            },
+            {
+              "value": "CS301",
+              "state": "done"
+            },
+            {
+              "value": "CS401",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "✅ Valid topological order found",
+              "kind": "return"
+            },
+            {
+              "text": "All prerequisites come before dependents",
+              "kind": "info"
+            },
+            {
+              "text": "O(V+E) — each vertex and edge processed once",
+              "kind": "info"
+            },
+            {
+              "text": "If cycle exists → not all nodes processed → detect!",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

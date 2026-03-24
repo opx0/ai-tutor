@@ -101,7 +101,7 @@ export default function Home() {
                       className="rounded-full px-10 py-6 h-auto text-base font-medium bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
                       asChild
                     >
-                      <Link href="/dashboard">Try AI Tutor</Link>
+                      <Link href="/dashboard">Try LearnLM</Link>
                     </Button>
                     <Button
                       size="lg"
@@ -146,7 +146,7 @@ export default function Home() {
         </div>
       </HeroHighlight>
 
-      {/* Your AI Tutor Section */}
+      {/* Your LearnLM Section */}
       <section id="features" className="py-24 bg-muted/10">
         <div className="container px-4 mx-auto max-w-6xl">
           <MotionWrapper variants={fadeIn}>
@@ -168,7 +168,7 @@ export default function Home() {
                 AI-Powered Learning Paths
               </h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                AI Tutor analyzes your learning style and adapts in real-time, creating a personalized path that evolves with your progress.
+                LearnLM analyzes your learning style and adapts in real-time, creating a personalized path that evolves with your progress.
               </p>
               <div className="pt-2">
                 <Link href="/dashboard" className="text-primary hover:text-primary/80 font-medium inline-flex items-center group">
@@ -208,7 +208,7 @@ export default function Home() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-400/20 to-violet-400/10">
                 <Brain className="h-6 w-6 text-blue-500" />
               </div>
-              <h3 className="text-2xl font-semibold text-foreground">Interactive AI Tutoring</h3>
+              <h3 className="text-2xl font-semibold text-foreground">Interactive LearnLMing</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 Engage in natural dialogue with context-aware AI that remembers your history and provides tailored explanations to your questions.
               </p>
@@ -286,10 +286,10 @@ export default function Home() {
       <section className="py-16 bg-muted/30">
         <div className="container px-4 mx-auto text-center max-w-3xl">
           <h2 className="text-xl font-medium mb-4 text-foreground">
-            We value your privacy and do not use your personal data to train AI Tutor
+            We value your privacy and do not use your personal data to train LearnLM
           </h2>
           <p className="text-muted-foreground mb-8">
-            AI Tutor does not use your personal data, including your source materials,
+            LearnLM does not use your personal data, including your source materials,
             queries, and the responses from the model for training.
           </p>
           <div className="flex justify-center">
@@ -337,7 +337,7 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
-                "AI Tutor has completely changed how I approach difficult programming concepts. The personalized learning paths helped me master algorithms in half the time it would have taken otherwise."
+                "LearnLM has completely changed how I approach difficult programming concepts. The personalized learning paths helped me master algorithms in half the time it would have taken otherwise."
               </p>
               <p className="text-sm text-muted-foreground">2 weeks ago</p>
             </MotionWrapper>
@@ -363,7 +363,7 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
-                "Studying anatomy became so much easier with AI Tutor. The interactive explanations and source-based learning helped me connect concepts that I was struggling with for months."
+                "Studying anatomy became so much easier with LearnLM. The interactive explanations and source-based learning helped me connect concepts that I was struggling with for months."
               </p>
               <p className="text-sm text-muted-foreground">1 month ago</p>
             </MotionWrapper>
@@ -389,7 +389,7 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
-                "I needed to quickly learn about market analysis for a new project. AI Tutor created a custom course that fit my schedule and learning style. The mobile access was perfect for my busy lifestyle."
+                "I needed to quickly learn about market analysis for a new project. LearnLM created a custom course that fit my schedule and learning style. The mobile access was perfect for my busy lifestyle."
               </p>
               <p className="text-sm text-muted-foreground">3 months ago</p>
             </MotionWrapper>
@@ -402,7 +402,7 @@ export default function Home() {
         <div className="container px-4 mx-auto max-w-6xl">
           <MotionWrapper variants={fadeIn} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8 text-foreground">
-              How People Are Using AI Tutor
+              How People Are Using LearnLM
             </h2>
             <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-16">
               Discover the many ways our platform can help you achieve your learning goals
@@ -487,7 +487,7 @@ export default function Home() {
                 className="rounded-full px-10 py-6 h-auto text-base font-medium bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 shadow-lg hover:shadow-xl transition-all"
                 asChild
               >
-                <Link href="/dashboard">Get Started with AI Tutor</Link>
+                <Link href="/dashboard">Get Started with LearnLM</Link>
               </Button>
               <Button
                 size="lg"
@@ -530,7 +530,7 @@ export default function Home() {
             <div className="md:col-span-1">
               <Link href="/" className="flex items-center mb-4">
                 <BookOpen className="h-6 w-6 text-primary mr-2" />
-                <span className="font-semibold text-lg">AI Tutor</span>
+                <span className="font-semibold text-lg">LearnLM</span>
               </Link>
               <p className="text-sm text-muted-foreground mb-4">
                 The ultimate AI-powered learning platform that adapts to your unique needs and helps you master any subject.
@@ -568,7 +568,7 @@ export default function Home() {
 
           <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} AI Tutor. All rights reserved.
+              © {new Date().getFullYear()} LearnLM. All rights reserved.
             </p>
             <div className="flex items-center mt-4 md:mt-0">
               <span className="text-sm text-muted-foreground flex items-center">

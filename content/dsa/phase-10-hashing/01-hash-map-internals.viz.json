@@ -1,0 +1,205 @@
+{
+  "type": "grid",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Hash Map: array of \"buckets\". hash(key) % size = bucket index. Insert (\"alice\", 90), (\"bob\", 85), (\"eve\", 78). Table size = 4.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "ht",
+          "label": "Hash Table (4 buckets)",
+          "cells": [
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "[0]",
+            "[1]",
+            "[2]",
+            "[3]"
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-op",
+          "name": "operation",
+          "value": "insert",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "hash(key) % 4 → bucket index",
+              "kind": "info"
+            },
+            {
+              "text": "Insert (\"alice\", 90)...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "hash(\"alice\") % 4 = 1. Place (alice, 90) in bucket 1. hash(\"bob\") % 4 = 3. Place (bob, 85) in bucket 3. No collisions so far.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "ht",
+          "label": "Hash Table",
+          "cells": [
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "alice:90",
+                "state": "done"
+              }
+            ],
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "bob:85",
+                "state": "done"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "[0]",
+            "[1]",
+            "[2]",
+            "[3]"
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "hash(\"alice\") % 4 = 1 → bucket[1]",
+              "kind": "swap"
+            },
+            {
+              "text": "hash(\"bob\") % 4 = 3 → bucket[3]",
+              "kind": "swap"
+            },
+            {
+              "text": "Insert (\"eve\", 78)... hash(\"eve\") % 4 = 1 💥",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "COLLISION! hash(\"eve\") % 4 = 1, same as alice. Solution: chaining — bucket 1 becomes a linked list: alice → eve. Lookup is still O(1) average.",
+      "elements": [
+        {
+          "type": "grid",
+          "id": "ht",
+          "label": "Hash Table (with chaining)",
+          "cells": [
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "alice:90",
+                "state": "done"
+              },
+              {
+                "value": "→ eve:78",
+                "state": "highlight"
+              }
+            ],
+            [
+              {
+                "value": "empty",
+                "state": "default"
+              }
+            ],
+            [
+              {
+                "value": "bob:85",
+                "state": "done"
+              }
+            ]
+          ],
+          "rowLabels": [
+            "[0]",
+            "[1]",
+            "[2]",
+            "[3]"
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-lf",
+          "name": "loadFactor",
+          "value": "3/4=0.75",
+          "state": "comparing",
+          "description": "resize threshold"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "💥 COLLISION at bucket 1: alice and eve",
+              "kind": "compare"
+            },
+            {
+              "text": "Chaining: bucket[1] = alice:90 → eve:78",
+              "kind": "swap"
+            },
+            {
+              "text": "Lookup \"eve\": hash→1, scan chain → found. Still O(1) avg",
+              "kind": "info"
+            },
+            {
+              "text": "Worst case (all collide): O(n). Good hash → rare.",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

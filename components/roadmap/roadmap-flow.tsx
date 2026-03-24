@@ -7,9 +7,9 @@ import {
   Background,
   BackgroundVariant,
   Controls,
-  MiniMap,
   type Edge,
   type NodeTypes,
+  MarkerType,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 import { useMemo } from "react"
@@ -49,18 +49,29 @@ export default function RoadmapFlow({ data }: RoadmapFlowProps) {
 
   const edges: Edge[] = useMemo(
     () =>
-      data.edges.map((edge, i) => ({
-        id: `edge-${i}`,
-        source: edge.source,
-        target: edge.target,
-        type: "smoothstep",
-        animated: true,
-        style: {
-          stroke: "hsl(var(--primary) / 0.4)",
-          strokeWidth: 2,
-        },
-      })),
-    [data.edges]
+      data.edges.map((edge, i) => {
+        // Find source course to get the accent color
+        const sourceCourse = data.courses.find((c) => c.id === edge.source)
+        const accent = sourceCourse?.color || "hsl(var(--primary))"
+        return {
+          id: `edge-${i}`,
+          source: edge.source,
+          target: edge.target,
+          type: "smoothstep",
+          animated: sourceCourse?.status === "in-progress",
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 16,
+            height: 16,
+            color: `${accent}90`,
+          },
+          style: {
+            stroke: `${accent}60`,
+            strokeWidth: 2.5,
+          },
+        }
+      }),
+    [data.edges, data.courses]
   )
 
   return (
@@ -70,9 +81,9 @@ export default function RoadmapFlow({ data }: RoadmapFlowProps) {
         edges={edges}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.3 }}
+        fitViewOptions={{ padding: 0.35 }}
         proOptions={{ hideAttribution: true }}
-        minZoom={0.3}
+        minZoom={0.25}
         maxZoom={1.5}
         panOnDrag
         zoomOnScroll
@@ -80,25 +91,14 @@ export default function RoadmapFlow({ data }: RoadmapFlowProps) {
       >
         <Background
           variant={BackgroundVariant.Dots}
-          gap={24}
-          size={1}
+          gap={28}
+          size={1.5}
+          color="hsl(var(--muted-foreground) / 0.15)"
           className="!bg-background"
         />
         <Controls
           showInteractive={false}
           className="!bg-card !border-border !shadow-md !rounded-xl"
-        />
-        <MiniMap
-          nodeColor={(node) => {
-            const course = data.courses.find((c) => c.id === node.id)
-            if (!course) return "hsl(var(--muted))"
-            if (course.status === "completed") return "hsl(var(--chart-2))"
-            if (course.status === "in-progress") return "hsl(var(--chart-5))"
-            if (course.status === "locked") return "hsl(var(--muted-foreground) / 0.3)"
-            return course.color || "hsl(var(--primary))"
-          }}
-          className="!bg-card !border-border !shadow-md !rounded-xl"
-          maskColor="hsl(var(--background) / 0.8)"
         />
       </ReactFlow>
     </div>

@@ -1,0 +1,550 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Dijkstra's: Find shortest path from A to all nodes. Initialize dist[A]=0, all others=∞. Use a min-heap to always process the closest unvisited node.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "g",
+          "label": "Weighted Graph",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "A",
+              "state": "active",
+              "x": 0,
+              "y": 80
+            },
+            {
+              "id": "B",
+              "value": "B",
+              "state": "default",
+              "x": 120,
+              "y": 0
+            },
+            {
+              "id": "C",
+              "value": "C",
+              "state": "default",
+              "x": 120,
+              "y": 160
+            },
+            {
+              "id": "D",
+              "value": "D",
+              "state": "default",
+              "x": 260,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "E",
+              "state": "default",
+              "x": 260,
+              "y": 160
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "B",
+              "label": "4",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "A",
+              "target": "C",
+              "label": "2",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "B",
+              "target": "D",
+              "label": "3",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "B",
+              "label": "1",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "label": "5",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "D",
+              "target": "E",
+              "label": "1",
+              "state": "default",
+              "directed": false
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "dist",
+          "label": "dist[]",
+          "items": [
+            {
+              "value": "0",
+              "state": "active"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dist = [A:0, B:∞, C:∞, D:∞, E:∞]",
+              "kind": "info"
+            },
+            {
+              "text": "Process A (dist=0). Relax neighbors...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Process A: Relax A→B (0+4=4 < ∞), A→C (0+2=2 < ∞). Update dist[B]=4, dist[C]=2. Next: process C (smallest unvisited dist).",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "g",
+          "label": "Weighted Graph",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "A:0",
+              "state": "done",
+              "x": 0,
+              "y": 80
+            },
+            {
+              "id": "B",
+              "value": "B:4",
+              "state": "comparing",
+              "x": 120,
+              "y": 0
+            },
+            {
+              "id": "C",
+              "value": "C:2",
+              "state": "active",
+              "x": 120,
+              "y": 160
+            },
+            {
+              "id": "D",
+              "value": "D:∞",
+              "state": "default",
+              "x": 260,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "E:∞",
+              "state": "default",
+              "x": 260,
+              "y": 160
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "B",
+              "label": "4",
+              "state": "comparing",
+              "directed": false
+            },
+            {
+              "source": "A",
+              "target": "C",
+              "label": "2",
+              "state": "active",
+              "directed": false
+            },
+            {
+              "source": "B",
+              "target": "D",
+              "label": "3",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "B",
+              "label": "1",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "label": "5",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "D",
+              "target": "E",
+              "label": "1",
+              "state": "default",
+              "directed": false
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "dist",
+          "label": "dist[]  (A B C D E)",
+          "items": [
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "4",
+              "state": "comparing"
+            },
+            {
+              "value": "2",
+              "state": "active"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Relax A→B: 0+4=4 < ∞ → dist[B]=4",
+              "kind": "swap"
+            },
+            {
+              "text": "Relax A→C: 0+2=2 < ∞ → dist[C]=2",
+              "kind": "swap"
+            },
+            {
+              "text": "Next: C (dist=2, smallest unvisited)",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Process C: Relax C→B (2+1=3 < 4!) dist[B] updated to 3. C→E (2+5=7). Next: process B (dist=3).",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "g",
+          "label": "Weighted Graph",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "A:0",
+              "state": "done",
+              "x": 0,
+              "y": 80
+            },
+            {
+              "id": "B",
+              "value": "B:3",
+              "state": "active",
+              "x": 120,
+              "y": 0
+            },
+            {
+              "id": "C",
+              "value": "C:2",
+              "state": "done",
+              "x": 120,
+              "y": 160
+            },
+            {
+              "id": "D",
+              "value": "D:∞",
+              "state": "default",
+              "x": 260,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "E:7",
+              "state": "comparing",
+              "x": 260,
+              "y": 160
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "B",
+              "label": "4",
+              "state": "done",
+              "directed": false
+            },
+            {
+              "source": "A",
+              "target": "C",
+              "label": "2",
+              "state": "done",
+              "directed": false
+            },
+            {
+              "source": "B",
+              "target": "D",
+              "label": "3",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "B",
+              "label": "1",
+              "state": "highlight",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "label": "5",
+              "state": "comparing",
+              "directed": false
+            },
+            {
+              "source": "D",
+              "target": "E",
+              "label": "1",
+              "state": "default",
+              "directed": false
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "dist",
+          "label": "dist[]  (A B C D E)",
+          "items": [
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "highlight"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "∞",
+              "state": "default"
+            },
+            {
+              "value": "7",
+              "state": "comparing"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Relax C→B: 2+1=3 < 4 → UPDATE dist[B]=3!",
+              "kind": "swap"
+            },
+            {
+              "text": "Found shorter path: A→C→B (cost 3) beats A→B (cost 4)",
+              "kind": "info"
+            },
+            {
+              "text": "Relax C→E: 2+5=7 → dist[E]=7",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Process B: B→D (3+3=6). Process D: D→E (6+1=7, not better than 7). Process E: no updates. Done! Shortest: A→C→B→D→E = 7.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "g",
+          "label": "Dijkstra Complete!",
+          "nodes": [
+            {
+              "id": "A",
+              "value": "A:0",
+              "state": "done",
+              "x": 0,
+              "y": 80
+            },
+            {
+              "id": "B",
+              "value": "B:3",
+              "state": "done",
+              "x": 120,
+              "y": 0
+            },
+            {
+              "id": "C",
+              "value": "C:2",
+              "state": "done",
+              "x": 120,
+              "y": 160
+            },
+            {
+              "id": "D",
+              "value": "D:6",
+              "state": "done",
+              "x": 260,
+              "y": 0
+            },
+            {
+              "id": "E",
+              "value": "E:7",
+              "state": "done",
+              "x": 260,
+              "y": 160
+            }
+          ],
+          "edges": [
+            {
+              "source": "A",
+              "target": "B",
+              "label": "4",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "A",
+              "target": "C",
+              "label": "2",
+              "state": "done",
+              "directed": false
+            },
+            {
+              "source": "B",
+              "target": "D",
+              "label": "3",
+              "state": "done",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "B",
+              "label": "1",
+              "state": "done",
+              "directed": false
+            },
+            {
+              "source": "C",
+              "target": "E",
+              "label": "5",
+              "state": "default",
+              "directed": false
+            },
+            {
+              "source": "D",
+              "target": "E",
+              "label": "1",
+              "state": "done",
+              "directed": false
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "dist",
+          "label": "Final dist[]  (A B C D E)",
+          "items": [
+            {
+              "value": "0",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "6",
+              "state": "done"
+            },
+            {
+              "value": "7",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "B→D: 3+3=6 → dist[D]=6",
+              "kind": "swap"
+            },
+            {
+              "text": "D→E: 6+1=7 = dist[E] → no update",
+              "kind": "compare"
+            },
+            {
+              "text": "✅ All shortest paths found from A",
+              "kind": "return"
+            },
+            {
+              "text": "O((V+E) log V) with min-heap",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

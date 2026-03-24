@@ -1,13 +1,13 @@
 {
-  "name": "ai-tutor",
+  "name": "learnlm",
   "version": "1.0.0",
   "description": "AI-powered learning platform that helps users create personalized courses on any topic using Google Gemini AI",
   "private": true,
   "scripts": {
-    "build": "bun run prisma generate && next build",
+    "build": "bun run prisma generate && bunx next build --webpack",
     "dev": "next dev",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next typegen && bunx tsc --noEmit",
     "postinstall": "bun run prisma generate",
     "db:studio": "bun run prisma studio"
   },
@@ -55,18 +55,19 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "8.5.1",
-    "framer-motion": "^12.35.2",
+    "framer-motion": "^12.37.0",
+    "gray-matter": "^4.0.3",
     "input-otp": "1.4.1",
     "lucide-react": "^0.577.0",
-    "next": "15.5.12",
+    "next": "16.1.6",
     "next-auth": "^4.24.13",
     "next-themes": "^0.4.6",
     "nodemailer": "^8.0.1",
     "prisma": "6",
     "razorpay": "^2.9.6",
-    "react": "^19.2.4",
-    "react-day-picker": "8.10.1",
-    "react-dom": "^19.2.4",
+    "react": "19.2.4",
+    "react-day-picker": "^9.14.0",
+    "react-dom": "19.2.4",
     "react-hook-form": "^7.71.2",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.9",
@@ -75,6 +76,7 @@
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.7",
+    "swr": "^2.4.1",
     "tailwind-merge": "^2.6.1",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.183.2",
@@ -86,10 +88,10 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.19.15",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "eslint": "^10.0.3",
-    "eslint-config-next": "^15.5.12",
+    "eslint-config-next": "16.1.6",
     "postcss": "^8.5.8",
     "tailwindcss": "3",
     "typescript": "^5.9.3"
@@ -103,6 +105,8 @@
     "minimatch": ">=10.2.1",
     "ajv": ">=8.18.0",
     "brace-expansion": ">=2.0.2",
-    "mdast-util-to-hast": ">=13.2.1"
+    "mdast-util-to-hast": ">=13.2.1",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
   }
 }

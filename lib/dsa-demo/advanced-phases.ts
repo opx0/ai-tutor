@@ -1392,6 +1392,10 @@ export const advancedPhases: DemoPhase[] = [
       { id: 102, title: 'Binary Tree Level Order Traversal', url: 'https://leetcode.com/problems/binary-tree-level-order-traversal/', tag: 'BFS' },
       { id: 208, title: 'Implement Trie', url: 'https://leetcode.com/problems/implement-trie-prefix-tree/', tag: 'Trie' },
       { id: 98, title: 'Validate BST', url: 'https://leetcode.com/problems/validate-binary-search-tree/', tag: 'BST' },
+      { id: 230, title: 'Kth Smallest Element in BST', url: 'https://leetcode.com/problems/kth-smallest-element-in-a-bst/', tag: 'BST' },
+      { id: 105, title: 'Build Tree from Pre/Inorder', url: 'https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/', tag: 'Tree' },
+      { id: 124, title: 'Binary Tree Max Path Sum', url: 'https://leetcode.com/problems/binary-tree-maximum-path-sum/', tag: 'DFS Hard' },
+      { id: 297, title: 'Serialize/Deserialize Binary Tree', url: 'https://leetcode.com/problems/serialize-and-deserialize-binary-tree/', tag: 'Tree Hard' },
     ],
   },
   // ─── Phase 8: Backtracking ────────────────────────────────────────
@@ -1409,6 +1413,8 @@ export const advancedPhases: DemoPhase[] = [
       { id: 46, title: 'Permutations', url: 'https://leetcode.com/problems/permutations/', tag: 'Backtracking' },
       { id: 51, title: 'N-Queens', url: 'https://leetcode.com/problems/n-queens/', tag: 'Backtracking' },
       { id: 39, title: 'Combination Sum', url: 'https://leetcode.com/problems/combination-sum/', tag: 'Backtracking' },
+      { id: 79, title: 'Word Search', url: 'https://leetcode.com/problems/word-search/', tag: 'Backtracking' },
+      { id: 131, title: 'Palindrome Partitioning', url: 'https://leetcode.com/problems/palindrome-partitioning/', tag: 'Backtracking' },
     ],
   },
   // ─── Phase 9: Heaps ───────────────────────────────────────────────
@@ -1471,6 +1477,9 @@ export const advancedPhases: DemoPhase[] = [
       { id: 743, title: 'Network Delay Time', url: 'https://leetcode.com/problems/network-delay-time/', tag: 'Dijkstra' },
       { id: 210, title: 'Course Schedule II', url: 'https://leetcode.com/problems/course-schedule-ii/', tag: 'Topo Sort' },
       { id: 133, title: 'Clone Graph', url: 'https://leetcode.com/problems/clone-graph/', tag: 'BFS/DFS' },
+      { id: 417, title: 'Pacific Atlantic Water Flow', url: 'https://leetcode.com/problems/pacific-atlantic-water-flow/', tag: 'DFS' },
+      { id: 207, title: 'Course Schedule', url: 'https://leetcode.com/problems/course-schedule/', tag: 'Topo Sort' },
+      { id: 269, title: 'Alien Dictionary', url: 'https://leetcode.com/problems/alien-dictionary/', tag: 'Topo Sort Hard' },
     ],
   },
   // ─── Phase 13 ⚡ Dynamic Programming (Keystone) ───────────────────
@@ -1491,6 +1500,10 @@ export const advancedPhases: DemoPhase[] = [
       { id: 62, title: 'Unique Paths', url: 'https://leetcode.com/problems/unique-paths/', tag: '2D DP' },
       { id: 322, title: 'Coin Change', url: 'https://leetcode.com/problems/coin-change/', tag: 'Unbounded Knapsack' },
       { id: 1143, title: 'Longest Common Subsequence', url: 'https://leetcode.com/problems/longest-common-subsequence/', tag: '2D DP' },
+      { id: 198, title: 'House Robber', url: 'https://leetcode.com/problems/house-robber/', tag: '1D DP' },
+      { id: 300, title: 'Longest Increasing Subsequence', url: 'https://leetcode.com/problems/longest-increasing-subsequence/', tag: '1D DP' },
+      { id: 416, title: 'Partition Equal Subset Sum', url: 'https://leetcode.com/problems/partition-equal-subset-sum/', tag: '0/1 Knapsack' },
+      { id: 139, title: 'Word Break', url: 'https://leetcode.com/problems/word-break/', tag: '1D DP' },
     ],
   },
   // ─── Phase 14: Bit Manipulation ───────────────────────────────────

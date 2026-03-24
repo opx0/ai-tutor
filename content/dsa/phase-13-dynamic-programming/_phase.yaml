@@ -1,0 +1,49 @@
+---
+id: phase-13
+phase: 13
+title: Dynamic Programming
+goal: >-
+  The final boss of DSA. DP = recursion + memoization. Once it clicks, you can
+  solve 80% of hard LeetCode problems.
+bossChallenge: >-
+  Solve Longest Common Subsequence (LC 1143) from scratch. Define state, write
+  recurrence, build the table. If you can do this cold, DP has clicked.
+leetcode:
+  - id: 53
+    title: Maximum Subarray
+    url: 'https://leetcode.com/problems/maximum-subarray/'
+    tag: Kadane's
+  - id: 70
+    title: Climbing Stairs
+    url: 'https://leetcode.com/problems/climbing-stairs/'
+    tag: 1D DP
+  - id: 62
+    title: Unique Paths
+    url: 'https://leetcode.com/problems/unique-paths/'
+    tag: 2D DP
+  - id: 322
+    title: Coin Change
+    url: 'https://leetcode.com/problems/coin-change/'
+    tag: Unbounded Knapsack
+  - id: 1143
+    title: Longest Common Subsequence
+    url: 'https://leetcode.com/problems/longest-common-subsequence/'
+    tag: 2D DP
+  - id: 198
+    title: House Robber
+    url: 'https://leetcode.com/problems/house-robber/'
+    tag: 1D DP
+  - id: 300
+    title: Longest Increasing Subsequence
+    url: 'https://leetcode.com/problems/longest-increasing-subsequence/'
+    tag: 1D DP
+  - id: 416
+    title: Partition Equal Subset Sum
+    url: 'https://leetcode.com/problems/partition-equal-subset-sum/'
+    tag: 0/1 Knapsack
+  - id: 139
+    title: Word Break
+    url: 'https://leetcode.com/problems/word-break/'
+    tag: 1D DP
+keystone: true
+---

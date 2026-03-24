@@ -1,0 +1,221 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "factorial(4): This calls factorial(3). Each call is a new frame on the call stack. The stack grows downward.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Call Stack",
+          "items": [
+            {
+              "value": "f(4)",
+              "state": "active"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-n",
+          "name": "n",
+          "value": "4",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "factorial(4) called",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "factorial(3) called from factorial(4). Stack grows. f(4) is waiting for f(3) to return.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Call Stack",
+          "items": [
+            {
+              "value": "f(4)",
+              "state": "default"
+            },
+            {
+              "value": "f(3)",
+              "state": "active"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-n",
+          "name": "n",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "factorial(4) called",
+              "kind": "call"
+            },
+            {
+              "text": "factorial(3) called",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "factorial(2), then factorial(1). n=1 hits the BASE CASE — returns 1. No more recursion.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Call Stack",
+          "items": [
+            {
+              "value": "f(4)",
+              "state": "default"
+            },
+            {
+              "value": "f(3)",
+              "state": "default"
+            },
+            {
+              "value": "f(2)",
+              "state": "default"
+            },
+            {
+              "value": "f(1)",
+              "state": "highlight"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-n",
+          "name": "n",
+          "value": "1",
+          "state": "highlight",
+          "description": "BASE CASE"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "factorial(3) called",
+              "kind": "call"
+            },
+            {
+              "text": "factorial(2) called",
+              "kind": "call"
+            },
+            {
+              "text": "factorial(1) called — BASE CASE, return 1",
+              "kind": "return"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Now UNWIND: f(2) gets 1 back, returns 2*1=2. f(3) gets 2, returns 3*2=6.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Call Stack (unwinding)",
+          "items": [
+            {
+              "value": "f(4)",
+              "state": "default"
+            },
+            {
+              "value": "f(3)=6",
+              "state": "active"
+            }
+          ],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-n",
+          "name": "result",
+          "value": "6",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "f(1) returns 1",
+              "kind": "return"
+            },
+            {
+              "text": "f(2) returns 2 × 1 = 2",
+              "kind": "return"
+            },
+            {
+              "text": "f(3) returns 3 × 2 = 6",
+              "kind": "return"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "f(4) gets 6, returns 4*6=24. Stack is empty. Done! Every recursion follows this pattern: grow stack → hit base → unwind.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "stack",
+          "label": "Call Stack (empty)",
+          "items": [],
+          "direction": "horizontal"
+        },
+        {
+          "type": "variable",
+          "id": "v-n",
+          "name": "result",
+          "value": "24",
+          "state": "done",
+          "description": "4! = 24"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "f(3) returns 3 × 2 = 6",
+              "kind": "return"
+            },
+            {
+              "text": "f(4) returns 4 × 6 = 24 ✅",
+              "kind": "return"
+            },
+            {
+              "text": "Pattern: grow → base case → unwind",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Insertion Sort on [5, 3, 8, 1, 2]. Think: pick up each card from unsorted and insert it into the right place in the sorted portion.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-key",
+          "name": "key",
+          "value": "—",
+          "state": "default"
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "i",
+          "value": "1",
+          "state": "default"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Sorted portion: [5]. Pick up arr[1]=3.",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "key=3: Compare with 5. 3 < 5, so shift 5 right, insert 3 at position 0. Sorted: [3, 5].",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "3",
+              "state": "highlight"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-key",
+          "name": "key",
+          "value": "3",
+          "state": "highlight"
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "i",
+          "value": "1",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "key=3: 3 < 5 → shift 5 right",
+              "kind": "compare"
+            },
+            {
+              "text": "Insert 3 at position 0",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "key=8: Compare with 5. 8 > 5, already in place. Sorted: [3, 5, 8].",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "highlight"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-key",
+          "name": "key",
+          "value": "8",
+          "state": "highlight"
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "i",
+          "value": "2",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Insert 3 at position 0",
+              "kind": "swap"
+            },
+            {
+              "text": "key=8: 8 > 5 → already in place ✓",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "key=1: Compare with 8, 5, 3. Shift all right. Insert 1 at position 0. Sorted: [1, 3, 5, 8]. This is the worst case — shift everything.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array",
+          "items": [
+            {
+              "value": "1",
+              "state": "highlight"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-key",
+          "name": "key",
+          "value": "1",
+          "state": "highlight"
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "i",
+          "value": "3",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "key=1: 1 < 8 → shift 8",
+              "kind": "compare"
+            },
+            {
+              "text": "1 < 5 → shift 5",
+              "kind": "compare"
+            },
+            {
+              "text": "1 < 3 → shift 3",
+              "kind": "compare"
+            },
+            {
+              "text": "Insert 1 at position 0",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "key=2: Compare with 8, 5, 3. Shift those. 2 > 1, stop. Insert at position 1. Final: [1, 2, 3, 5, 8]. O(n²) worst case, but O(n) if nearly sorted.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "arr",
+          "label": "Array (sorted!)",
+          "items": [
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-key",
+          "name": "key",
+          "value": "2",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "i",
+          "value": "4",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "key=2: 2 < 8, 2 < 5, 2 < 3 → shift",
+              "kind": "compare"
+            },
+            {
+              "text": "2 > 1 → STOP, insert 2 at pos 1",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ Sorted! [1, 2, 3, 5, 8]",
+              "kind": "info"
+            },
+            {
+              "text": "O(n²) worst, O(n) best (already sorted)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

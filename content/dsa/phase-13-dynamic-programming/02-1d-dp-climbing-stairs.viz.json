@@ -1,0 +1,194 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Climbing Stairs: n=5 steps. You can take 1 or 2 steps at a time. How many distinct ways to reach the top? dp[i] = ways to reach step i.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "dp",
+          "label": "dp[] — ways to reach each step",
+          "items": [
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "computing",
+          "value": "dp[2]",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Base: dp[0]=1 (standing), dp[1]=1 (one step)",
+              "kind": "info"
+            },
+            {
+              "text": "Recurrence: dp[i] = dp[i-1] + dp[i-2]",
+              "kind": "info"
+            },
+            {
+              "text": "Why? To reach step i, either come from i-1 (+1 step) or i-2 (+2 steps)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "dp[2] = dp[1] + dp[0] = 1 + 1 = 2. Two ways: (1+1) or (2). dp[3] = dp[2] + dp[1] = 2 + 1 = 3. Three ways: (1+1+1), (1+2), (2+1).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "dp",
+          "label": "dp[]",
+          "items": [
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            },
+            {
+              "value": "?",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-i",
+          "name": "computing",
+          "value": "dp[3]",
+          "state": "active"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dp[2] = dp[1]+dp[0] = 1+1 = 2",
+              "kind": "return"
+            },
+            {
+              "text": "dp[3] = dp[2]+dp[1] = 2+1 = 3",
+              "kind": "return"
+            },
+            {
+              "text": "This is literally Fibonacci!",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "dp[4] = 3+2 = 5. dp[5] = 5+3 = 8. Answer: 8 ways to climb 5 stairs! O(n) time, O(n) space (or O(1) with just two variables).",
+      "elements": [
+        {
+          "type": "array",
+          "id": "dp",
+          "label": "dp[] (complete)",
+          "items": [
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "highlight"
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-ans",
+          "name": "answer",
+          "value": "8",
+          "state": "done",
+          "description": "8 ways!"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "dp[4] = 3+2 = 5",
+              "kind": "return"
+            },
+            {
+              "text": "dp[5] = 5+3 = 8",
+              "kind": "return"
+            },
+            {
+              "text": "✅ 8 distinct ways to climb 5 stairs",
+              "kind": "info"
+            },
+            {
+              "text": "DP pattern: define state, find recurrence, fill table",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

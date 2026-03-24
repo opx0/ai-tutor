@@ -115,7 +115,7 @@ export default function SubscriptionPage() {
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "AI Tutor",
+        name: "LearnLM",
         description: "Premium Subscription",
         order_id: orderData.orderId,
         handler: async function (response: any) {
@@ -176,9 +176,9 @@ export default function SubscriptionPage() {
   }
 
   const monthlyPlans =
-    subscriptionInfo?.plans.filter((plan) => plan.interval === "monthly") || [];
+    subscriptionInfo?.plans.filter((plan) => plan.interval?.toUpperCase() === "MONTHLY") || [];
   const yearlyPlans =
-    subscriptionInfo?.plans.filter((plan) => plan.interval === "yearly") || [];
+    subscriptionInfo?.plans.filter((plan) => plan.interval?.toUpperCase() === "YEARLY") || [];
 
   const freeFeatures = [
     "One full course with unlimited modules",
@@ -204,7 +204,7 @@ export default function SubscriptionPage() {
       />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-16">
-        {subscriptionInfo?.subscriptionStatus === "premium" ? (
+        {subscriptionInfo?.subscriptionStatus?.toUpperCase() === "PREMIUM" ? (
           /* ── Premium member view (unchanged) ── */
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">

@@ -1,13 +1,13 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect /admin routes — require ADMIN role
   if (pathname.startsWith("/admin")) {
     const token = await getToken({
-      req: request,
+      req: request as any,
       secret: process.env.NEXTAUTH_SECRET,
     });
 
@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
   // Protect /admin API routes
   if (pathname.startsWith("/api/admin")) {
     const token = await getToken({
-      req: request,
+      req: request as any,
       secret: process.env.NEXTAUTH_SECRET,
     });
 

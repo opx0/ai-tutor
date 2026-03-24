@@ -1,0 +1,35 @@
+---
+id: phase-6
+phase: 6
+title: Binary Search
+goal: >-
+  The template that halves search space in O(log n). Short phase, high interview
+  ROI.
+bossChallenge: Solve Binary Search on a rotated array cold — LC 33.
+leetcode:
+  - id: 704
+    title: Binary Search
+    url: 'https://leetcode.com/problems/binary-search/'
+    tag: Binary Search
+  - id: 74
+    title: Search a 2D Matrix
+    url: 'https://leetcode.com/problems/search-a-2d-matrix/'
+    tag: Binary Search
+  - id: 33
+    title: Search in Rotated Sorted Array
+    url: 'https://leetcode.com/problems/search-in-rotated-sorted-array/'
+    tag: Binary Search
+  - id: 34
+    title: Find First and Last Position
+    url: >-
+      https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+    tag: Search Range
+  - id: 153
+    title: Find Minimum in Rotated Array
+    url: 'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/'
+    tag: Binary Search
+  - id: 875
+    title: Koko Eating Bananas
+    url: 'https://leetcode.com/problems/koko-eating-bananas/'
+    tag: Binary Search on Answer
+---

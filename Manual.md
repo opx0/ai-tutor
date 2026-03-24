@@ -1,10 +1,10 @@
-# AI Tutor Manual
+# LearnLM Manual
 
-This comprehensive manual provides instructions for running and using the AI Tutor application with its dual backend architecture (Next.js and PHP).
+This comprehensive manual provides instructions for running and using the LearnLM application with its dual backend architecture (Next.js and PHP).
 
 ## System Architecture
 
-The AI Tutor uses a dual backend architecture:
+The LearnLM uses a dual backend architecture:
 - **Next.js Backend**: Main application server, handles UI rendering and most API endpoints
 - **PHP Backend**: Secondary server handling specific API endpoints
 - **Database**: Neon PostgreSQL (cloud-hosted)
@@ -57,31 +57,31 @@ bun run dev
 
 ```bash
 # Create a new tmux session for PHP backend
-tmux new-session -d -s ai-tutor-php 'cd php-backend && php -S localhost:8000 router.php'
+tmux new-session -d -s learnlm-php 'cd php-backend && php -S localhost:8000 router.php'
 
 # Create a new tmux session for Next.js backend
-tmux new-session -d -s ai-tutor-next 'bun --bun next start'
+tmux new-session -d -s learnlm-next 'bun --bun next start'
 ```
 
 #### With PHP-FPM (Recommended for Production)
 
 ```bash
 # Create a new tmux session for PHP-FPM backend
-tmux new-session -d -s ai-tutor-php-fpm 'php-fpm -F -y ./config/php-fpm.conf'
+tmux new-session -d -s learnlm-php-fpm 'php-fpm -F -y ./config/php-fpm.conf'
 
 # Create a new tmux session for Next.js backend
-tmux new-session -d -s ai-tutor-next 'bun --bun next start'
+tmux new-session -d -s learnlm-next 'bun --bun next start'
 ```
 
 #### Managing tmux Sessions
 
 To attach to a session:
 ```bash
-tmux attach -t ai-tutor-php
+tmux attach -t learnlm-php
 # OR
-tmux attach -t ai-tutor-next
+tmux attach -t learnlm-next
 # OR
-tmux attach -t ai-tutor-php-fpm
+tmux attach -t learnlm-php-fpm
 ```
 
 To detach from a session: Press `Ctrl+B` then `D`
@@ -93,7 +93,7 @@ tmux ls
 
 To kill a session:
 ```bash
-tmux kill-session -t ai-tutor
+tmux kill-session -t learnlm
 ```
 
 ## Database Operations

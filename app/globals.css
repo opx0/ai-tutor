@@ -64,6 +64,7 @@ body {
     --sidebar-accent-foreground: 266 85% 50%;
     --sidebar-border: 225 14% 85%;
     --sidebar-ring: 266 85% 58%;
+    --sidebar-ring: 266 85% 58%;
   }
 
   .dark {
@@ -99,6 +100,7 @@ body {
     --sidebar-accent: 267 30% 25%;
     --sidebar-accent-foreground: 267 84% 85%;
     --sidebar-border: 234 13% 25%;
+    --sidebar-ring: 267 84% 81%;
     --sidebar-ring: 267 84% 81%;
   }
 }
@@ -277,4 +279,28 @@ body {
 }
 .roadmap-flow .react-flow__edge.animated path {
   animation-duration: 3s;
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .glass-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .premium-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }

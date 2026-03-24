@@ -3,7 +3,6 @@ import {
   BookOpen,
   Home,
   LayoutDashboard,
-  Map,
   Settings,
 } from "lucide-react";
 import Link from "next/link";
@@ -12,8 +11,7 @@ import type React from "react";
 const adminNav = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { title: "Courses", href: "/admin/courses", icon: BookOpen },
-  { title: "Roadmap", href: "/admin/roadmap", icon: Map },
-  { title: "Settings", href: "/admin/settings", icon: Settings },
+  { title: "Site Settings", href: "/profile", icon: Settings },
 ];
 
 export default async function AdminLayout({

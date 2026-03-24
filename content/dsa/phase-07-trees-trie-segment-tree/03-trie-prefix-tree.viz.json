@@ -1,0 +1,325 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "A Trie (prefix tree) stores strings character by character. Each edge is a character. Shared prefixes share nodes. Let's insert \"app\", \"apple\", \"apt\".",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "trie",
+          "label": "Trie",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "root",
+              "value": "ROOT",
+              "state": "active"
+            }
+          ],
+          "edges": []
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Trie: each path from root = one prefix",
+              "kind": "info"
+            },
+            {
+              "text": "Insert \"app\"...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Insert \"app\": Create nodes a → p → p. Mark last p as end-of-word (*). Three characters, three edges.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "trie",
+          "label": "Trie — after \"app\"",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "root",
+              "value": "ROOT",
+              "state": "default"
+            },
+            {
+              "id": "a",
+              "value": "a",
+              "state": "done"
+            },
+            {
+              "id": "ap",
+              "value": "p",
+              "state": "done"
+            },
+            {
+              "id": "app",
+              "value": "p*",
+              "state": "highlight"
+            }
+          ],
+          "edges": [
+            {
+              "source": "root",
+              "target": "a",
+              "label": "a",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "a",
+              "target": "ap",
+              "label": "p",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "ap",
+              "target": "app",
+              "label": "p",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Insert \"app\": root →a→ p → p*",
+              "kind": "swap"
+            },
+            {
+              "text": "* marks end-of-word",
+              "kind": "info"
+            },
+            {
+              "text": "Insert \"apple\"...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Insert \"apple\": Follow existing path a→p→p, then ADD l→e. \"app\" prefix is shared — no duplication! Mark e as end-of-word.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "trie",
+          "label": "Trie — after \"apple\"",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "root",
+              "value": "ROOT",
+              "state": "default"
+            },
+            {
+              "id": "a",
+              "value": "a",
+              "state": "done"
+            },
+            {
+              "id": "ap",
+              "value": "p",
+              "state": "done"
+            },
+            {
+              "id": "app",
+              "value": "p*",
+              "state": "done"
+            },
+            {
+              "id": "appl",
+              "value": "l",
+              "state": "active"
+            },
+            {
+              "id": "apple",
+              "value": "e*",
+              "state": "highlight"
+            }
+          ],
+          "edges": [
+            {
+              "source": "root",
+              "target": "a",
+              "label": "a",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "a",
+              "target": "ap",
+              "label": "p",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "ap",
+              "target": "app",
+              "label": "p",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "app",
+              "target": "appl",
+              "label": "l",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "appl",
+              "target": "apple",
+              "label": "e",
+              "state": "active",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Insert \"apple\": reuse a→p→p, add l→e*",
+              "kind": "swap"
+            },
+            {
+              "text": "Shared prefix \"app\" — zero extra nodes for it!",
+              "kind": "info"
+            },
+            {
+              "text": "Insert \"apt\"...",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Insert \"apt\": Follow a→p (shared), then branch at p with new edge \"t\". \"ap\" is the shared prefix. This branching is the Trie's power.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "trie",
+          "label": "Trie — all 3 words",
+          "layout": "tree",
+          "nodes": [
+            {
+              "id": "root",
+              "value": "ROOT",
+              "state": "default"
+            },
+            {
+              "id": "a",
+              "value": "a",
+              "state": "done"
+            },
+            {
+              "id": "ap",
+              "value": "p",
+              "state": "done"
+            },
+            {
+              "id": "app",
+              "value": "p*",
+              "state": "done"
+            },
+            {
+              "id": "appl",
+              "value": "l",
+              "state": "done"
+            },
+            {
+              "id": "apple",
+              "value": "e*",
+              "state": "done"
+            },
+            {
+              "id": "apt",
+              "value": "t*",
+              "state": "highlight"
+            }
+          ],
+          "edges": [
+            {
+              "source": "root",
+              "target": "a",
+              "label": "a",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "a",
+              "target": "ap",
+              "label": "p",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "ap",
+              "target": "app",
+              "label": "p",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "app",
+              "target": "appl",
+              "label": "l",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "appl",
+              "target": "apple",
+              "label": "e",
+              "state": "done",
+              "directed": true
+            },
+            {
+              "source": "ap",
+              "target": "apt",
+              "label": "t",
+              "state": "highlight",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Insert \"apt\": reuse a→p, branch with t*",
+              "kind": "swap"
+            },
+            {
+              "text": "✅ 3 words stored, shared prefix \"ap\" saves space",
+              "kind": "info"
+            },
+            {
+              "text": "Search \"app\": O(m) where m = word length, not n!",
+              "kind": "info"
+            },
+            {
+              "text": "Use cases: autocomplete, spell check, IP routing",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

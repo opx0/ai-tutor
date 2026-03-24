@@ -1,0 +1,294 @@
+{
+  "type": "array",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Bucket Sort: values in [0, 10). Create 5 buckets for ranges [0-2), [2-4), [4-6), [6-8), [8-10). Input: [3, 7, 1, 9, 4, 2, 8, 5].",
+      "elements": [
+        {
+          "type": "array",
+          "id": "input",
+          "label": "Input",
+          "items": [
+            {
+              "value": "3",
+              "state": "default"
+            },
+            {
+              "value": "7",
+              "state": "default"
+            },
+            {
+              "value": "1",
+              "state": "default"
+            },
+            {
+              "value": "9",
+              "state": "default"
+            },
+            {
+              "value": "4",
+              "state": "default"
+            },
+            {
+              "value": "2",
+              "state": "default"
+            },
+            {
+              "value": "8",
+              "state": "default"
+            },
+            {
+              "value": "5",
+              "state": "default"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "5 buckets for [0-2), [2-4), [4-6), [6-8), [8-10)",
+              "kind": "info"
+            },
+            {
+              "text": "bucket = floor(value / range * k)",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Distribute: 3→B1, 7→B3, 1→B0, 9→B4, 4→B2, 2→B1, 8→B4, 5→B2. Each element goes to its bucket.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "b0",
+          "label": "Bucket 0 [0-2)",
+          "items": [
+            {
+              "value": "1",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b1",
+          "label": "Bucket 1 [2-4)",
+          "items": [
+            {
+              "value": "3",
+              "state": "active"
+            },
+            {
+              "value": "2",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b2",
+          "label": "Bucket 2 [4-6)",
+          "items": [
+            {
+              "value": "4",
+              "state": "active"
+            },
+            {
+              "value": "5",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b3",
+          "label": "Bucket 3 [6-8)",
+          "items": [
+            {
+              "value": "7",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b4",
+          "label": "Bucket 4 [8-10)",
+          "items": [
+            {
+              "value": "9",
+              "state": "active"
+            },
+            {
+              "value": "8",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Distributed into 5 buckets — O(n)",
+              "kind": "swap"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Sort each bucket individually (insertion sort — small buckets). Then concatenate all buckets in order.",
+      "elements": [
+        {
+          "type": "array",
+          "id": "b0",
+          "label": "Bucket 0 ✓",
+          "items": [
+            {
+              "value": "1",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b1",
+          "label": "Bucket 1 ✓",
+          "items": [
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b2",
+          "label": "Bucket 2 ✓",
+          "items": [
+            {
+              "value": "4",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b3",
+          "label": "Bucket 3 ✓",
+          "items": [
+            {
+              "value": "7",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "id": "b4",
+          "label": "Bucket 4 ✓",
+          "items": [
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "9",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Sort each bucket — tiny, so fast",
+              "kind": "swap"
+            },
+            {
+              "text": "Concatenate: B0 + B1 + B2 + B3 + B4",
+              "kind": "call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Result: [1, 2, 3, 4, 5, 7, 8, 9]. O(n+k) average. Breaks the O(n log n) barrier because we don't compare all pairs!",
+      "elements": [
+        {
+          "type": "array",
+          "id": "result",
+          "label": "Sorted!",
+          "items": [
+            {
+              "value": "1",
+              "state": "done"
+            },
+            {
+              "value": "2",
+              "state": "done"
+            },
+            {
+              "value": "3",
+              "state": "done"
+            },
+            {
+              "value": "4",
+              "state": "done"
+            },
+            {
+              "value": "5",
+              "state": "done"
+            },
+            {
+              "value": "7",
+              "state": "done"
+            },
+            {
+              "value": "8",
+              "state": "done"
+            },
+            {
+              "value": "9",
+              "state": "done"
+            }
+          ]
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "✅ Sorted! O(n+k) average",
+              "kind": "return"
+            },
+            {
+              "text": "Works best with uniform distribution",
+              "kind": "info"
+            },
+            {
+              "text": "Worst: all in one bucket → O(n²)",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

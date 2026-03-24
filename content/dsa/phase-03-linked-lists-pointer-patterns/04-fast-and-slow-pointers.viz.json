@@ -1,0 +1,613 @@
+{
+  "type": "graph",
+  "initialState": {},
+  "steps": [
+    {
+      "message": "Cycle detection: Does this linked list have a cycle? Fast pointer moves 2 steps, slow moves 1. If they meet → cycle exists.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "Linked List (with cycle)",
+          "nodes": [
+            {
+              "id": "a",
+              "value": "1",
+              "state": "active",
+              "x": 0,
+              "y": 50
+            },
+            {
+              "id": "b",
+              "value": "2",
+              "state": "default",
+              "x": 80,
+              "y": 50
+            },
+            {
+              "id": "c",
+              "value": "3",
+              "state": "default",
+              "x": 160,
+              "y": 50
+            },
+            {
+              "id": "d",
+              "value": "4",
+              "state": "default",
+              "x": 240,
+              "y": 50
+            },
+            {
+              "id": "e",
+              "value": "5",
+              "state": "default",
+              "x": 240,
+              "y": 130
+            },
+            {
+              "id": "f",
+              "value": "6",
+              "state": "default",
+              "x": 160,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "source": "a",
+              "target": "b",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "b",
+              "target": "c",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "c",
+              "target": "d",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "d",
+              "target": "e",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "e",
+              "target": "f",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "f",
+              "target": "c",
+              "label": "cycle!",
+              "state": "error",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-slow",
+          "name": "slow",
+          "value": "node 1",
+          "state": "active",
+          "description": "+1 step"
+        },
+        {
+          "type": "variable",
+          "id": "v-fast",
+          "name": "fast",
+          "value": "node 1",
+          "state": "highlight",
+          "description": "+2 steps"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Start: slow=1, fast=1",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Step 1: slow moves to node 2, fast moves to node 3. They haven't met yet.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "Linked List (with cycle)",
+          "nodes": [
+            {
+              "id": "a",
+              "value": "1",
+              "state": "visited",
+              "x": 0,
+              "y": 50
+            },
+            {
+              "id": "b",
+              "value": "2",
+              "state": "active",
+              "x": 80,
+              "y": 50
+            },
+            {
+              "id": "c",
+              "value": "3",
+              "state": "highlight",
+              "x": 160,
+              "y": 50
+            },
+            {
+              "id": "d",
+              "value": "4",
+              "state": "default",
+              "x": 240,
+              "y": 50
+            },
+            {
+              "id": "e",
+              "value": "5",
+              "state": "default",
+              "x": 240,
+              "y": 130
+            },
+            {
+              "id": "f",
+              "value": "6",
+              "state": "default",
+              "x": 160,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "source": "a",
+              "target": "b",
+              "state": "active",
+              "directed": true
+            },
+            {
+              "source": "b",
+              "target": "c",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "c",
+              "target": "d",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "d",
+              "target": "e",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "e",
+              "target": "f",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "f",
+              "target": "c",
+              "label": "cycle!",
+              "state": "error",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-slow",
+          "name": "slow",
+          "value": "node 2",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-fast",
+          "name": "fast",
+          "value": "node 3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Start: slow=1, fast=1",
+              "kind": "info"
+            },
+            {
+              "text": "Step 1: slow→2, fast→3",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Step 2: slow→3, fast→5 (jumped 3→4→5). Fast is deep in the cycle. Slow just entered.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "Linked List (with cycle)",
+          "nodes": [
+            {
+              "id": "a",
+              "value": "1",
+              "state": "visited",
+              "x": 0,
+              "y": 50
+            },
+            {
+              "id": "b",
+              "value": "2",
+              "state": "visited",
+              "x": 80,
+              "y": 50
+            },
+            {
+              "id": "c",
+              "value": "3",
+              "state": "active",
+              "x": 160,
+              "y": 50
+            },
+            {
+              "id": "d",
+              "value": "4",
+              "state": "visited",
+              "x": 240,
+              "y": 50
+            },
+            {
+              "id": "e",
+              "value": "5",
+              "state": "highlight",
+              "x": 240,
+              "y": 130
+            },
+            {
+              "id": "f",
+              "value": "6",
+              "state": "default",
+              "x": 160,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "source": "a",
+              "target": "b",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "b",
+              "target": "c",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "c",
+              "target": "d",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "d",
+              "target": "e",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "e",
+              "target": "f",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "f",
+              "target": "c",
+              "label": "cycle!",
+              "state": "error",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-slow",
+          "name": "slow",
+          "value": "node 3",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-fast",
+          "name": "fast",
+          "value": "node 5",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Step 1: slow→2, fast→3",
+              "kind": "compare"
+            },
+            {
+              "text": "Step 2: slow→3, fast→5",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Step 3: slow→4, fast→5→6→3 (fast wraps around the cycle!). fast is now at node 3.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "Linked List (with cycle)",
+          "nodes": [
+            {
+              "id": "a",
+              "value": "1",
+              "state": "visited",
+              "x": 0,
+              "y": 50
+            },
+            {
+              "id": "b",
+              "value": "2",
+              "state": "visited",
+              "x": 80,
+              "y": 50
+            },
+            {
+              "id": "c",
+              "value": "3",
+              "state": "highlight",
+              "x": 160,
+              "y": 50
+            },
+            {
+              "id": "d",
+              "value": "4",
+              "state": "active",
+              "x": 240,
+              "y": 50
+            },
+            {
+              "id": "e",
+              "value": "5",
+              "state": "visited",
+              "x": 240,
+              "y": 130
+            },
+            {
+              "id": "f",
+              "value": "6",
+              "state": "visited",
+              "x": 160,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "source": "a",
+              "target": "b",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "b",
+              "target": "c",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "c",
+              "target": "d",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "d",
+              "target": "e",
+              "state": "default",
+              "directed": true
+            },
+            {
+              "source": "e",
+              "target": "f",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "f",
+              "target": "c",
+              "label": "cycle!",
+              "state": "highlight",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-slow",
+          "name": "slow",
+          "value": "node 4",
+          "state": "active"
+        },
+        {
+          "type": "variable",
+          "id": "v-fast",
+          "name": "fast",
+          "value": "node 3",
+          "state": "highlight"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Step 2: slow→3, fast→5",
+              "kind": "compare"
+            },
+            {
+              "text": "Step 3: slow→4, fast→3 (wrapped around cycle)",
+              "kind": "compare"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "Step 4: slow→5, fast→3→4→5. THEY MEET at node 5! Cycle confirmed. The fast pointer always catches the slow in a cycle because the gap shrinks by 1 each step.",
+      "elements": [
+        {
+          "type": "graph",
+          "id": "ll",
+          "label": "CYCLE DETECTED!",
+          "nodes": [
+            {
+              "id": "a",
+              "value": "1",
+              "state": "visited",
+              "x": 0,
+              "y": 50
+            },
+            {
+              "id": "b",
+              "value": "2",
+              "state": "visited",
+              "x": 80,
+              "y": 50
+            },
+            {
+              "id": "c",
+              "value": "3",
+              "state": "visited",
+              "x": 160,
+              "y": 50
+            },
+            {
+              "id": "d",
+              "value": "4",
+              "state": "visited",
+              "x": 240,
+              "y": 50
+            },
+            {
+              "id": "e",
+              "value": "5",
+              "state": "done",
+              "x": 240,
+              "y": 130
+            },
+            {
+              "id": "f",
+              "value": "6",
+              "state": "visited",
+              "x": 160,
+              "y": 130
+            }
+          ],
+          "edges": [
+            {
+              "source": "a",
+              "target": "b",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "b",
+              "target": "c",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "c",
+              "target": "d",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "d",
+              "target": "e",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "e",
+              "target": "f",
+              "state": "visited",
+              "directed": true
+            },
+            {
+              "source": "f",
+              "target": "c",
+              "label": "cycle!",
+              "state": "done",
+              "directed": true
+            }
+          ]
+        },
+        {
+          "type": "variable",
+          "id": "v-slow",
+          "name": "slow",
+          "value": "node 5",
+          "state": "done"
+        },
+        {
+          "type": "variable",
+          "id": "v-fast",
+          "name": "fast",
+          "value": "node 5",
+          "state": "done"
+        },
+        {
+          "type": "log",
+          "id": "log",
+          "lines": [
+            {
+              "text": "Step 3: slow→4, fast→3",
+              "kind": "compare"
+            },
+            {
+              "text": "Step 4: slow→5, fast→5 — THEY MEET!",
+              "kind": "return"
+            },
+            {
+              "text": "✅ Cycle detected at node 5. O(n) time, O(1) space.",
+              "kind": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

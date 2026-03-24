@@ -1,16 +1,14 @@
 import { SessionProvider } from "@/components/session-provider";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SWRProvider } from "@/components/swr-config";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import type React from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "AI Tutor - Learn Anything with AI",
+  title: "LearnLM - Learn Anything with AI",
   description: "Generate personalized courses on any topic with AI",
 };
 
@@ -21,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className="antialiased" suppressHydrationWarning>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
@@ -29,10 +27,12 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <main className="flex-1 ">{children}</main>
-            </div>
+            <SWRProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <SiteHeader />
+                <main className="flex-1 ">{children}</main>
+              </div>
+            </SWRProvider>
             <Toaster position="top-right" />
           </ThemeProvider>
         </SessionProvider>

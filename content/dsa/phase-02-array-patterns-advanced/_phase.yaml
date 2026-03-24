@@ -1,0 +1,45 @@
+---
+id: phase-2
+phase: 2
+title: Array Patterns (Advanced)
+goal: >-
+  Learn the 4 core array manipulation patterns — they appear in ~40% of all
+  LeetCode problems.
+bossChallenge: >-
+  Solve Maximum Subarray using Sliding Window logic without looking up the
+  approach.
+leetcode:
+  - id: 643
+    title: Max Average Subarray I
+    url: 'https://leetcode.com/problems/maximum-average-subarray-i/'
+    tag: Fixed Window
+  - id: 3
+    title: Longest Substring Without Repeating
+    url: >-
+      https://leetcode.com/problems/longest-substring-without-repeating-characters/
+    tag: Variable Window
+  - id: 76
+    title: Minimum Window Substring
+    url: 'https://leetcode.com/problems/minimum-window-substring/'
+    tag: Variable Window
+  - id: 167
+    title: Two Sum II
+    url: 'https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/'
+    tag: Two Pointers
+  - id: 15
+    title: 3Sum
+    url: 'https://leetcode.com/problems/3sum/'
+    tag: Two Pointers
+  - id: 11
+    title: Container With Most Water
+    url: 'https://leetcode.com/problems/container-with-most-water/'
+    tag: Two Pointers
+  - id: 303
+    title: Range Sum Query
+    url: 'https://leetcode.com/problems/range-sum-query-immutable/'
+    tag: Prefix Sum
+  - id: 560
+    title: Subarray Sum Equals K
+    url: 'https://leetcode.com/problems/subarray-sum-equals-k/'
+    tag: Prefix Sum + Hash
+---

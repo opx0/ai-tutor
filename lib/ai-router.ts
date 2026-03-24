@@ -6,7 +6,7 @@
  * library code never import providers directly.
  */
 
-import { generateObject, generateText, streamText } from "ai";
+import { generateObject, generateText, streamObject, streamText } from "ai";
 import {
     CourseSchema,
     QuizSchema,
@@ -114,6 +114,46 @@ export async function generateCourseContent(
       "We couldn't generate the full course right now. Please check your connection or API key."
     );
   }
+}
+
+/**
+ * Streams course content using Vercel AI SDK `streamObject`.
+ * This allows the UI to show modules as they are being generated.
+ */
+export async function streamCourseContent(
+  topic: string,
+  difficulty: string,
+  additionalDetails?: string
+) {
+  const model = isTechnicalTopic(topic) ? geminiPro : geminiFlash;
+
+  const prompt = `
+    Create a comprehensive learning course on "${topic}" for ${difficulty} level students.
+    ${additionalDetails ? `Additional context: ${additionalDetails}` : ""}
+
+    Course Structure Requirements:
+    1. Create 5-7 distinct modules suitable for this difficulty level.
+    2. Each module must have 4-6 detailed lessons.
+    3. "content" field MUST use HTML formatting (<h1>, <p>, <ul>, <li>, <pre><code>) for readability.
+    4. "exercises" should be a set of 2-3 practical tasks relevant to the lesson.
+
+    Visualization Requirements (for algorithm/data-structure courses):
+    - For any lesson that explains a step-by-step algorithm or process, include a "visualization" field.
+    - Set "visualization" to null ONLY for pure theory or introductory lessons.
+    - Each visualization has a "type" ("array", "graph", or "grid") and 3-8 "steps".
+    - Each step has a "message" (explain WHY, not just WHAT) and "elements" (visual components).
+    - Element types: "array", "variable", "log".
+    - Valid states: "default","active","comparing","done","highlight","error","visited".
+    - Valid log kinds: "info","call","return","compare","swap".
+
+    Make the content educational, engaging, and accurate.
+  `;
+
+  return streamObject({
+    model,
+    schema: CourseSchema,
+    prompt,
+  });
 }
 
 // ---------------------------------------------------------------------------
