@@ -1,41 +1,57 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { z } from "zod"
+import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { z } from "zod";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
 
 const noteSchema = z.object({
   content: z.string().min(1),
   lessonId: z.string(),
-})
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json()
+    const clientId = getClientIdentifier(req, session.user.id);
+    const limit = await consumeRateLimit(`notes:${session.user.id}:${clientId}`, {
+      max: 60,
+      windowMs: 60000,
+    });
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { message: "Too many requests", retryAfterMs: limit.retryAfterMs },
+        { status: 429 },
+      );
+    }
+
+    const body = await req.json();
 
     // Validate input
-    const result = noteSchema.safeParse(body)
+    const result = noteSchema.safeParse(body);
     if (!result.success) {
-      return NextResponse.json({ message: "Invalid input data", errors: result.error.format() }, { status: 400 })
+      return NextResponse.json(
+        { message: "Invalid input data", errors: result.error.format() },
+        { status: 400 },
+      );
     }
 
-    const { content, lessonId } = body
+    const { content, lessonId } = result.data;
 
     // Check if lesson exists
     const lesson = await prisma.lesson.findUnique({
       where: {
         id: lessonId,
       },
-    })
+    });
 
     if (!lesson) {
-      return NextResponse.json({ message: "Lesson not found" }, { status: 404 })
+      return NextResponse.json({ message: "Lesson not found" }, { status: 404 });
     }
 
     // Create or update note
@@ -44,9 +60,9 @@ export async function POST(req: NextRequest) {
         lessonId,
         userId: session.user.id,
       },
-    })
+    });
 
-    let note
+    let note;
     if (existingNote) {
       note = await prisma.note.update({
         where: {
@@ -55,7 +71,7 @@ export async function POST(req: NextRequest) {
         data: {
           content,
         },
-      })
+      });
     } else {
       note = await prisma.note.create({
         data: {
@@ -63,29 +79,29 @@ export async function POST(req: NextRequest) {
           lessonId,
           userId: session.user.id,
         },
-      })
+      });
     }
 
-    return NextResponse.json({ message: "Note saved successfully", note }, { status: 200 })
+    return NextResponse.json({ message: "Note saved successfully", note }, { status: 200 });
   } catch (error) {
-    console.error("Error saving note:", error)
-    return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
+    console.error("Error saving note:", error);
+    return NextResponse.json({ message: "Something went wrong" }, { status: 500 });
   }
 }
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(req.url)
-    const lessonId = searchParams.get("lessonId")
+    const { searchParams } = new URL(req.url);
+    const lessonId = searchParams.get("lessonId");
 
     if (!lessonId) {
-      return NextResponse.json({ message: "Lesson ID is required" }, { status: 400 })
+      return NextResponse.json({ message: "Lesson ID is required" }, { status: 400 });
     }
 
     const note = await prisma.note.findFirst({
@@ -93,28 +109,40 @@ export async function GET(req: NextRequest) {
         lessonId,
         userId: session.user.id,
       },
-    })
+    });
 
-    return NextResponse.json({ note })
+    return NextResponse.json({ note });
   } catch (error) {
-    console.error("Error fetching note:", error)
-    return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
+    console.error("Error fetching note:", error);
+    return NextResponse.json({ message: "Something went wrong" }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(req.url)
-    const noteId = searchParams.get("id")
+    const clientId = getClientIdentifier(req, session.user.id);
+    const limit = await consumeRateLimit(`notes:${session.user.id}:${clientId}`, {
+      max: 60,
+      windowMs: 60000,
+    });
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { message: "Too many requests", retryAfterMs: limit.retryAfterMs },
+        { status: 429 },
+      );
+    }
+
+    const { searchParams } = new URL(req.url);
+    const noteId = searchParams.get("id");
 
     if (!noteId) {
-      return NextResponse.json({ message: "Note ID is required" }, { status: 400 })
+      return NextResponse.json({ message: "Note ID is required" }, { status: 400 });
     }
 
     // Check if note exists and belongs to user
@@ -122,14 +150,14 @@ export async function DELETE(req: NextRequest) {
       where: {
         id: noteId,
       },
-    })
+    });
 
     if (!note) {
-      return NextResponse.json({ message: "Note not found" }, { status: 404 })
+      return NextResponse.json({ message: "Note not found" }, { status: 404 });
     }
 
     if (note.userId !== session.user.id) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     // Delete note
@@ -137,12 +165,11 @@ export async function DELETE(req: NextRequest) {
       where: {
         id: noteId,
       },
-    })
+    });
 
-    return NextResponse.json({ message: "Note deleted successfully" }, { status: 200 })
+    return NextResponse.json({ message: "Note deleted successfully" }, { status: 200 });
   } catch (error) {
-    console.error("Error deleting note:", error)
-    return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
+    console.error("Error deleting note:", error);
+    return NextResponse.json({ message: "Something went wrong" }, { status: 500 });
   }
 }
-

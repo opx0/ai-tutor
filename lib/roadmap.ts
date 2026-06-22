@@ -1,31 +1,31 @@
-import { prisma } from "@/lib/prisma"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export type CourseNodeData = {
-  id: string
-  title: string
-  slug: string | null
-  description: string | null
-  icon: string | null
-  color: string | null
-  difficulty: string
-  estimatedHours: number | null
-  moduleCount: number
-  lessonCount: number
+  id: string;
+  title: string;
+  slug: string | null;
+  description: string | null;
+  icon: string | null;
+  color: string | null;
+  difficulty: string;
+  estimatedHours: number | null;
+  moduleCount: number;
+  lessonCount: number;
   // User-specific
-  progress: number // 0-100
-  status: "locked" | "available" | "in-progress" | "completed"
-}
+  progress: number; // 0-100
+  status: "locked" | "available" | "in-progress" | "completed";
+};
 
 export type RoadmapData = {
-  courses: (CourseNodeData & { x: number; y: number; group: string | null })[]
-  edges: { source: string; target: string }[]
-}
+  courses: (CourseNodeData & { x: number; y: number; group: string | null })[];
+  edges: { source: string; target: string }[];
+};
 
 function normalizeProgress(progress: number | null | undefined) {
-  if (typeof progress !== "number" || Number.isNaN(progress)) return 0
-  return Math.max(0, Math.min(100, progress))
+  if (typeof progress !== "number" || Number.isNaN(progress)) return 0;
+  return Math.max(0, Math.min(100, progress));
 }
 
 /**
@@ -33,8 +33,8 @@ function normalizeProgress(progress: number | null | undefined) {
  * prerequisite edges, and user progress.
  */
 export async function getRoadmapData(): Promise<RoadmapData> {
-  const session = await getServerSession(authOptions)
-  const userId = session?.user?.id
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
 
   // Fetch curated courses with roadmap nodes, prerequisites, module/lesson counts
   const courses = await prisma.course.findMany({
@@ -58,22 +58,22 @@ export async function getRoadmapData(): Promise<RoadmapData> {
         : {}),
     },
     orderBy: { createdAt: "asc" },
-  })
+  });
 
   // Build prerequisite edges
-  const edges: { source: string; target: string }[] = []
+  const edges: { source: string; target: string }[] = [];
   for (const course of courses) {
     for (const prereq of course.prerequisites) {
-      edges.push({ source: prereq.id, target: course.id })
+      edges.push({ source: prereq.id, target: course.id });
     }
   }
 
   // Determine completed course IDs for lock logic
-  const completedIds = new Set<string>()
+  const completedIds = new Set<string>();
   if (userId) {
     for (const course of courses) {
-      const progress = normalizeProgress(course.UserProgress?.[0]?.progress ?? 0)
-      if (progress >= 100) completedIds.add(course.id)
+      const progress = normalizeProgress(course.UserProgress?.[0]?.progress ?? 0);
+      if (progress >= 100) completedIds.add(course.id);
     }
   }
 
@@ -81,27 +81,22 @@ export async function getRoadmapData(): Promise<RoadmapData> {
   const courseNodes = courses
     .filter((c) => c.roadmapNode) // Only show courses that have a roadmap position
     .map((course) => {
-      const progress = normalizeProgress(course.UserProgress?.[0]?.progress ?? 0)
-      const moduleCount = course.modules.length
-      const lessonCount = course.modules.reduce(
-        (sum, m) => sum + m._count.lessons,
-        0
-      )
+      const progress = normalizeProgress(course.UserProgress?.[0]?.progress ?? 0);
+      const moduleCount = course.modules.length;
+      const lessonCount = course.modules.reduce((sum, m) => sum + m._count.lessons, 0);
 
       // Determine status
-      let status: CourseNodeData["status"] = "available"
+      let status: CourseNodeData["status"] = "available";
       if (!userId) {
-        status = "available" // Show all as available for non-logged-in users
+        status = "available"; // Show all as available for non-logged-in users
       } else if (progress >= 100) {
-        status = "completed"
+        status = "completed";
       } else if (progress > 0) {
-        status = "in-progress"
+        status = "in-progress";
       } else {
         // Check if all prerequisites are completed
-        const allPrereqsMet = course.prerequisites.every((p) =>
-          completedIds.has(p.id)
-        )
-        status = allPrereqsMet ? "available" : "locked"
+        const allPrereqsMet = course.prerequisites.every((p) => completedIds.has(p.id));
+        status = allPrereqsMet ? "available" : "locked";
       }
 
       return {
@@ -120,8 +115,8 @@ export async function getRoadmapData(): Promise<RoadmapData> {
         x: course.roadmapNode!.x,
         y: course.roadmapNode!.y,
         group: course.roadmapNode!.group,
-      }
-    })
+      };
+    });
 
-  return { courses: courseNodes, edges }
+  return { courses: courseNodes, edges };
 }

@@ -1,11 +1,18 @@
+import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { requireAdminApi } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+
+const updateModuleSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().nullable().optional(),
+  order: z.number().int().optional(),
+});
 
 // PUT /api/admin/modules/[moduleId] — update a module
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ moduleId: string }> }
+  { params }: { params: Promise<{ moduleId: string }> },
 ) {
   const session = await requireAdminApi();
   if (!session) {
@@ -13,8 +20,11 @@ export async function PUT(
   }
 
   const { moduleId } = await params;
-  const body = await request.json();
-  const { title, description, order } = body;
+  const parsed = updateModuleSchema.safeParse(await request.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { title, description, order } = parsed.data;
 
   const module = await prisma.module.update({
     where: { id: moduleId },
@@ -31,7 +41,7 @@ export async function PUT(
 // DELETE /api/admin/modules/[moduleId] — delete a module and its lessons
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ moduleId: string }> }
+  { params }: { params: Promise<{ moduleId: string }> },
 ) {
   const session = await requireAdminApi();
   if (!session) {

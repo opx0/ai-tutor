@@ -1,16 +1,16 @@
-import { getRoadmapData } from "@/lib/roadmap"
-import RoadmapFlow from "@/components/roadmap/roadmap-flow"
-import { ArrowLeft, Orbit } from "lucide-react"
-import Link from "next/link"
+import { ArrowLeft, Orbit } from "lucide-react";
+import Link from "next/link";
+import RoadmapFlow from "@/components/roadmap/roadmap-flow";
+import { getRoadmapData } from "@/lib/roadmap";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Visual Path - LearnLM",
-}
+};
 
 export default async function VisualPathPage() {
-  const data = await getRoadmapData()
+  const data = await getRoadmapData();
 
   return (
     <div className="flex flex-col h-[calc(100vh-5rem)] relative overflow-hidden bg-background">
@@ -31,5 +31,5 @@ export default async function VisualPathPage() {
       {/* Flow canvas */}
       {data.courses.length > 0 && <RoadmapFlow data={data} />}
     </div>
-  )
+  );
 }

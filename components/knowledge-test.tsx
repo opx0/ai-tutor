@@ -1,48 +1,48 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Check, X, TriangleAlert } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
+import { Check, TriangleAlert, X } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type Question = {
-  id: string
-  question: string
-  options: string[]
-  correctAnswer: number
-}
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+};
 
 type KnowledgeTestProps = {
-  lessonId: string
-  questions: Question[]
-}
+  lessonId: string;
+  questions: Question[];
+};
 
 export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProps) {
-  const [answers, setAnswers] = useState<Record<string, number>>({})
-  const [submitted, setSubmitted] = useState(false)
-  const [score, setScore] = useState(0)
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [score, setScore] = useState(0);
 
   const handleSubmit = () => {
-    if (Object.keys(answers).length === 0) return
+    if (Object.keys(answers).length === 0) return;
 
-    let correctCount = 0
+    let correctCount = 0;
     questions.forEach((question) => {
       if (answers[question.id] === question.correctAnswer) {
-        correctCount++
+        correctCount++;
       }
-    })
+    });
 
-    setScore(correctCount)
-    setSubmitted(true)
-  }
+    setScore(correctCount);
+    setSubmitted(true);
+  };
 
   const handleReset = () => {
-    setAnswers({})
-    setSubmitted(false)
-    setScore(0)
-  }
+    setAnswers({});
+    setSubmitted(false);
+    setScore(0);
+  };
 
   return (
     <div className="mt-12">
@@ -83,11 +83,11 @@ export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProp
                   <RadioGroup
                     value={answers[question.id]?.toString()}
                     onValueChange={(value) => {
-                      if (submitted) return
+                      if (submitted) return;
                       setAnswers({
                         ...answers,
                         [question.id]: Number.parseInt(value),
-                      })
+                      });
                     }}
                     className="space-y-3"
                   >
@@ -98,13 +98,17 @@ export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProp
                           id={`${question.id}-${optionIndex}`}
                           disabled={submitted}
                           className={
-                            submitted && question.correctAnswer === optionIndex ? "text-green-500 border-green-500" : ""
+                            submitted && question.correctAnswer === optionIndex
+                              ? "text-green-500 border-green-500"
+                              : ""
                           }
                         />
                         <Label
                           htmlFor={`${question.id}-${optionIndex}`}
                           className={
-                            submitted && question.correctAnswer === optionIndex ? "text-green-500 font-medium" : ""
+                            submitted && question.correctAnswer === optionIndex
+                              ? "text-green-500 font-medium"
+                              : ""
                           }
                         >
                           {option}
@@ -116,7 +120,8 @@ export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProp
                 {submitted && answers[question.id] !== question.correctAnswer && (
                   <CardFooter className="bg-muted/50 border-t px-6 py-3">
                     <div className="text-sm">
-                      <span className="font-medium">Correct answer:</span> {question.options[question.correctAnswer]}
+                      <span className="font-medium">Correct answer:</span>{" "}
+                      {question.options[question.correctAnswer]}
                     </div>
                   </CardFooter>
                 )}
@@ -129,13 +134,18 @@ export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProp
               <>
                 <div className="text-lg">
                   Your score: <span className="font-bold">{score}</span> out of{" "}
-                  <span className="font-bold">{questions.length}</span> ({Math.round((score / questions.length) * 100)}
+                  <span className="font-bold">{questions.length}</span> (
+                  {Math.round((score / questions.length) * 100)}
                   %)
                 </div>
                 <Button onClick={handleReset}>Try Again</Button>
               </>
             ) : (
-              <Button onClick={handleSubmit} disabled={Object.keys(answers).length === 0} className="ml-auto">
+              <Button
+                onClick={handleSubmit}
+                disabled={Object.keys(answers).length === 0}
+                className="ml-auto"
+              >
                 Submit Answers
               </Button>
             )}
@@ -143,6 +153,5 @@ export default function KnowledgeTest({ lessonId, questions }: KnowledgeTestProp
         </>
       )}
     </div>
-  )
+  );
 }
-

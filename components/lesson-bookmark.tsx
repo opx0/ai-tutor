@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { LoaderCircle, BookmarkPlus, BookmarkCheck } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
+import { BookmarkCheck, BookmarkPlus, LoaderCircle } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 // PHP backend URL - Commented out for Render deployment
 // const PHP_API_URL = "http://localhost:8000/api"
 
 type LessonBookmarkProps = {
-  lessonId: string
-}
+  lessonId: string;
+};
 
 export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
-  const { data: session, status } = useSession()
-  const [isBookmarked, setIsBookmarked] = useState(false)
-  const [bookmarkId, setBookmarkId] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isToggling, setIsToggling] = useState(false)
+  const { data: session, status } = useSession();
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated" && lessonId) {
-      checkBookmarkStatus()
+      checkBookmarkStatus();
     }
-  }, [status, lessonId])
+  }, [status, lessonId]);
 
   const checkBookmarkStatus = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       // PHP API call commented out for Render deployment
       /*
@@ -46,32 +46,32 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
       */
 
       // Using Next.js API directly
-      const response = await fetch(`/api/bookmarks?lessonId=${lessonId}`)
-      const data = await response.json()
+      const response = await fetch(`/api/bookmarks?lessonId=${lessonId}`);
+      const data = await response.json();
 
       if (data.bookmark) {
-        setIsBookmarked(true)
-        setBookmarkId(data.bookmark.id)
+        setIsBookmarked(true);
+        setBookmarkId(data.bookmark.id);
       } else {
-        setIsBookmarked(false)
-        setBookmarkId(null)
+        setIsBookmarked(false);
+        setBookmarkId(null);
       }
     } catch (error) {
-      console.error("Bookmark API error:", error)
-      setIsBookmarked(false)
-      setBookmarkId(null)
+      console.error("Bookmark API error:", error);
+      setIsBookmarked(false);
+      setBookmarkId(null);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const toggleBookmark = async () => {
     if (status !== "authenticated") {
-      toast.error("Please sign in to bookmark lessons")
-      return
+      toast.error("Please sign in to bookmark lessons");
+      return;
     }
 
-    setIsToggling(true)
+    setIsToggling(true);
     try {
       // PHP API call commented out for Render deployment
       /*
@@ -116,15 +116,15 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
         const queryParam = bookmarkId ? `id=${bookmarkId}` : `lessonId=${lessonId}`;
         const response = await fetch(`/api/bookmarks?${queryParam}`, {
           method: "DELETE",
-        })
+        });
 
         if (!response.ok) {
-          throw new Error("Failed to remove bookmark")
+          throw new Error("Failed to remove bookmark");
         }
 
-        setIsBookmarked(false)
-        setBookmarkId(null)
-        toast.success("Bookmark removed")
+        setIsBookmarked(false);
+        setBookmarkId(null);
+        toast.success("Bookmark removed");
       } else {
         const response = await fetch("/api/bookmarks", {
           method: "POST",
@@ -134,24 +134,24 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
           body: JSON.stringify({
             lessonId,
           }),
-        })
+        });
 
         if (!response.ok) {
-          throw new Error("Failed to bookmark lesson")
+          throw new Error("Failed to bookmark lesson");
         }
 
-        const data = await response.json()
-        setIsBookmarked(true)
-        setBookmarkId(data.bookmark.id)
-        toast.success("Lesson bookmarked")
+        const data = await response.json();
+        setIsBookmarked(true);
+        setBookmarkId(data.bookmark.id);
+        toast.success("Lesson bookmarked");
       }
     } catch (error) {
-      console.error("Bookmark API error:", error)
-      toast.error("Failed to update bookmark")
+      console.error("Bookmark API error:", error);
+      toast.error("Failed to update bookmark");
     } finally {
-      setIsToggling(false)
+      setIsToggling(false);
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -159,11 +159,16 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
         <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
         Loading...
       </Button>
-    )
+    );
   }
 
   return (
-    <Button variant={isBookmarked ? "default" : "outline"} size="sm" onClick={toggleBookmark} disabled={isToggling}>
+    <Button
+      variant={isBookmarked ? "default" : "outline"}
+      size="sm"
+      onClick={toggleBookmark}
+      disabled={isToggling}
+    >
       {isToggling ? (
         <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
       ) : isBookmarked ? (
@@ -173,6 +178,5 @@ export default function LessonBookmark({ lessonId }: LessonBookmarkProps) {
       )}
       {isBookmarked ? "Bookmarked" : "Bookmark"}
     </Button>
-  )
+  );
 }
-

@@ -1,11 +1,11 @@
+import type { NextRequest } from "next/server";
+import { getServerSession } from "next-auth";
 import { generateKnowledgeTestQuestions } from "@/lib/ai-router";
-import { authOptions } from "@/lib/auth";
 import { createErrorResponse, createSuccessResponse } from "@/lib/api-utils";
+import { authOptions } from "@/lib/auth";
 import { logApiRequest, logError } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
-import { getServerSession } from "next-auth";
-import { type NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const requestContext = logApiRequest(req);
@@ -17,12 +17,12 @@ export async function POST(req: NextRequest) {
         "Unauthorized. Please sign in.",
         401,
         "Missing authenticated user session",
-        "UNAUTHORIZED"
+        "UNAUTHORIZED",
       );
     }
 
     const clientId = getClientIdentifier(req, session.user.id);
-    const limit = consumeRateLimit(`knowledge-test:${session.user.id}:${clientId}`, {
+    const limit = await consumeRateLimit(`knowledge-test:${session.user.id}:${clientId}`, {
       max: 12,
       windowMs: 60_000,
     });
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         "Too many requests. Please try again shortly.",
         429,
         `Retry after ${Math.ceil(limit.retryAfterMs / 1000)} seconds`,
-        "RATE_LIMITED"
+        "RATE_LIMITED",
       );
     }
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         "lessonId is required",
         400,
         "Expected a non-empty lessonId string",
-        "INVALID_INPUT"
+        "INVALID_INPUT",
       );
     }
 
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         "Lesson not found",
         404,
         `No lesson found with ID: ${lessonId}`,
-        "RESOURCE_NOT_FOUND"
+        "RESOURCE_NOT_FOUND",
       );
     }
 
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         "You do not have access to this lesson",
         403,
         "Custom private course content is restricted to the owner",
-        "ACCESS_DENIED"
+        "ACCESS_DENIED",
       );
     }
 
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
       "Failed to generate knowledge test",
       500,
       error instanceof Error ? error.message : "Unknown error",
-      "KNOWLEDGE_TEST_GENERATION_ERROR"
+      "KNOWLEDGE_TEST_GENERATION_ERROR",
     );
   }
 }

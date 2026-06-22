@@ -1,12 +1,11 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-
 import * as THREE from "three";
+import { cn } from "@/lib/utils";
 
 type Uniforms = {
   [key: string]: {
@@ -48,17 +47,17 @@ export const CanvasRevealEffect = ({
   reverse?: boolean; // This prop determines the direction
 }) => {
   return (
-    <div className={cn("h-full relative w-full", containerClassName)}> {/* Removed bg-white */}
+    <div className={cn("h-full relative w-full", containerClassName)}>
+      {" "}
+      {/* Removed bg-white */}
       <div className="h-full w-full">
         <DotMatrix
           colors={colors ?? [[0, 255, 255]]}
           dotSize={dotSize ?? 3}
-          opacities={
-            opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]
-          }
+          opacities={opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]}
           // Pass reverse state and speed via string flags in the empty shader prop
           shader={`
-            ${reverse ? 'u_reverse_active' : 'false'}_;
+            ${reverse ? "u_reverse_active" : "false"}_;
             animation_speed_factor_${animationSpeed.toFixed(1)}_;
           `}
           center={["x", "y"]}
@@ -121,9 +120,7 @@ const ShaderMaterial = ({
           break;
         case "uniform3fv":
           preparedUniforms[uniformName] = {
-            value: uniform.value.map((v: number[]) =>
-              new THREE.Vector3().fromArray(v)
-            ),
+            value: uniform.value.map((v: number[]) => new THREE.Vector3().fromArray(v)),
             type: "3fv",
           };
           break;
@@ -208,40 +205,15 @@ const DotMatrix: React.FC<DotMatrixProps> = ({
 }) => {
   // ... uniforms calculation remains the same for colors, opacities, etc.
   const uniforms = React.useMemo(() => {
-    let colorsArray = [
-      colors[0],
-      colors[0],
-      colors[0],
-      colors[0],
-      colors[0],
-      colors[0],
-    ];
+    let colorsArray = [colors[0], colors[0], colors[0], colors[0], colors[0], colors[0]];
     if (colors.length === 2) {
-      colorsArray = [
-        colors[0],
-        colors[0],
-        colors[0],
-        colors[1],
-        colors[1],
-        colors[1],
-      ];
+      colorsArray = [colors[0], colors[0], colors[0], colors[1], colors[1], colors[1]];
     } else if (colors.length === 3) {
-      colorsArray = [
-        colors[0],
-        colors[0],
-        colors[1],
-        colors[1],
-        colors[2],
-        colors[2],
-      ];
+      colorsArray = [colors[0], colors[0], colors[1], colors[1], colors[2], colors[2]];
     }
     return {
       u_colors: {
-        value: colorsArray.map((color) => [
-          color[0] / 255,
-          color[1] / 255,
-          color[2] / 255,
-        ]),
+        value: colorsArray.map((color) => [color[0] / 255, color[1] / 255, color[2] / 255]),
         type: "uniform3fv",
       },
       u_opacities: {
@@ -354,14 +326,16 @@ const DotMatrix: React.FC<DotMatrixProps> = ({
   );
 };
 
-
 const AnimatedNavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const defaultTextColor = 'text-gray-300';
-  const hoverTextColor = 'text-white';
-  const textSizeClass = 'text-sm';
+  const defaultTextColor = "text-gray-300";
+  const hoverTextColor = "text-white";
+  const textSizeClass = "text-sm";
 
   return (
-    <a href={href} className={`group relative inline-block overflow-hidden h-5 flex items-center ${textSizeClass}`}>
+    <a
+      href={href}
+      className={`group relative inline-block overflow-hidden h-5 flex items-center ${textSizeClass}`}
+    >
       <div className="flex flex-col transition-transform duration-400 ease-out transform group-hover:-translate-y-1/2">
         <span className={defaultTextColor}>{children}</span>
         <span className={hoverTextColor}>{children}</span>
@@ -372,7 +346,7 @@ const AnimatedNavLink = ({ href, children }: { href: string; children: React.Rea
 
 export function MiniNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [headerShapeClass, setHeaderShapeClass] = useState('rounded-full');
+  const [headerShapeClass, setHeaderShapeClass] = useState("rounded-full");
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleMenu = () => {
@@ -385,10 +359,10 @@ export function MiniNavbar() {
     }
 
     if (isOpen) {
-      setHeaderShapeClass('rounded-xl');
+      setHeaderShapeClass("rounded-xl");
     } else {
       shapeTimeoutRef.current = setTimeout(() => {
-        setHeaderShapeClass('rounded-full');
+        setHeaderShapeClass("rounded-full");
       }, 300);
     }
 
@@ -401,17 +375,17 @@ export function MiniNavbar() {
 
   const logoElement = (
     <div className="relative w-5 h-5 flex items-center justify-center">
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 top-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 left-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 right-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
-    <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 bottom-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
- </div>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 top-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 left-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 right-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
+      <span className="absolute w-1.5 h-1.5 rounded-full bg-gray-200 bottom-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
+    </div>
   );
 
   const navLinksData = [
-    { label: 'Manifesto', href: '#1' },
-    { label: 'Careers', href: '#2' },
-    { label: 'Discover', href: '#3' },
+    { label: "Manifesto", href: "#1" },
+    { label: "Careers", href: "#2" },
+    { label: "Discover", href: "#3" },
   ];
 
   const loginButtonElement = (
@@ -425,12 +399,14 @@ export function MiniNavbar() {
   const signupButtonElement = (
     <Link href="/auth/signup" className="w-full sm:w-auto">
       <div className="relative group w-full sm:w-auto">
-        <div className="absolute inset-0 -m-2 rounded-full
+        <div
+          className="absolute inset-0 -m-2 rounded-full
                       hidden sm:block
                       bg-gray-100
                       opacity-40 filter blur-lg pointer-events-none
                       transition-all duration-300 ease-out
-                      group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"></div>
+                      group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
+        ></div>
         <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-black bg-gradient-to-br from-gray-100 to-gray-300 rounded-full hover:from-gray-200 hover:to-gray-400 transition-all duration-200 w-full sm:w-auto">
           Signup
         </button>
@@ -439,18 +415,17 @@ export function MiniNavbar() {
   );
 
   return (
-    <header className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-20
+    <header
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-20
                        flex flex-col items-center
                        pl-6 pr-6 py-3 backdrop-blur-sm
                        ${headerShapeClass}
                        border border-[#333] bg-[#1f1f1f57]
                        w-[calc(100%-2rem)] sm:w-auto
-                       transition-[border-radius] duration-0 ease-in-out`}>
-
+                       transition-[border-radius] duration-0 ease-in-out`}
+    >
       <div className="flex items-center justify-between w-full gap-x-6 sm:gap-x-8">
-        <div className="flex items-center">
-           {logoElement}
-        </div>
+        <div className="flex items-center">{logoElement}</div>
 
         <nav className="hidden sm:flex items-center space-x-4 sm:space-x-6 text-sm">
           {navLinksData.map((link) => (
@@ -465,20 +440,56 @@ export function MiniNavbar() {
           {signupButtonElement}
         </div>
 
-        <button className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none" onClick={toggleMenu} aria-label={isOpen ? 'Close Menu' : 'Open Menu'}>
+        <button
+          className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none"
+          onClick={toggleMenu}
+          aria-label={isOpen ? "Close Menu" : "Open Menu"}
+        >
           {isOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
           ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
           )}
         </button>
       </div>
 
-      <div className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
-                       ${isOpen ? 'max-h-[1000px] opacity-100 pt-4' : 'max-h-0 opacity-0 pt-0 pointer-events-none'}`}>
+      <div
+        className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
+                       ${isOpen ? "max-h-[1000px] opacity-100 pt-4" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
+      >
         <nav className="flex flex-col items-center space-y-4 text-base w-full">
           {navLinksData.map((link) => (
-            <a key={link.href} href={link.href} className="text-gray-300 hover:text-white transition-colors w-full text-center">
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-gray-300 hover:text-white transition-colors w-full text-center"
+            >
               {link.label}
             </a>
           ))}
@@ -526,7 +537,7 @@ export const SignInPage = ({ className }: SignInPageProps) => {
       }
 
       if (index === 5 && value) {
-        const isComplete = newCode.every(digit => digit.length === 1);
+        const isComplete = newCode.every((digit) => digit.length === 1);
         if (isComplete) {
           setReverseCanvasVisible(true);
           setTimeout(() => {
@@ -607,10 +618,13 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">Welcome Developer</h1>
-                      <p className="text-[1.8rem] text-white/70 font-light">Your sign in component</p>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
+                        Welcome Developer
+                      </h1>
+                      <p className="text-[1.8rem] text-white/70 font-light">
+                        Your sign in component
+                      </p>
                     </div>
-
 
                     <div className="space-y-4">
                       <button className="backdrop-blur-[2px] w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-full py-3 px-4 transition-colors">
@@ -652,7 +666,42 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     </div>
 
                     <p className="text-xs text-white/40 pt-10">
-                      By signing up, you agree to the <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">MSA</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Product Terms</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Policies</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Notice</Link>, and <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Notice</Link>.
+                      By signing up, you agree to the{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        MSA
+                      </Link>
+                      ,{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Product Terms
+                      </Link>
+                      ,{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Policies
+                      </Link>
+                      ,{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Privacy Notice
+                      </Link>
+                      , and{" "}
+                      <Link
+                        href="#"
+                        className="underline text-white/40 hover:text-white/60 transition-colors"
+                      >
+                        Cookie Notice
+                      </Link>
+                      .
                     </p>
                   </motion.div>
                 ) : step === "code" ? (
@@ -665,7 +714,9 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">We sent you a code</h1>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
+                        We sent you a code
+                      </h1>
                       <p className="text-[1.25rem] text-white/50 font-light">Please enter it</p>
                     </div>
 
@@ -684,10 +735,10 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                                   pattern="[0-9]*"
                                   maxLength={1}
                                   value={digit}
-                                  onChange={e => handleCodeChange(i, e.target.value)}
-                                  onKeyDown={e => handleKeyDown(i, e)}
+                                  onChange={(e) => handleCodeChange(i, e.target.value)}
+                                  onKeyDown={(e) => handleKeyDown(i, e)}
                                   className="w-8 text-center text-xl bg-transparent text-white border-none focus:outline-none focus:ring-0 appearance-none"
-                                  style={{ caretColor: 'transparent' }}
+                                  style={{ caretColor: "transparent" }}
                                 />
                                 {!digit && (
                                   <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
@@ -724,11 +775,11 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                       </motion.button>
                       <motion.button
                         className={`flex-1 rounded-full font-medium py-3 border transition-all duration-300 ${
-                          code.every(d => d !== "")
-                          ? "bg-white text-black border-transparent hover:bg-white/90 cursor-pointer"
-                          : "bg-[#111] text-white/50 border-white/10 cursor-not-allowed"
+                          code.every((d) => d !== "")
+                            ? "bg-white text-black border-transparent hover:bg-white/90 cursor-pointer"
+                            : "bg-[#111] text-white/50 border-white/10 cursor-not-allowed"
                         }`}
-                        disabled={!code.every(d => d !== "")}
+                        disabled={!code.every((d) => d !== "")}
                       >
                         Continue
                       </motion.button>
@@ -736,7 +787,42 @@ export const SignInPage = ({ className }: SignInPageProps) => {
 
                     <div className="pt-16">
                       <p className="text-xs text-white/40">
-                        By signing up, you agree to the <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">MSA</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Product Terms</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Policies</Link>, <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Privacy Notice</Link>, and <Link href="#" className="underline text-white/40 hover:text-white/60 transition-colors">Cookie Notice</Link>.
+                        By signing up, you agree to the{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          MSA
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Product Terms
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Policies
+                        </Link>
+                        ,{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Privacy Notice
+                        </Link>
+                        , and{" "}
+                        <Link
+                          href="#"
+                          className="underline text-white/40 hover:text-white/60 transition-colors"
+                        >
+                          Cookie Notice
+                        </Link>
+                        .
                       </p>
                     </div>
                   </motion.div>
@@ -749,7 +835,9 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     className="space-y-6 text-center"
                   >
                     <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">You're in!</h1>
+                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
+                        You're in!
+                      </h1>
                       <p className="text-[1.25rem] text-white/50 font-light">Welcome</p>
                     </div>
 
@@ -760,8 +848,17 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                       className="py-10"
                     >
                       <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-white to-white/70 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-black" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-8 w-8 text-black"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     </motion.div>
@@ -779,7 +876,6 @@ export const SignInPage = ({ className }: SignInPageProps) => {
               </AnimatePresence>
             </div>
           </div>
-
         </div>
       </div>
     </div>

@@ -1,6 +1,19 @@
+import type { Difficulty } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { requireAdminApi } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+
+const createCourseSchema = z.object({
+  title: z.string().min(1),
+  difficulty: z.string().min(1),
+  topic: z.string().min(1),
+  description: z.string().optional().nullable(),
+  slug: z.string().optional().nullable(),
+  icon: z.string().optional().nullable(),
+  color: z.string().optional().nullable(),
+  estimatedHours: z.union([z.string(), z.number()]).optional().nullable(),
+});
 
 // GET /api/admin/courses — list all curated courses
 export async function GET() {
@@ -36,24 +49,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await request.json();
-  const {
-    title,
-    description,
-    difficulty,
-    topic,
-    slug,
-    icon,
-    color,
-    estimatedHours,
-  } = body;
-
-  if (!title || !difficulty || !topic) {
+  const result = createCourseSchema.safeParse(await request.json());
+  if (!result.success) {
     return NextResponse.json(
       { error: "title, difficulty, and topic are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
+  const { title, description, difficulty, topic, slug, icon, color, estimatedHours } = result.data;
 
   // Check slug uniqueness
   if (slug) {
@@ -61,7 +64,7 @@ export async function POST(request: NextRequest) {
     if (existing) {
       return NextResponse.json(
         { error: "A course with this slug already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
   }
@@ -70,13 +73,13 @@ export async function POST(request: NextRequest) {
     data: {
       title,
       description: description || null,
-      difficulty,
+      difficulty: difficulty as Difficulty,
       topic,
       type: "CURATED",
       slug: slug || null,
       icon: icon || null,
       color: color || null,
-      estimatedHours: estimatedHours ? parseInt(estimatedHours) : null,
+      estimatedHours: estimatedHours ? parseInt(String(estimatedHours)) : null,
       isPublic: true,
       userId: session.user.id,
     },

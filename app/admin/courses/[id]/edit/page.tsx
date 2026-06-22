@@ -1,12 +1,8 @@
-import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 import { CourseEditor } from "./course-editor";
 
-export default async function EditCoursePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function EditCoursePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   const course = await prisma.course.findUnique({

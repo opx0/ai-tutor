@@ -1,8 +1,8 @@
 "use client";
 
 import { CheckIcon, LoaderCircle, SparklesIcon } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -45,8 +45,7 @@ function FilledCheck() {
 export default function SubscriptionPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [subscriptionInfo, setSubscriptionInfo] =
-    useState<SubscriptionInfo | null>(null);
+  const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [processingPayment, setProcessingPayment] = useState(false);
 
@@ -104,9 +103,7 @@ export default function SubscriptionPage() {
 
       if (!orderResponse.ok) {
         const errorData = await orderResponse.json();
-        throw new Error(
-          errorData.details || errorData.error || "Failed to create order"
-        );
+        throw new Error(errorData.details || errorData.error || "Failed to create order");
       }
 
       const orderData = await orderResponse.json();
@@ -118,7 +115,7 @@ export default function SubscriptionPage() {
         name: "LearnLM",
         description: "Premium Subscription",
         order_id: orderData.orderId,
-        handler: async function (response: any) {
+        handler: async (response: any) => {
           try {
             const verifyResponse = await fetch("/api/subscriptions/verify", {
               method: "POST",
@@ -194,7 +191,7 @@ export default function SubscriptionPage() {
         className={cn(
           "absolute inset-0 -z-10 size-full opacity-40",
           "bg-[radial-gradient(color-mix(in_oklab,var(--foreground)_8%,transparent)_1px,transparent_1px)]",
-          "bg-[size:12px_12px]"
+          "bg-[size:12px_12px]",
         )}
       />
       {/* Subtle radial glow */}
@@ -210,8 +207,7 @@ export default function SubscriptionPage() {
             <div className="text-center mb-12">
               <h1 className="text-5xl font-bold mb-6">Premium Membership</h1>
               <p className="text-lg text-muted-foreground">
-                Thank you for being a premium member. Enjoy unlimited access to
-                all features.
+                Thank you for being a premium member. Enjoy unlimited access to all features.
               </p>
             </div>
 
@@ -230,23 +226,17 @@ export default function SubscriptionPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="p-4 bg-background/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Subscription Status
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Subscription Status</p>
                   <p className="font-medium flex items-center">
                     <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
                     Active
                   </p>
                 </div>
                 <div className="p-4 bg-background/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Valid Until
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Valid Until</p>
                   <p className="font-medium">
                     {subscriptionInfo.subscriptionExpiresAt
-                      ? new Date(
-                          subscriptionInfo.subscriptionExpiresAt
-                        ).toLocaleDateString()
+                      ? new Date(subscriptionInfo.subscriptionExpiresAt).toLocaleDateString()
                       : "N/A"}
                   </p>
                 </div>
@@ -271,16 +261,10 @@ export default function SubscriptionPage() {
             </div>
 
             <div className="text-center">
-              <Button
-                variant="outline"
-                className="mr-2"
-                onClick={() => router.push("/courses")}
-              >
+              <Button variant="outline" className="mr-2" onClick={() => router.push("/courses")}>
                 Browse Courses
               </Button>
-              <Button onClick={() => router.push("/dashboard")}>
-                Go to Dashboard
-              </Button>
+              <Button onClick={() => router.push("/dashboard")}>Go to Dashboard</Button>
             </div>
           </div>
         ) : (
@@ -292,9 +276,8 @@ export default function SubscriptionPage() {
                 Unlock Your Learning
               </h1>
               <p className="text-muted-foreground mt-4 text-sm md:text-base">
-                Choose the plan that fits your learning journey. Upgrade
-                anytime to access unlimited AI-powered courses, modules, and
-                priority support.
+                Choose the plan that fits your learning journey. Upgrade anytime to access unlimited
+                AI-powered courses, modules, and priority support.
               </p>
             </div>
 
@@ -305,7 +288,7 @@ export default function SubscriptionPage() {
                   className={cn(
                     "bg-background border-foreground/10 relative w-full overflow-hidden rounded-md border",
                     "supports-[backdrop-filter]:bg-background/10 backdrop-blur",
-                    "lg:col-span-5"
+                    "lg:col-span-5",
                   )}
                 >
                   {/* Decorative gradient overlay */}
@@ -316,7 +299,7 @@ export default function SubscriptionPage() {
                         className={cn(
                           "absolute inset-0 size-full mix-blend-overlay",
                           "bg-[linear-gradient(to_right,var(--foreground)/.1_1px,transparent_1px)]",
-                          "bg-[size:24px]"
+                          "bg-[size:24px]",
                         )}
                       />
                     </div>
@@ -347,9 +330,7 @@ export default function SubscriptionPage() {
                       <span className="font-mono text-5xl font-semibold tracking-tight">
                         ₹{(monthlyPlans[0].price / 100).toFixed(0)}
                       </span>
-                      <span className="text-muted-foreground text-sm">
-                        /month
-                      </span>
+                      <span className="text-muted-foreground text-sm">/month</span>
                     </div>
                     <ul className="text-muted-foreground grid gap-4 text-sm lg:w-[70%]">
                       {monthlyPlans[0].features.map((f, i) => (
@@ -368,24 +349,19 @@ export default function SubscriptionPage() {
                 className={cn(
                   "bg-background border-foreground/10 relative overflow-hidden rounded-md border",
                   "supports-[backdrop-filter]:bg-background/10 backdrop-blur",
-                  "lg:col-span-3"
+                  "lg:col-span-3",
                 )}
               >
                 <div className="flex items-center gap-3 p-4">
                   <Badge variant="secondary">FREE</Badge>
                   <div className="ml-auto">
-                    <Button
-                      variant="outline"
-                      onClick={() => router.push("/dashboard")}
-                    >
+                    <Button variant="outline" onClick={() => router.push("/dashboard")}>
                       Get Started
                     </Button>
                   </div>
                 </div>
                 <div className="flex items-end gap-2 px-4 py-2">
-                  <span className="font-mono text-5xl font-semibold tracking-tight">
-                    Free
-                  </span>
+                  <span className="font-mono text-5xl font-semibold tracking-tight">Free</span>
                 </div>
                 <ul className="text-muted-foreground grid gap-4 p-4 text-sm">
                   {freeFeatures.map((f, i) => (
@@ -403,7 +379,7 @@ export default function SubscriptionPage() {
                   className={cn(
                     "bg-background border-foreground/10 relative overflow-hidden rounded-md border",
                     "supports-[backdrop-filter]:bg-background/10 backdrop-blur",
-                    "lg:col-span-4"
+                    "lg:col-span-4",
                   )}
                 >
                   <div className="flex items-center gap-3 p-4">
@@ -450,7 +426,7 @@ export default function SubscriptionPage() {
                 className={cn(
                   "bg-background border-foreground/10 relative overflow-hidden rounded-md border",
                   "supports-[backdrop-filter]:bg-background/10 backdrop-blur",
-                  "lg:col-span-4"
+                  "lg:col-span-4",
                 )}
               >
                 <div className="flex items-center gap-3 p-4">
@@ -479,8 +455,7 @@ export default function SubscriptionPage() {
 
             <div className="mt-12 text-center">
               <p className="text-muted-foreground text-sm">
-                All plans include access to our AI instructor and course
-                generation features.
+                All plans include access to our AI instructor and course generation features.
                 <br />
                 Need help choosing? Contact us for assistance.
               </p>

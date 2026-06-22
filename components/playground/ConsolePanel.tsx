@@ -1,4 +1,4 @@
-import { Terminal, Square } from "lucide-react";
+import { Square, Terminal } from "lucide-react";
 
 type Props = {
   output: string | null;

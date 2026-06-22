@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import type { Course } from "@prisma/client";
+import { CodeXml, Search } from "lucide-react";
 import Link from "next/link";
-import { Search, CodeXml } from "lucide-react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 // CourseButton import removed
 import useSWR from "swr";
-import type { Course } from "@prisma/client";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type CourseWithLessonCount = Course & {
   _count: {
@@ -21,7 +21,11 @@ type CourseWithLessonCount = Course & {
 };
 
 export default function CourseList() {
-  const { data: courses, error: fetchError, isLoading } = useSWR<CourseWithLessonCount[]>("/api/courses");
+  const {
+    data: courses,
+    error: fetchError,
+    isLoading,
+  } = useSWR<CourseWithLessonCount[]>("/api/courses");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState<CourseWithLessonCount[]>([]);
 
@@ -33,7 +37,7 @@ export default function CourseList() {
         const filtered = courses.filter(
           (course) =>
             course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            course.topic.toLowerCase().includes(searchQuery.toLowerCase())
+            course.topic.toLowerCase().includes(searchQuery.toLowerCase()),
         );
         setFilteredCourses(filtered);
       }
@@ -50,7 +54,7 @@ export default function CourseList() {
         const filtered = (courses || []).filter(
           (course) =>
             course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            course.topic.toLowerCase().includes(searchQuery.toLowerCase())
+            course.topic.toLowerCase().includes(searchQuery.toLowerCase()),
         );
         setFilteredCourses(filtered);
       }
@@ -115,14 +119,10 @@ export default function CourseList() {
       {filteredCourses.length === 0 ? (
         <div className="text-center py-12">
           {searchQuery ? (
-            <p className="text-muted-foreground">
-              No courses found matching your search.
-            </p>
-          )           : (
+            <p className="text-muted-foreground">No courses found matching your search.</p>
+          ) : (
             <>
-              <p className="text-muted-foreground mb-4">
-                You haven't created any courses yet.
-              </p>
+              <p className="text-muted-foreground mb-4">You haven't created any courses yet.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button asChild>
                   <Link href="/courses?tab=create">Create a Course</Link>
@@ -140,15 +140,16 @@ export default function CourseList() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredCourses.map((course) => (
-            <Card key={course.id} className="overflow-hidden flex flex-col group hover:-translate-y-1 shadow-sm hover:shadow-md transition-all bg-card/40 backdrop-blur-xl border border-border/40 rounded-3xl relative">
+            <Card
+              key={course.id}
+              className="overflow-hidden flex flex-col group hover:-translate-y-1 shadow-sm hover:shadow-md transition-all bg-card/40 backdrop-blur-xl border border-border/40 rounded-3xl relative"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-chart-2/0 via-transparent to-chart-2/0 group-hover:from-chart-2/5 transition-colors pointer-events-none" />
               <CardContent className="p-5 flex-grow relative z-10">
                 <Badge variant="outline" className="mb-2 px-2 py-0.5 text-xs">
                   {course.difficulty}
                 </Badge>
-                <h3 className="text-lg font-semibold mb-2 line-clamp-2">
-                  {course.title}
-                </h3>
+                <h3 className="text-lg font-semibold mb-2 line-clamp-2">{course.title}</h3>
                 <div className="flex items-center text-sm text-muted-foreground mb-3">
                   <span>{course._count.lessons} lessons</span>
                 </div>
@@ -162,9 +163,7 @@ export default function CourseList() {
                   className="w-full py-2 text-sm h-auto rounded-xl font-bold bg-background hover:bg-muted border border-border/50 text-foreground group-hover:border-chart-2/40 group-hover:text-chart-2 transition-colors"
                   asChild
                 >
-                  <Link href={`/courses/${course.id}`}>
-                    View Course
-                  </Link>
+                  <Link href={`/courses/${course.id}`}>View Course</Link>
                 </Button>
               </CardFooter>
             </Card>

@@ -50,14 +50,8 @@ export async function GET() {
   }
 
   // Check environment variables
-  const requiredEnvVars = [
-    "DATABASE_URL",
-    "NEXTAUTH_URL",
-    "NEXTAUTH_SECRET",
-  ];
-  const missingEnvVars = requiredEnvVars.filter(
-    (envVar) => !process.env[envVar]
-  );
+  const requiredEnvVars = ["DATABASE_URL", "NEXTAUTH_URL", "NEXTAUTH_SECRET"];
+  const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
   response.components.environment = {
     status: missingEnvVars.length === 0 ? "healthy" : "warning",

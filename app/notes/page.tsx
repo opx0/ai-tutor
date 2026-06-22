@@ -1,19 +1,19 @@
-import { redirect } from "next/navigation"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { format } from "date-fns"
+import { format } from "date-fns";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function NotesPage() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/auth/signin?callbackUrl=/notes")
+    redirect("/auth/signin?callbackUrl=/notes");
   }
 
   // Get user's notes
@@ -35,7 +35,7 @@ export default async function NotesPage() {
     orderBy: {
       updatedAt: "desc",
     },
-  })
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -66,7 +66,9 @@ export default async function NotesPage() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="font-semibold">{note.lesson.title}</h3>
-                    <p className="text-sm text-muted-foreground">{note.lesson.module.course.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {note.lesson.module.course.title}
+                    </p>
                   </div>
                 </div>
                 <div className="prose prose-sm max-w-none mb-4">
@@ -77,7 +79,9 @@ export default async function NotesPage() {
                     {format(new Date(note.updatedAt), "MMM d, yyyy")}
                   </span>
                   <Button size="sm" variant="outline" asChild>
-                    <Link href={`/courses/${note.lesson.module.courseId}/${note.lessonId}`}>View Lesson</Link>
+                    <Link href={`/courses/${note.lesson.module.courseId}/${note.lessonId}`}>
+                      View Lesson
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
@@ -86,6 +90,5 @@ export default async function NotesPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
-

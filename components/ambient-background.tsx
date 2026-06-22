@@ -33,9 +33,7 @@ export function AmbientBackground({ variant = "subtle" }: AmbientBackgroundProps
         className={`ambient-blob ambient-blob-2 ${isFull ? "opacity-[0.06]" : "opacity-[0.03]"}`}
       />
       {/* Blob 3 — teal accent, center (full variant only) */}
-      {isFull && (
-        <div className="ambient-blob ambient-blob-3 opacity-[0.05]" />
-      )}
+      {isFull && <div className="ambient-blob ambient-blob-3 opacity-[0.05]" />}
       {/* Dot grid overlay */}
       <div className="ambient-dot-grid" />
     </div>

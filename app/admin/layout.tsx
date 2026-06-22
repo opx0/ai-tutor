@@ -1,12 +1,7 @@
-import { requireAdmin } from "@/lib/admin";
-import {
-  BookOpen,
-  Home,
-  LayoutDashboard,
-  Settings,
-} from "lucide-react";
+import { BookOpen, Home, LayoutDashboard, Settings } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
+import { requireAdmin } from "@/lib/admin";
 
 const adminNav = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -14,11 +9,7 @@ const adminNav = [
   { title: "Site Settings", href: "/profile", icon: Settings },
 ];
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await requireAdmin();
 
   return (
@@ -32,9 +23,7 @@ export default async function AdminLayout({
             </div>
             <div>
               <h2 className="font-semibold text-sm">Admin Panel</h2>
-              <p className="text-xs text-muted-foreground">
-                {session.user.email}
-              </p>
+              <p className="text-xs text-muted-foreground">{session.user.email}</p>
             </div>
           </Link>
         </div>

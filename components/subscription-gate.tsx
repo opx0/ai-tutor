@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { LoaderCircle, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { LoaderCircle, Lock } from "lucide-react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -45,19 +45,19 @@ export default function SubscriptionGate({
   const checkAccess = async () => {
     try {
       setLoading(true);
-      
+
       const url = new URL("/api/courses/access", window.location.origin);
       url.searchParams.append("courseId", courseId);
       if (moduleId) {
         url.searchParams.append("moduleId", moduleId);
       }
-      
+
       const response = await fetch(url.toString());
-      
+
       if (!response.ok) {
         throw new Error("Failed to check access");
       }
-      
+
       const data = await response.json();
       setHasAccess(data.hasAccess);
       setSubscriptionStatus(data.subscriptionStatus);
@@ -94,9 +94,7 @@ export default function SubscriptionGate({
               </div>
             </div>
             <CardTitle className="text-center text-xl">
-              {moduleId
-                ? `This module is locked`
-                : `Full course access is locked`}
+              {moduleId ? `This module is locked` : `Full course access is locked`}
             </CardTitle>
             <CardDescription className="text-center">
               {moduleId && moduleOrder !== null && moduleOrder >= 3
@@ -110,16 +108,12 @@ export default function SubscriptionGate({
                 Upgrade to premium to unlock unlimited access to all courses and modules.
               </p>
               {moduleId && moduleName && (
-                <p className="text-sm text-muted-foreground">
-                  Module: {moduleName}
-                </p>
+                <p className="text-sm text-muted-foreground">Module: {moduleName}</p>
               )}
             </div>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button onClick={() => router.push("/subscription")}>
-              View Subscription Plans
-            </Button>
+            <Button onClick={() => router.push("/subscription")}>View Subscription Plans</Button>
           </CardFooter>
         </Card>
       </div>

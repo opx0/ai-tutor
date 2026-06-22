@@ -1,22 +1,22 @@
+import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { streamTAResponse } from "@/lib/ai-router";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
-import { getServerSession } from "next-auth";
-import { type NextRequest, NextResponse } from "next/server";
+
+// Allow long-running streamed responses before the platform times out the route.
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     const clientId = getClientIdentifier(req, session.user.id);
-    const limit = consumeRateLimit(`ta:${session.user.id}:${clientId}`, {
+    const limit = await consumeRateLimit(`ta:${session.user.id}:${clientId}`, {
       max: 20,
       windowMs: 60_000,
     });
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
           error: "Too many assistant requests. Please try again shortly.",
           retryAfterMs: limit.retryAfterMs,
         },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     if (message.length > 4_000) {
       return NextResponse.json(
         { error: "Message is too long. Please keep it under 4000 characters." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     if (courseId && typeof courseId === "string" && course.id !== courseId) {
       return NextResponse.json(
         { error: "lessonId does not match the provided courseId" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     if (!course.isPublic && course.type === "CUSTOM" && course.userId !== session.user.id) {
       return NextResponse.json(
         { error: "You do not have access to this lesson." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -119,18 +119,16 @@ Format your responses with appropriate spacing and structure for readability.
 Use markdown formatting when it helps clarify your explanation (e.g., for code blocks, lists, or emphasis).
     `.trim();
 
-    // Stream the response — Perplexity Sonar Reasoning Pro if configured, else Gemini Flash
+    // Stream the TA response (Gemini, via the centralized AI router).
     const result = await streamTAResponse({
       systemPrompt,
       userMessage: message,
+      signal: req.signal,
     });
 
     return result.toTextStreamResponse();
   } catch (error) {
     console.error("Error generating Teaching Assistant response:", error);
-    return NextResponse.json(
-      { error: "Failed to generate response" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to generate response" }, { status: 500 });
   }
 }

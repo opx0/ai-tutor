@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { LoaderCircle, Users, BookOpen, BookMarked, FileText } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { BookMarked, BookOpen, FileText, LoaderCircle, Users } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 // PHP backend URL - Commented out for Render deployment
 // const PHP_API_URL = "http://localhost:8000/api"
 
 type CourseStatisticsProps = {
-  courseId?: string // Optional - if not provided, shows overall stats
-}
+  courseId?: string; // Optional - if not provided, shows overall stats
+};
 
 export default function CourseStatistics({ courseId }: CourseStatisticsProps) {
-  const { status } = useSession()
-  const [isLoading, setIsLoading] = useState(true)
-  const [stats, setStats] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { status } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetchStatistics()
+      fetchStatistics();
     } else if (status === "unauthenticated") {
-      setIsLoading(false)
-      setError("Please sign in to view statistics")
+      setIsLoading(false);
+      setError("Please sign in to view statistics");
     }
-  }, [status, courseId])
+  }, [status, courseId]);
 
   const fetchStatistics = async () => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
       // PHP API call commented out for Render deployment
@@ -71,63 +71,72 @@ export default function CourseStatistics({ courseId }: CourseStatisticsProps) {
 
       // For Render deployment, we'll use mock statistics data
       // In a real implementation, you would create a Next.js API route for statistics
-      setStats(courseId ? {
-        totalLessons: 0,
-        completedLessons: 0,
-        averageProgress: 0,
-        userCount: 0,
-        bookmarkCount: 0
-      } : {
-        courseCount: 0,
-        averageProgress: 0,
-        bookmarkCount: 0,
-        noteCount: 0,
-        topCourses: []
-      })
-
+      setStats(
+        courseId
+          ? {
+              totalLessons: 0,
+              completedLessons: 0,
+              averageProgress: 0,
+              userCount: 0,
+              bookmarkCount: 0,
+            }
+          : {
+              courseCount: 0,
+              averageProgress: 0,
+              bookmarkCount: 0,
+              noteCount: 0,
+              topCourses: [],
+            },
+      );
     } catch (error) {
-      console.error("Error fetching statistics:", error)
-      setError("Failed to load statistics")
+      console.error("Error fetching statistics:", error);
+      setError("Failed to load statistics");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">{courseId ? "Course Statistics" : "Learning Statistics"}</h2>
+        <h2 className="text-xl font-bold">
+          {courseId ? "Course Statistics" : "Learning Statistics"}
+        </h2>
         <div className="flex justify-center py-12">
           <LoaderCircle className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">{courseId ? "Course Statistics" : "Learning Statistics"}</h2>
+        <h2 className="text-xl font-bold">
+          {courseId ? "Course Statistics" : "Learning Statistics"}
+        </h2>
         <Card>
           <CardContent className="py-6">
             <p className="text-center text-muted-foreground">{error}</p>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   if (!stats) {
     return (
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">{courseId ? "Course Statistics" : "Learning Statistics"}</h2>
+        <h2 className="text-xl font-bold">
+          {courseId ? "Course Statistics" : "Learning Statistics"}
+        </h2>
         <Card>
           <CardContent className="py-6">
             <p className="text-center text-muted-foreground">No statistics available</p>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   // Course-specific statistics
@@ -169,7 +178,7 @@ export default function CourseStatistics({ courseId }: CourseStatisticsProps) {
             <CardContent>
               <div className="text-2xl font-bold">{stats.averageProgress}%</div>
               <p className="text-xs text-muted-foreground mt-1">
-                {stats.userCount} {stats.userCount === 1 ? 'user' : 'users'}
+                {stats.userCount} {stats.userCount === 1 ? "user" : "users"}
               </p>
             </CardContent>
           </Card>
@@ -185,7 +194,7 @@ export default function CourseStatistics({ courseId }: CourseStatisticsProps) {
           </Card>
         </div>
       </div>
-    )
+    );
   }
 
   // Overall statistics
@@ -254,5 +263,5 @@ export default function CourseStatistics({ courseId }: CourseStatisticsProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

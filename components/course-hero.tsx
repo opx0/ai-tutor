@@ -1,41 +1,44 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 import {
+  BookOpen,
   Brain,
   ChevronLeft,
-  Clock,
-  BookOpen,
-  CircleCheck,
-  Play,
-  Layers,
-  Trophy,
-  type LucideIcon,
   ChevronRight,
-} from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+  CircleCheck,
+  Clock,
+  Layers,
+  type LucideIcon,
+  Play,
+  Trophy,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
-const iconMap: Record<string, LucideIcon> = { Brain }
+const iconMap: Record<string, LucideIcon> = { Brain };
 
 type CourseHeroProps = {
   course: {
-    title: string
-    description: string | null
-    difficulty: string
-    type: string
-    icon: string | null
-    color: string | null
-    estimatedHours: number | null
-    modules: { title: string, lessons: { id: string, title: string, estimatedMinutes: number | null }[] }[]
-  }
-  courseHref: string
-  progress: number
-  totalLessons: number
-  completedCount: number
-  continueLessonId: string | null
-}
+    title: string;
+    description: string | null;
+    difficulty: string;
+    type: string;
+    icon: string | null;
+    color: string | null;
+    estimatedHours: number | null;
+    modules: {
+      title: string;
+      lessons: { id: string; title: string; estimatedMinutes: number | null }[];
+    }[];
+  };
+  courseHref: string;
+  progress: number;
+  totalLessons: number;
+  completedCount: number;
+  continueLessonId: string | null;
+};
 
 export default function CourseHero({
   course,
@@ -45,28 +48,28 @@ export default function CourseHero({
   completedCount,
   continueLessonId,
 }: CourseHeroProps) {
-  const pathname = usePathname()
-  const CourseIcon = (course.icon && iconMap[course.icon]) || Brain
-  const accentColor = course.color || "hsl(var(--primary))"
-  const isAllComplete = completedCount === totalLessons && totalLessons > 0
+  const pathname = usePathname();
+  const CourseIcon = (course.icon && iconMap[course.icon]) || Brain;
+  const accentColor = course.color || "hsl(var(--primary))";
+  const isAllComplete = completedCount === totalLessons && totalLessons > 0;
 
   // Check if we are on a lesson page vs the overview page
   // pathname format: /courses/[slug] vs /courses/[slug]/[lessonId]
-  const pathParts = pathname.split('/').filter(Boolean)
-  const isLessonPage = pathParts.length >= 3 && pathParts[0] === 'courses'
+  const pathParts = pathname.split("/").filter(Boolean);
+  const isLessonPage = pathParts.length >= 3 && pathParts[0] === "courses";
 
   if (isLessonPage) {
     // Find the current lesson and module
-    const currentLessonId = pathParts[2]
-    let currentModuleName = ""
-    let currentLessonName = ""
+    const currentLessonId = pathParts[2];
+    let currentModuleName = "";
+    let currentLessonName = "";
 
     for (const mod of course.modules) {
-      const lesson = mod.lessons.find((l) => l.id === currentLessonId)
+      const lesson = mod.lessons.find((l) => l.id === currentLessonId);
       if (lesson) {
-        currentModuleName = mod.title
-        currentLessonName = lesson.title
-        break
+        currentModuleName = mod.title;
+        currentLessonName = lesson.title;
+        break;
       }
     }
 
@@ -84,10 +87,10 @@ export default function CourseHero({
               <ChevronLeft className="w-4 h-4" />
             </Link>
           </Button>
-          
+
           <div className="flex items-center text-sm ml-3 truncate min-w-0">
-            <Link 
-              href={`/courses/${courseHref}`} 
+            <Link
+              href={`/courses/${courseHref}`}
               className="font-semibold hover:text-primary transition-colors truncate hidden sm:block"
             >
               {course.title}
@@ -97,26 +100,23 @@ export default function CourseHero({
               {currentModuleName}
             </span>
             <ChevronRight className="w-3.5 h-3.5 mx-2 text-muted-foreground/40 shrink-0 hidden md:block" />
-            <span className="text-foreground font-medium truncate">
-              {currentLessonName}
-            </span>
+            <span className="text-foreground font-medium truncate">{currentLessonName}</span>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   // Full Hero for Course Overview Page
   const totalMinutes = course.modules.reduce(
-    (acc, m) =>
-      acc + m.lessons.reduce((s, l) => s + (l.estimatedMinutes ?? 5), 0),
-    0
-  )
+    (acc, m) => acc + m.lessons.reduce((s, l) => s + (l.estimatedMinutes ?? 5), 0),
+    0,
+  );
 
   return (
     <div className="relative overflow-hidden border-b border-[hsl(var(--border))]/20 bg-background pt-12 pb-10">
       {/* Mind-bending dynamic mesh animated background */}
-      <div 
+      <div
         className="absolute inset-0 z-0 opacity-[0.2] dark:opacity-[0.4]"
         style={{
           backgroundImage: `
@@ -126,17 +126,17 @@ export default function CourseHero({
             linear-gradient(to right, rgba(255,255,255,0.01) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255,255,255,0.01) 1px, transparent 1px)
           `,
-          backgroundSize: '100% 100%, 100% 100%, 100% 100%, 60px 60px, 60px 60px',
+          backgroundSize: "100% 100%, 100% 100%, 100% 100%, 60px 60px, 60px 60px",
         }}
       />
       {/* Decorative ultra-bright data orbs */}
       <div
         className="absolute top-[-10%] left-[-10%] w-[40%] h-[120%] rounded-full opacity-30 blur-[120px] pointer-events-none animate-pulse"
-        style={{ backgroundColor: accentColor, animationDuration: '6s' }}
+        style={{ backgroundColor: accentColor, animationDuration: "6s" }}
       />
       <div
         className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[150%] rounded-full opacity-20 blur-[150px] pointer-events-none animate-pulse"
-        style={{ backgroundColor: accentColor, animationDuration: '10s', animationDelay: '2s' }}
+        style={{ backgroundColor: accentColor, animationDuration: "10s", animationDelay: "2s" }}
       />
 
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -166,10 +166,10 @@ export default function CourseHero({
                 boxShadow: `0 0 50px -10px ${accentColor}80, inset 0 0 0 1px ${accentColor}60`,
               }}
             >
-              <div 
-                className="absolute inset-0 rounded-3xl z-0" 
+              <div
+                className="absolute inset-0 rounded-3xl z-0"
                 style={{
-                  background: `linear-gradient(135deg, transparent 20%, ${accentColor}40)`
+                  background: `linear-gradient(135deg, transparent 20%, ${accentColor}40)`,
                 }}
               />
               <CourseIcon
@@ -220,9 +220,7 @@ export default function CourseHero({
                   <div
                     key={i}
                     className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg ${
-                      stat.highlight
-                        ? "font-medium"
-                        : "text-muted-foreground"
+                      stat.highlight ? "font-medium" : "text-muted-foreground"
                     }`}
                     style={
                       stat.highlight
@@ -243,10 +241,23 @@ export default function CourseHero({
             <div className="flex items-center gap-3 bg-black/5 dark:bg-white/5 backdrop-blur-md border border-black/5 dark:border-white/10 rounded-2xl px-5 py-3 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)]">
               <div className="relative w-10 h-10 shrink-0">
                 <svg className="w-10 h-10 -rotate-90 drop-shadow-md" viewBox="0 0 48 48">
-                  <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" className="text-muted/30" strokeWidth="4" />
                   <circle
-                    cx="24" cy="24" r="20" fill="none"
-                    stroke={accentColor} strokeWidth="4" strokeLinecap="round"
+                    cx="24"
+                    cy="24"
+                    r="20"
+                    fill="none"
+                    stroke="currentColor"
+                    className="text-muted/30"
+                    strokeWidth="4"
+                  />
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="20"
+                    fill="none"
+                    stroke={accentColor}
+                    strokeWidth="4"
+                    strokeLinecap="round"
                     strokeDasharray={`${2 * Math.PI * 20}`}
                     strokeDashoffset={`${2 * Math.PI * 20 * (1 - progress / 100)}`}
                     className="transition-all duration-700 ease-out"
@@ -270,21 +281,23 @@ export default function CourseHero({
               <Button
                 asChild
                 className="gap-2 rounded-2xl shadow-[0_0_20px_-5px_var(--btn-glow)] hover:shadow-[0_0_30px_-5px_var(--btn-glow)] transition-all hover:-translate-y-1 h-12 px-6"
-                style={{
-                  background: `linear-gradient(135deg, ${accentColor}, ${accentColor}cc)`,
-                  color: "white",
-                  '--btn-glow': accentColor
-                } as React.CSSProperties}
+                style={
+                  {
+                    background: `linear-gradient(135deg, ${accentColor}, ${accentColor}cc)`,
+                    color: "white",
+                    "--btn-glow": accentColor,
+                  } as React.CSSProperties
+                }
               >
                 <Link href={`/courses/${courseHref}/${continueLessonId}`}>
                   <Play className="w-4 h-4" />
                   {completedCount > 0 ? "Continue" : "Start"}
-                 </Link>
-               </Button>
-             )}
-           </div>
-         </div>
-       </div>
-     </div>
-   )
- }
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

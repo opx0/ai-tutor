@@ -1,24 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { ChevronRight, CircleCheck, Circle, FileText, Map } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChevronRight, Circle, CircleCheck, FileText, Map } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type CourseDetailProps = {
-  course: any
-  progress: number
-  lastLessonId: string | null | undefined
-}
+  course: any;
+  progress: number;
+  lastLessonId: string | null | undefined;
+};
 
 export default function CourseDetail({ course, progress, lastLessonId }: CourseDetailProps) {
-  const [activeTab, setActiveTab] = useState<string>("outline")
+  const [activeTab, setActiveTab] = useState<string>("outline");
 
   // Count total lessons
-  const totalLessons = course.modules.reduce((acc: number, module: any) => acc + module.lessons.length, 0)
+  const totalLessons = course.modules.reduce(
+    (acc: number, module: any) => acc + module.lessons.length,
+    0,
+  );
 
   return (
     <div>
@@ -35,11 +43,19 @@ export default function CourseDetail({ course, progress, lastLessonId }: CourseD
 
       <Tabs defaultValue="outline" className="mb-8">
         <TabsList>
-          <TabsTrigger value="outline" onClick={() => setActiveTab("outline")} className="flex items-center gap-2">
+          <TabsTrigger
+            value="outline"
+            onClick={() => setActiveTab("outline")}
+            className="flex items-center gap-2"
+          >
             <FileText className="h-4 w-4" />
             Outline
           </TabsTrigger>
-          <TabsTrigger value="map" onClick={() => setActiveTab("map")} className="flex items-center gap-2">
+          <TabsTrigger
+            value="map"
+            onClick={() => setActiveTab("map")}
+            className="flex items-center gap-2"
+          >
             <Map className="h-4 w-4" />
             Map
           </TabsTrigger>
@@ -47,11 +63,17 @@ export default function CourseDetail({ course, progress, lastLessonId }: CourseD
 
         <TabsContent value="outline" className="mt-6">
           <div className="space-y-4">
-            <div className="bg-muted/30 rounded-md p-2 text-sm text-muted-foreground mb-4">{progress}% Completed</div>
+            <div className="bg-muted/30 rounded-md p-2 text-sm text-muted-foreground mb-4">
+              {progress}% Completed
+            </div>
 
             <Accordion type="multiple" defaultValue={course.modules.map((m: any) => m.id)}>
               {course.modules.map((module: any, moduleIndex: number) => (
-                <AccordionItem key={module.id} value={module.id} className="border rounded-md mb-4 overflow-hidden">
+                <AccordionItem
+                  key={module.id}
+                  value={module.id}
+                  className="border rounded-md mb-4 overflow-hidden"
+                >
                   <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 [&[data-state=open]>svg]:rotate-180">
                     <div className="flex items-center gap-3 text-left">
                       <div className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-muted text-xs font-medium">
@@ -123,7 +145,9 @@ export default function CourseDetail({ course, progress, lastLessonId }: CourseD
                         <div className="flex-grow">
                           <h5 className="font-medium">{lesson.title}</h5>
                         </div>
-                        {lastLessonId === lesson.id && <CircleCheck className="h-4 w-4 text-green-500 ml-auto" />}
+                        {lastLessonId === lesson.id && (
+                          <CircleCheck className="h-4 w-4 text-green-500 ml-auto" />
+                        )}
                       </Link>
                     ))}
                   </div>
@@ -134,5 +158,5 @@ export default function CourseDetail({ course, progress, lastLessonId }: CourseD
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

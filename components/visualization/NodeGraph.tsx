@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
-import { getCellStyle, getEdgeHex } from '@/lib/visualization/cellStateColors'
-import type { CellState, NodeGraphElement } from '@/lib/visualization/types'
 import {
-    Background,
-    BackgroundVariant,
-    Handle,
-    Position,
-    ReactFlow,
-    useEdgesState,
-    useNodesState,
-    type Edge,
-    type Node,
-    type NodeProps,
-} from '@xyflow/react'
-import '@xyflow/react/dist/style.css'
-import { useCallback, useEffect, useMemo } from 'react'
+  Background,
+  BackgroundVariant,
+  type Edge,
+  Handle,
+  type Node,
+  type NodeProps,
+  Position,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from "@xyflow/react";
+import { getCellStyle, getEdgeHex } from "@/lib/visualization/cellStateColors";
+import type { CellState, NodeGraphElement } from "@/lib/visualization/types";
+import "@xyflow/react/dist/style.css";
+import { useCallback, useEffect, useMemo } from "react";
 
 // ─── Custom Node ──────────────────────────────────────────────────────
 function GraphNodeComponent({ data }: NodeProps) {
-  const state = (data.state as CellState) || 'default'
-  const style = getCellStyle(state)
+  const state = (data.state as CellState) || "default";
+  const style = getCellStyle(state);
 
   return (
     <div
@@ -28,102 +28,101 @@ function GraphNodeComponent({ data }: NodeProps) {
       style={style}
     >
       <Handle type="target" position={Position.Top} className="!bg-zinc-500 !w-2 !h-2" />
-      {String(data.label ?? '')}
+      {String(data.label ?? "")}
       <Handle type="source" position={Position.Bottom} className="!bg-zinc-500 !w-2 !h-2" />
     </div>
-  )
+  );
 }
 
-const nodeTypes = { custom: GraphNodeComponent }
+const nodeTypes = { custom: GraphNodeComponent };
 
 // ─── Layout helpers ───────────────────────────────────────────────────
-function applyLayout(
-  element: NodeGraphElement
-): { nodes: Node[]; edges: Edge[] } {
-  const layout = element.layout || 'force'
-  const elementNodes = element.nodes || []
-  const elementEdges = element.edges || []
+function applyLayout(element: NodeGraphElement): { nodes: Node[]; edges: Edge[] } {
+  const layout = element.layout || "force";
+  const elementNodes = element.nodes || [];
+  const elementEdges = element.edges || [];
 
   if (elementNodes.length === 0) {
-    return { nodes: [], edges: [] }
+    return { nodes: [], edges: [] };
   }
 
   const nodes: Node[] = elementNodes.map((n, i) => {
-    let x = n.x ?? 0
-    let y = n.y ?? 0
+    let x = n.x ?? 0;
+    let y = n.y ?? 0;
 
     // Auto-position if no explicit coordinates
     if (n.x === undefined && n.y === undefined) {
-      if (layout === 'linear') {
-        x = i * 100
-        y = 0
-      } else if (layout === 'tree') {
+      if (layout === "linear") {
+        x = i * 100;
+        y = 0;
+      } else if (layout === "tree") {
         // Simple tree: one level deep for now
-        x = i * 100
-        y = Math.floor(i / 3) * 100
+        x = i * 100;
+        y = Math.floor(i / 3) * 100;
       } else {
         // Force-like: circular layout
-        const angle = (2 * Math.PI * i) / elementNodes.length
-        const radius = Math.max(80, elementNodes.length * 25)
-        x = radius + radius * Math.cos(angle)
-        y = radius + radius * Math.sin(angle)
+        const angle = (2 * Math.PI * i) / elementNodes.length;
+        const radius = Math.max(80, elementNodes.length * 25);
+        x = radius + radius * Math.cos(angle);
+        y = radius + radius * Math.sin(angle);
       }
     }
 
     return {
       id: n.id,
-      type: 'custom',
+      type: "custom",
       position: { x, y },
       data: { label: n.value, state: n.state },
-    }
-  })
+    };
+  });
 
   const edges: Edge[] = elementEdges.map((e, i) => {
-    const edgeColor = getEdgeHex(e.state)
+    const edgeColor = getEdgeHex(e.state);
     return {
       id: `${element.id}-edge-${i}`,
       source: e.source,
       target: e.target,
       label: e.label || undefined,
-      type: e.directed !== false ? 'default' : 'straight',
-      markerEnd: e.directed !== false ? { type: 'arrowclosed' as const, color: edgeColor } : undefined,
+      type: e.directed !== false ? "default" : "straight",
+      markerEnd:
+        e.directed !== false ? { type: "arrowclosed" as const, color: edgeColor } : undefined,
       style: {
         stroke: edgeColor,
         strokeWidth: 2,
-        filter: e.state !== 'default' ? `drop-shadow(0 0 4px ${edgeColor}80)` : undefined,
+        filter: e.state !== "default" ? `drop-shadow(0 0 4px ${edgeColor}80)` : undefined,
       },
       labelStyle: {
-        fill: '#a1a1aa',
+        fill: "#a1a1aa",
         fontSize: 10,
       },
-    }
-  })
+    };
+  });
 
-  return { nodes, edges }
+  return { nodes, edges };
 }
 
 // ─── Component ────────────────────────────────────────────────────────
 type NodeGraphProps = {
-  element: NodeGraphElement
-}
+  element: NodeGraphElement;
+};
 
 export default function NodeGraph({ element }: NodeGraphProps) {
   const { nodes: initialNodes, edges: initialEdges } = useMemo(
     () => applyLayout(element),
-    [element]
-  )
+    [element],
+  );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   // Sync when element (step) changes
   useEffect(() => {
-    const { nodes: newNodes, edges: newEdges } = applyLayout(element)
-    setNodes(newNodes)
-    setEdges(newEdges)
-  }, [element, setNodes, setEdges])
+    const { nodes: newNodes, edges: newEdges } = applyLayout(element);
+    setNodes(newNodes);
+    setEdges(newEdges);
+  }, [element, setNodes, setEdges]);
 
-  const onInit = useCallback(() => {}, [])
+  const onInit = useCallback(() => {}, []);
 
   return (
     <div className="space-y-2">
@@ -152,5 +151,5 @@ export default function NodeGraph({ element }: NodeGraphProps) {
         </ReactFlow>
       </div>
     </div>
-  )
+  );
 }

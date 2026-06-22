@@ -1,14 +1,13 @@
-import { prisma } from "@/lib/prisma";
 import { BookOpen, GraduationCap, Layers, Users } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 export default async function AdminDashboardPage() {
-  const [totalUsers, totalCourses, curatedCourses, totalLessons] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.course.count(),
-      prisma.course.count({ where: { type: "CURATED" } }),
-      prisma.lesson.count(),
-    ]);
+  const [totalUsers, totalCourses, curatedCourses, totalLessons] = await Promise.all([
+    prisma.user.count(),
+    prisma.course.count(),
+    prisma.course.count({ where: { type: "CURATED" } }),
+    prisma.lesson.count(),
+  ]);
 
   const stats = [
     {
@@ -48,10 +47,7 @@ export default async function AdminDashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-xl border border-border bg-card p-5"
-          >
+          <div key={stat.label} className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-muted/50 flex items-center justify-center">
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />

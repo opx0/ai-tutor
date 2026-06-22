@@ -3,26 +3,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
-import { signIn } from "next-auth/react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@/components/ui/form";
-import dynamic from "next/dynamic";
 import { toast } from "sonner";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 
 const CanvasRevealEffect = dynamic(
   () => import("@/components/ui/sign-in-flow-1").then((m) => m.CanvasRevealEffect),
-  { ssr: false }
+  { ssr: false },
 );
 
 const formSchema = z.object({
@@ -57,9 +50,7 @@ function SignInForm() {
 
       if (result?.error) {
         toast.error(
-          result.error === "CredentialsSignin"
-            ? "Invalid email or password"
-            : result.error
+          result.error === "CredentialsSignin" ? "Invalid email or password" : result.error,
         );
         setIsLoading(false);
         return;
@@ -122,10 +113,16 @@ function SignInForm() {
 
       <div className="relative z-10 flex flex-col flex-1">
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20 flex bg-[#1f1f1f57] backdrop-blur-md border border-[#333] rounded-full p-1.5 shadow-lg">
-          <Link href="/auth/signin" className="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-all shadow-sm">
+          <Link
+            href="/auth/signin"
+            className="px-6 py-2 rounded-full bg-white text-black text-sm font-medium transition-all shadow-sm"
+          >
             Sign In
           </Link>
-          <Link href="/auth/signup" className="px-6 py-2 rounded-full text-gray-400 hover:text-white text-sm font-medium transition-all">
+          <Link
+            href="/auth/signup"
+            className="px-6 py-2 rounded-full text-gray-400 hover:text-white text-sm font-medium transition-all"
+          >
             Sign Up
           </Link>
         </div>

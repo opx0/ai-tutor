@@ -1,21 +1,19 @@
-'use client'
+"use client";
 
-import { getCellStyle } from '@/lib/visualization/cellStateColors'
-import type { VariableElement } from '@/lib/visualization/types'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from "framer-motion";
+import { getCellStyle } from "@/lib/visualization/cellStateColors";
+import type { VariableElement } from "@/lib/visualization/types";
 
 type VariableBoxProps = {
-  element: VariableElement
-}
+  element: VariableElement;
+};
 
 export default function VariableBox({ element }: VariableBoxProps) {
-  const style = getCellStyle(element.state)
+  const style = getCellStyle(element.state);
 
   return (
     <div className="inline-flex flex-col items-start gap-1">
-      <div className="text-xs font-medium text-zinc-400 font-mono">
-        {element.name}
-      </div>
+      <div className="text-xs font-medium text-zinc-400 font-mono">{element.name}</div>
       <motion.div
         layout
         className="flex items-center justify-center min-w-[3rem] h-10 px-3 rounded-lg border-2 font-mono text-sm font-bold transition-all duration-300"
@@ -29,15 +27,13 @@ export default function VariableBox({ element }: VariableBoxProps) {
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.2 }}
           >
-            {element.value ?? 'null'}
+            {element.value ?? "null"}
           </motion.span>
         </AnimatePresence>
       </motion.div>
       {element.description && (
-        <div className="text-[10px] text-zinc-500 max-w-[8rem]">
-          {element.description}
-        </div>
+        <div className="text-[10px] text-zinc-500 max-w-[8rem]">{element.description}</div>
       )}
     </div>
-  )
+  );
 }

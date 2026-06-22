@@ -1,8 +1,18 @@
 "use client";
 
-import { ARRAY_PROBLEMS, PROBLEM_GROUPS, type ArrayProblem } from "@/lib/playground/array-problems";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Zap, Layers, ArrowLeftRight, Gauge, GitMerge, Brain, Database, type LucideIcon } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowLeftRight,
+  Brain,
+  ChevronRight,
+  Database,
+  Gauge,
+  GitMerge,
+  Layers,
+  type LucideIcon,
+  Zap,
+} from "lucide-react";
+import { ARRAY_PROBLEMS, type ArrayProblem, PROBLEM_GROUPS } from "@/lib/playground/array-problems";
 
 const PATTERN_ICONS: Record<string, LucideIcon> = {
   "Two Pointer": ArrowLeftRight,
@@ -33,7 +43,9 @@ export function ProblemSelector({ selectedId, onSelect }: Props) {
       <div className="px-4 py-4 border-b border-white/5 flex-shrink-0">
         <div className="flex items-center gap-2 mb-1">
           <GitMerge className="w-4 h-4 text-violet-400" />
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-400">Array Problems</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
+            Array Problems
+          </span>
         </div>
         <p className="text-[10px] text-white/30 leading-relaxed">
           Select a problem to fork its code into the editor and watch it animate step by step.
@@ -72,7 +84,9 @@ export function ProblemSelector({ selectedId, onSelect }: Props) {
                       <div className="flex-1 min-w-0">
                         <div className="text-[13px] font-medium truncate">{problem.title}</div>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[problem.difficulty]}`}>
+                          <span
+                            className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${DIFFICULTY_COLORS[problem.difficulty]}`}
+                          >
                             {problem.difficulty}
                           </span>
                           {problem.visualization && (
@@ -105,7 +119,8 @@ export function ProblemSelector({ selectedId, onSelect }: Props) {
       {/* Footer hint */}
       <div className="px-4 py-3 border-t border-white/5 flex-shrink-0">
         <p className="text-[10px] text-white/20 leading-relaxed text-center">
-          Hit <span className="text-violet-400 font-bold">Run</span> to switch from static viz to live trace
+          Hit <span className="text-violet-400 font-bold">Run</span> to switch from static viz to
+          live trace
         </p>
       </div>
     </div>

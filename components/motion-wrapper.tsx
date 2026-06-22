@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
-import { FC, ReactNode } from "react";
+import { motion, type Variants } from "framer-motion";
+import type { FC, ReactNode } from "react";
 
 interface MotionWrapperProps {
   children?: ReactNode;

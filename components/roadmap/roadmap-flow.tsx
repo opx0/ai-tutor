@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import type { RoadmapData } from "@/lib/roadmap"
-import { CourseNode, type CourseNodeType } from "@/components/roadmap/course-node"
 import {
-  ReactFlow,
   Background,
   BackgroundVariant,
   Controls,
   type Edge,
-  type NodeTypes,
   MarkerType,
-} from "@xyflow/react"
-import "@xyflow/react/dist/style.css"
-import { useMemo } from "react"
+  type NodeTypes,
+  ReactFlow,
+} from "@xyflow/react";
+import { CourseNode, type CourseNodeType } from "@/components/roadmap/course-node";
+import type { RoadmapData } from "@/lib/roadmap";
+import "@xyflow/react/dist/style.css";
+import { useMemo } from "react";
 
 const nodeTypes: NodeTypes = {
   course: CourseNode,
-}
+};
 
 type RoadmapFlowProps = {
-  data: RoadmapData
-}
+  data: RoadmapData;
+};
 
 export default function RoadmapFlow({ data }: RoadmapFlowProps) {
   const nodes: CourseNodeType[] = useMemo(
@@ -44,15 +44,15 @@ export default function RoadmapFlow({ data }: RoadmapFlowProps) {
           status: course.status,
         },
       })),
-    [data.courses]
-  )
+    [data.courses],
+  );
 
   const edges: Edge[] = useMemo(
     () =>
       data.edges.map((edge, i) => {
         // Find source course to get the accent color
-        const sourceCourse = data.courses.find((c) => c.id === edge.source)
-        const accent = sourceCourse?.color || "hsl(var(--primary))"
+        const sourceCourse = data.courses.find((c) => c.id === edge.source);
+        const accent = sourceCourse?.color || "hsl(var(--primary))";
         return {
           id: `edge-${i}`,
           source: edge.source,
@@ -69,10 +69,10 @@ export default function RoadmapFlow({ data }: RoadmapFlowProps) {
             stroke: `${accent}60`,
             strokeWidth: 2.5,
           },
-        }
+        };
       }),
-    [data.edges, data.courses]
-  )
+    [data.edges, data.courses],
+  );
 
   return (
     <div className="w-full h-[calc(100vh-8rem)]">
@@ -102,5 +102,5 @@ export default function RoadmapFlow({ data }: RoadmapFlowProps) {
         />
       </ReactFlow>
     </div>
-  )
+  );
 }

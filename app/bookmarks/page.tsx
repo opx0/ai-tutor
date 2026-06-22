@@ -1,19 +1,19 @@
-import { redirect } from "next/navigation"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { BookMarked } from "lucide-react"
+import { BookMarked } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function BookmarksPage() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/auth/signin?callbackUrl=/bookmarks")
+    redirect("/auth/signin?callbackUrl=/bookmarks");
   }
 
   const bookmarks = await prisma.bookmark.findMany({
@@ -34,26 +34,26 @@ export default async function BookmarksPage() {
     orderBy: {
       createdAt: "desc",
     },
-  })
+  });
 
   const bookmarksByCourse = bookmarks.reduce(
     (acc, bookmark) => {
-      const courseId = bookmark.lesson.module.courseId
-      const courseTitle = bookmark.lesson.module.course.title
+      const courseId = bookmark.lesson.module.courseId;
+      const courseTitle = bookmark.lesson.module.course.title;
 
       if (!acc[courseId]) {
         acc[courseId] = {
           id: courseId,
           title: courseTitle,
           bookmarks: [],
-        }
+        };
       }
 
-      acc[courseId].bookmarks.push(bookmark)
-      return acc
+      acc[courseId].bookmarks.push(bookmark);
+      return acc;
     },
     {} as Record<string, { id: string; title: string; bookmarks: typeof bookmarks }>,
-  )
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -67,8 +67,12 @@ export default async function BookmarksPage() {
       {bookmarks.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground mb-4">You haven&apos;t bookmarked any lessons yet.</p>
-            <p className="text-muted-foreground mb-4">Bookmark lessons to quickly access them later.</p>
+            <p className="text-muted-foreground mb-4">
+              You haven&apos;t bookmarked any lessons yet.
+            </p>
+            <p className="text-muted-foreground mb-4">
+              Bookmark lessons to quickly access them later.
+            </p>
             <Button asChild>
               <Link href="/courses">Browse Courses</Link>
             </Button>
@@ -92,7 +96,9 @@ export default async function BookmarksPage() {
                         <BookMarked className="h-5 w-5 mt-0.5 flex-shrink-0" />
                         <div>
                           <h3 className="font-medium">{bookmark.lesson.title}</h3>
-                          <p className="text-sm text-muted-foreground">Module: {bookmark.lesson.module.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Module: {bookmark.lesson.module.title}
+                          </p>
                         </div>
                       </Link>
                     </div>
@@ -104,6 +110,5 @@ export default async function BookmarksPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
-

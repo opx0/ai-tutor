@@ -1,15 +1,7 @@
 "use client";
 
 import type { Course, Lesson, Module } from "@prisma/client";
-import {
-  ChevronDown,
-  ChevronRight,
-  GripVertical,
-  Pencil,
-  Plus,
-  Save,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, GripVertical, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
@@ -19,13 +11,7 @@ type CourseWithModules = Course & {
 
 // ---------- Course Metadata Form ----------
 
-function CourseMetadataForm({
-  course,
-  onSaved,
-}: {
-  course: Course;
-  onSaved: () => void;
-}) {
+function CourseMetadataForm({ course, onSaved }: { course: Course; onSaved: () => void }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -255,9 +241,7 @@ function LessonItem({
         )}
         <span className="text-sm font-medium flex-1">{lesson.title}</span>
         {lesson.estimatedMinutes && (
-          <span className="text-xs text-muted-foreground">
-            {lesson.estimatedMinutes}min
-          </span>
+          <span className="text-xs text-muted-foreground">{lesson.estimatedMinutes}min</span>
         )}
         <button
           onClick={(e) => {
@@ -275,9 +259,7 @@ function LessonItem({
         <form onSubmit={handleSave} className="p-4 pt-2 space-y-3 border-t border-border">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
-                Title
-              </label>
+              <label className="text-xs font-medium text-muted-foreground">Title</label>
               <input
                 name="title"
                 defaultValue={lesson.title}
@@ -286,9 +268,7 @@ function LessonItem({
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
-                Est. Minutes
-              </label>
+              <label className="text-xs font-medium text-muted-foreground">Est. Minutes</label>
               <input
                 name="estimatedMinutes"
                 type="number"
@@ -300,9 +280,7 @@ function LessonItem({
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">
-              Description
-            </label>
+            <label className="text-xs font-medium text-muted-foreground">Description</label>
             <input
               name="description"
               defaultValue={lesson.description || ""}
@@ -311,9 +289,7 @@ function LessonItem({
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">
-              Content (Markdown)
-            </label>
+            <label className="text-xs font-medium text-muted-foreground">Content (Markdown)</label>
             <textarea
               name="content"
               defaultValue={lesson.content || ""}
@@ -329,9 +305,7 @@ function LessonItem({
             <textarea
               name="visualization"
               defaultValue={
-                lesson.visualization
-                  ? JSON.stringify(lesson.visualization, null, 2)
-                  : ""
+                lesson.visualization ? JSON.stringify(lesson.visualization, null, 2) : ""
               }
               rows={6}
               className="w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring resize-y"
@@ -339,16 +313,10 @@ function LessonItem({
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">
-              Exercises (JSON)
-            </label>
+            <label className="text-xs font-medium text-muted-foreground">Exercises (JSON)</label>
             <textarea
               name="exercises"
-              defaultValue={
-                lesson.exercises
-                  ? JSON.stringify(lesson.exercises, null, 2)
-                  : ""
-              }
+              defaultValue={lesson.exercises ? JSON.stringify(lesson.exercises, null, 2) : ""}
               rows={4}
               className="w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring resize-y"
             />
@@ -403,12 +371,7 @@ function ModuleSection({
   }
 
   async function handleDeleteModule() {
-    if (
-      !confirm(
-        `Delete module "${module.title}" and all its lessons?`
-      )
-    )
-      return;
+    if (!confirm(`Delete module "${module.title}" and all its lessons?`)) return;
     setDeleting(true);
     await fetch(`/api/admin/modules/${module.id}`, { method: "DELETE" });
     onRefresh();
@@ -473,10 +436,7 @@ function ModuleSection({
       {expanded && (
         <div className="px-4 pb-4 space-y-3">
           {editing && (
-            <form
-              onSubmit={handleSaveModule}
-              className="p-3 rounded-lg bg-muted/30 space-y-2"
-            >
+            <form onSubmit={handleSaveModule} className="p-3 rounded-lg bg-muted/30 space-y-2">
               <input
                 name="title"
                 defaultValue={module.title}
@@ -521,10 +481,7 @@ function ModuleSection({
           </div>
 
           {addingLesson ? (
-            <form
-              onSubmit={handleAddLesson}
-              className="flex items-center gap-2 pl-6"
-            >
+            <form onSubmit={handleAddLesson} className="flex items-center gap-2 pl-6">
               <input
                 name="title"
                 placeholder="Lesson title..."
@@ -619,11 +576,7 @@ export function CourseEditor({ course }: { course: CourseWithModules }) {
             Modules & Lessons
             <span className="text-sm font-normal text-muted-foreground ml-2">
               ({course.modules.length} modules,{" "}
-              {course.modules.reduce(
-                (sum, m) => sum + m.lessons.length,
-                0
-              )}{" "}
-              lessons)
+              {course.modules.reduce((sum, m) => sum + m.lessons.length, 0)} lessons)
             </span>
           </h2>
         </div>

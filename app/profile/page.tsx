@@ -1,7 +1,10 @@
+import { format } from "date-fns";
+import { Award, BookOpen, Calendar, Clock, Mail, User as UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,20 +13,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  BookOpen,
-  Clock,
-  Award,
-  User as UserIcon,
-  Mail,
-  Calendar,
-} from "lucide-react";
-import { Suspense } from "react";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // Loading component for profile sections
 function ProfileLoading() {
@@ -87,8 +80,7 @@ async function ProfileData() {
 
   const averageProgress =
     userProgress.length > 0
-      ? userProgress.reduce((acc, curr) => acc + Number(curr.progress), 0) /
-        userProgress.length
+      ? userProgress.reduce((acc, curr) => acc + Number(curr.progress), 0) / userProgress.length
       : 0;
 
   return (
@@ -145,9 +137,7 @@ async function ProfileData() {
                 <UserIcon className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Name</p>
-                  <p className="font-medium">
-                    {session.user.name || user.name || "Not provided"}
-                  </p>
+                  <p className="font-medium">{session.user.name || user.name || "Not provided"}</p>
                 </div>
               </div>
 
@@ -155,9 +145,7 @@ async function ProfileData() {
                 <Mail className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium">
-                    {session.user.email || user.email}
-                  </p>
+                  <p className="font-medium">{session.user.email || user.email}</p>
                 </div>
               </div>
 
@@ -165,9 +153,7 @@ async function ProfileData() {
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Member since</p>
-                  <p className="font-medium">
-                    {format(new Date(user.createdAt), "MMMM yyyy")}
-                  </p>
+                  <p className="font-medium">{format(new Date(user.createdAt), "MMMM yyyy")}</p>
                 </div>
               </div>
             </div>
@@ -178,9 +164,7 @@ async function ProfileData() {
           <Card>
             <CardHeader>
               <CardTitle>Learning Statistics</CardTitle>
-              <CardDescription>
-                Your learning journey at a glance
-              </CardDescription>
+              <CardDescription>Your learning journey at a glance</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -196,12 +180,8 @@ async function ProfileData() {
                 </div>
                 <div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
                   <Award className="h-8 w-8 text-primary mb-2" />
-                  <span className="text-2xl font-bold">
-                    {averageProgress.toFixed(0)}%
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    Avg. Completion
-                  </span>
+                  <span className="text-2xl font-bold">{averageProgress.toFixed(0)}%</span>
+                  <span className="text-sm text-muted-foreground">Avg. Completion</span>
                 </div>
               </div>
             </CardContent>

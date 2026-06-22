@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { LoaderCircle } from "lucide-react"
-import KnowledgeTest from "@/components/knowledge-test"
-import { Button } from "@/components/ui/button"
+import { LoaderCircle } from "lucide-react";
+import { useState } from "react";
+import KnowledgeTest from "@/components/knowledge-test";
+import { Button } from "@/components/ui/button";
 
 type Question = {
-  id: string
-  question: string
-  options: string[]
-  correctAnswer: number
-}
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+};
 
 type LessonKnowledgeTestProps = {
-  lessonId: string
-}
+  lessonId: string;
+};
 
 // Sample questions to use as fallback when API fails
 const SAMPLE_QUESTIONS: Question[] = [
@@ -25,9 +25,9 @@ const SAMPLE_QUESTIONS: Question[] = [
       "To test your knowledge of the lesson content",
       "To provide additional learning resources",
       "To track your progress through the course",
-      "To connect with other learners"
+      "To connect with other learners",
     ],
-    correctAnswer: 0
+    correctAnswer: 0,
   },
   {
     id: "sample-2",
@@ -36,30 +36,30 @@ const SAMPLE_QUESTIONS: Question[] = [
       "The lesson has no content to generate questions from",
       "The API key for question generation is not configured",
       "The AI model failed to generate proper questions",
-      "All of the above"
+      "All of the above",
     ],
-    correctAnswer: 3
-  }
+    correctAnswer: 3,
+  },
 ];
 
 export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestProps) {
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isGenerated, setIsGenerated] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [usingSampleQuestions, setUsingSampleQuestions] = useState(false)
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGenerated, setIsGenerated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [usingSampleQuestions, setUsingSampleQuestions] = useState(false);
 
   const useSampleQuestions = () => {
-    setUsingSampleQuestions(true)
-    setQuestions(SAMPLE_QUESTIONS)
-    setIsGenerated(true)
-    setIsLoading(false)
-  }
+    setUsingSampleQuestions(true);
+    setQuestions(SAMPLE_QUESTIONS);
+    setIsGenerated(true);
+    setIsLoading(false);
+  };
 
   const generateQuestions = async () => {
-    setIsLoading(true)
-    setError(null)
-    setUsingSampleQuestions(false)
+    setIsLoading(true);
+    setError(null);
+    setUsingSampleQuestions(false);
 
     try {
       const response = await fetch("/api/knowledge-test", {
@@ -68,46 +68,48 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ lessonId }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        console.error("API error response:", data)
-        let errorMessage = "Failed to generate questions. Please try again."
+        console.error("API error response:", data);
+        let errorMessage = "Failed to generate questions. Please try again.";
 
         // Extract more specific error message if available
         if (data.message) {
-          errorMessage = `Error: ${data.message}`
+          errorMessage = `Error: ${data.message}`;
           if (data.details) {
-            errorMessage += ` (${data.details})`
+            errorMessage += ` (${data.details})`;
           }
         }
 
-        throw new Error(errorMessage)
+        throw new Error(errorMessage);
       }
 
       if (!data.questions || !Array.isArray(data.questions) || data.questions.length === 0) {
-        console.error("Invalid or empty questions array:", data)
-        throw new Error("No valid questions were generated. Please try again.")
+        console.error("Invalid or empty questions array:", data);
+        throw new Error("No valid questions were generated. Please try again.");
       }
 
       // Check if these are fallback questions
       if (data.note && data.note.includes("fallback")) {
-        setUsingSampleQuestions(true)
+        setUsingSampleQuestions(true);
       } else {
-        setUsingSampleQuestions(false)
+        setUsingSampleQuestions(false);
       }
 
-      setQuestions(data.questions)
-      setIsGenerated(true)
+      setQuestions(data.questions);
+      setIsGenerated(true);
     } catch (error) {
-      console.error("Error generating questions:", error)
-      setError(error instanceof Error ? error.message : "Failed to generate questions. Please try again.")
+      console.error("Error generating questions:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to generate questions. Please try again.",
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (!isGenerated) {
     return (
@@ -126,11 +128,7 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
                 "Generate Questions"
               )}
             </Button>
-            <Button
-              variant="outline"
-              onClick={useSampleQuestions}
-              disabled={isLoading}
-            >
+            <Button variant="outline" onClick={useSampleQuestions} disabled={isLoading}>
               Use Sample Questions
             </Button>
           </div>
@@ -139,14 +137,14 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
             <div className="mt-4 p-3 bg-red-500/10 border border-red-500/50 rounded-md text-red-500">
               <p>{error}</p>
               <p className="text-xs mt-2">
-                Note: This feature requires a valid Gemini API key to be configured in the environment.
-                You can use the "Use Sample Questions" button instead.
+                Note: This feature requires a valid Gemini API key to be configured in the
+                environment. You can use the "Use Sample Questions" button instead.
               </p>
             </div>
           )}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -160,6 +158,5 @@ export default function LessonKnowledgeTest({ lessonId }: LessonKnowledgeTestPro
       )}
       <KnowledgeTest lessonId={lessonId} questions={questions} />
     </>
-  )
+  );
 }
-

@@ -2,8 +2,8 @@
  * Enhanced logging functionality for the Next.js backend
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 // Define log levels
 export enum LogLevel {
@@ -16,20 +16,20 @@ export enum LogLevel {
 
 // Log level names
 const LOG_LEVEL_NAMES: Record<LogLevel, string> = {
-  [LogLevel.DEBUG]: 'DEBUG',
-  [LogLevel.INFO]: 'INFO',
-  [LogLevel.WARNING]: 'WARNING',
-  [LogLevel.ERROR]: 'ERROR',
-  [LogLevel.CRITICAL]: 'CRITICAL',
+  [LogLevel.DEBUG]: "DEBUG",
+  [LogLevel.INFO]: "INFO",
+  [LogLevel.WARNING]: "WARNING",
+  [LogLevel.ERROR]: "ERROR",
+  [LogLevel.CRITICAL]: "CRITICAL",
 };
 
 // Get the configured log level from environment or use default
-const configuredLogLevel = process.env.NEXTJS_LOG_LEVEL || 'INFO';
+const configuredLogLevel = process.env.NEXTJS_LOG_LEVEL || "INFO";
 const currentLogLevel = getLogLevelValue(configuredLogLevel);
 const fileLoggingEnabled = process.env.ENABLE_FILE_LOGGING === "true";
 
-const logDir = path.join(process.cwd(), 'logs');
-const logFile = path.join(logDir, 'nextjs-backend.log');
+const logDir = path.join(process.cwd(), "logs");
+const logFile = path.join(logDir, "nextjs-backend.log");
 let didInitLogDir = false;
 
 function ensureLogDirectory(): boolean {
@@ -43,7 +43,7 @@ function ensureLogDirectory(): boolean {
     didInitLogDir = true;
     return true;
   } catch (error) {
-    console.error('Failed to create logs directory:', error);
+    console.error("Failed to create logs directory:", error);
     return false;
   }
 }
@@ -53,15 +53,15 @@ function ensureLogDirectory(): boolean {
  */
 function getLogLevelValue(level: string): LogLevel {
   switch (level.toUpperCase()) {
-    case 'DEBUG':
+    case "DEBUG":
       return LogLevel.DEBUG;
-    case 'INFO':
+    case "INFO":
       return LogLevel.INFO;
-    case 'WARNING':
+    case "WARNING":
       return LogLevel.WARNING;
-    case 'ERROR':
+    case "ERROR":
       return LogLevel.ERROR;
-    case 'CRITICAL':
+    case "CRITICAL":
       return LogLevel.CRITICAL;
     default:
       return LogLevel.INFO; // Default to INFO
@@ -74,7 +74,7 @@ function getLogLevelValue(level: string): LogLevel {
 export function logMessage(
   message: string,
   level: LogLevel = LogLevel.INFO,
-  context: Record<string, any> = {}
+  context: Record<string, any> = {},
 ): void {
   // Only log if the level is greater than or equal to the configured level
   if (level < currentLogLevel) {
@@ -87,15 +87,13 @@ export function logMessage(
 
   // Get request information
   const requestId = context.requestId || generateRequestId();
-  const requestMethod = context.method || 'UNKNOWN';
-  const requestPath = context.path || 'UNKNOWN';
-  const requestIp = context.ip || 'UNKNOWN';
-  const userId = context.userId || 'anonymous';
+  const requestMethod = context.method || "UNKNOWN";
+  const requestPath = context.path || "UNKNOWN";
+  const requestIp = context.ip || "UNKNOWN";
+  const userId = context.userId || "anonymous";
 
   // Format context as JSON if not empty
-  const contextStr = Object.keys(context).length > 0 
-    ? ' ' + JSON.stringify(context)
-    : '';
+  const contextStr = Object.keys(context).length > 0 ? " " + JSON.stringify(context) : "";
 
   // Format log entry
   const logEntry = `[${timestamp}] [${levelName}] [${requestId}] [${requestMethod} ${requestPath}] [${requestIp}] [${userId}] ${message}${contextStr}\n`;
@@ -103,7 +101,7 @@ export function logMessage(
   // Write to log file only when explicitly enabled.
   if (ensureLogDirectory()) {
     void fs.promises.appendFile(logFile, logEntry).catch((error) => {
-      console.error('Failed to write to log file:', error);
+      console.error("Failed to write to log file:", error);
     });
   }
 
@@ -182,12 +180,12 @@ export function logApiRequest(req: Request): Record<string, any> {
     method: req.method,
     path: url.pathname,
     query: Object.fromEntries(url.searchParams.entries()),
-    ip: 'UNKNOWN', // In Next.js, IP is not directly available from Request
-    userAgent: req.headers.get('user-agent') || 'UNKNOWN',
-    requestId: req.headers.get('x-request-id') || generateRequestId(),
+    ip: "UNKNOWN", // In Next.js, IP is not directly available from Request
+    userAgent: req.headers.get("user-agent") || "UNKNOWN",
+    requestId: req.headers.get("x-request-id") || generateRequestId(),
   };
 
-  logInfo('API Request received', requestContext);
+  logInfo("API Request received", requestContext);
   return requestContext;
 }
 
@@ -197,7 +195,7 @@ export function logApiRequest(req: Request): Record<string, any> {
 export function logApiResponse(
   statusCode: number,
   responseData: any = null,
-  requestContext: Record<string, any> = {}
+  requestContext: Record<string, any> = {},
 ): void {
   const context: Record<string, any> = {
     ...requestContext,
@@ -209,11 +207,11 @@ export function logApiResponse(
     context.response = responseData;
   }
 
-  logInfo('API Response sent', context);
+  logInfo("API Response sent", context);
 }
 
 // Initialize logging
-logInfo('Next.js Backend Logger initialized', {
+logInfo("Next.js Backend Logger initialized", {
   logLevel: configuredLogLevel,
   fileLoggingEnabled,
   ...(fileLoggingEnabled ? { logFile } : {}),

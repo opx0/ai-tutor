@@ -1,216 +1,818 @@
-import type { VisualizationBlock } from '@/lib/visualization/types'
+import type { VisualizationBlock } from "@/lib/visualization/types";
 
 export type ArrayProblem = {
-  id: string
-  title: string
-  pattern: string
-  difficulty: 'Easy' | 'Medium' | 'Hard'
-  description: string
-  defaultInput: string
-  starterCode: { javascript: string; python: string; cpp: string }
-  visualization: VisualizationBlock | null
-}
+  id: string;
+  title: string;
+  pattern: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  description: string;
+  defaultInput: string;
+  starterCode: { javascript: string; python: string; cpp: string };
+  visualization: VisualizationBlock | null;
+};
 
 // ─── Pre-authored visualization blocks ────────────────────────────────
 
 const twoPointersViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: 'Two Sum II: In sorted array [1, 3, 4, 5, 7, 11], find two numbers summing to 9. Left pointer at start, right at end.', elements: [
-      { type: 'array', id: 'arr', label: 'Sorted Array', items: [{ value: '1', state: 'active' }, { value: '3', state: 'default' }, { value: '4', state: 'default' }, { value: '5', state: 'default' }, { value: '7', state: 'default' }, { value: '11', state: 'active' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '0', state: 'active' }, { type: 'variable', id: 'r', name: 'right', value: '5', state: 'active' },
-      { type: 'variable', id: 's', name: 'sum', value: '12', state: 'default' }, { type: 'variable', id: 't', name: 'target', value: '9', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'arr[0]+arr[5] = 1+11 = 12 > 9 → move right LEFT', kind: 'compare' }] },
-    ]},
-    { message: 'sum=12 > 9 → move right left. right: 5→4. arr[0]+arr[4]=1+7=8 < 9.', elements: [
-      { type: 'array', id: 'arr', label: 'Sorted Array', items: [{ value: '1', state: 'active' }, { value: '3', state: 'default' }, { value: '4', state: 'default' }, { value: '5', state: 'default' }, { value: '7', state: 'active' }, { value: '11', state: 'visited' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '0', state: 'active' }, { type: 'variable', id: 'r', name: 'right', value: '4', state: 'active' },
-      { type: 'variable', id: 's', name: 'sum', value: '8', state: 'default' }, { type: 'variable', id: 't', name: 'target', value: '9', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'arr[0]+arr[4] = 1+7 = 8 < 9 → move left RIGHT', kind: 'compare' }] },
-    ]},
-    { message: 'sum=8 < 9 → move left right. left: 0→1. arr[1]+arr[4]=3+7=10 > 9.', elements: [
-      { type: 'array', id: 'arr', label: 'Sorted Array', items: [{ value: '1', state: 'visited' }, { value: '3', state: 'active' }, { value: '4', state: 'default' }, { value: '5', state: 'default' }, { value: '7', state: 'active' }, { value: '11', state: 'visited' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '1', state: 'active' }, { type: 'variable', id: 'r', name: 'right', value: '4', state: 'active' },
-      { type: 'variable', id: 's', name: 'sum', value: '10', state: 'default' }, { type: 'variable', id: 't', name: 'target', value: '9', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'arr[1]+arr[4] = 3+7 = 10 > 9 → move right LEFT', kind: 'compare' }] },
-    ]},
-    { message: 'sum=10 > 9 → right: 4→3. arr[1]+arr[3]=3+5=8 < 9 → left: 1→2. arr[2]+arr[3]=4+5=9 ✅', elements: [
-      { type: 'array', id: 'arr', label: 'Sorted Array', items: [{ value: '1', state: 'visited' }, { value: '3', state: 'visited' }, { value: '4', state: 'done' }, { value: '5', state: 'done' }, { value: '7', state: 'visited' }, { value: '11', state: 'visited' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '2', state: 'done' }, { type: 'variable', id: 'r', name: 'right', value: '3', state: 'done' },
-      { type: 'variable', id: 's', name: 'sum', value: '9', state: 'done' }, { type: 'variable', id: 't', name: 'target', value: '9', state: 'done' },
-      { type: 'log', id: 'log', lines: [{ text: 'FOUND: arr[2]+arr[3] = 4+5 = 9 ✅ O(n) solution', kind: 'return' }] },
-    ]},
+    {
+      message:
+        "Two Sum II: In sorted array [1, 3, 4, 5, 7, 11], find two numbers summing to 9. Left pointer at start, right at end.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Sorted Array",
+          items: [
+            { value: "1", state: "active" },
+            { value: "3", state: "default" },
+            { value: "4", state: "default" },
+            { value: "5", state: "default" },
+            { value: "7", state: "default" },
+            { value: "11", state: "active" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "0", state: "active" },
+        { type: "variable", id: "r", name: "right", value: "5", state: "active" },
+        { type: "variable", id: "s", name: "sum", value: "12", state: "default" },
+        { type: "variable", id: "t", name: "target", value: "9", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "arr[0]+arr[5] = 1+11 = 12 > 9 → move right LEFT", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "sum=12 > 9 → move right left. right: 5→4. arr[0]+arr[4]=1+7=8 < 9.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Sorted Array",
+          items: [
+            { value: "1", state: "active" },
+            { value: "3", state: "default" },
+            { value: "4", state: "default" },
+            { value: "5", state: "default" },
+            { value: "7", state: "active" },
+            { value: "11", state: "visited" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "0", state: "active" },
+        { type: "variable", id: "r", name: "right", value: "4", state: "active" },
+        { type: "variable", id: "s", name: "sum", value: "8", state: "default" },
+        { type: "variable", id: "t", name: "target", value: "9", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "arr[0]+arr[4] = 1+7 = 8 < 9 → move left RIGHT", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "sum=8 < 9 → move left right. left: 0→1. arr[1]+arr[4]=3+7=10 > 9.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Sorted Array",
+          items: [
+            { value: "1", state: "visited" },
+            { value: "3", state: "active" },
+            { value: "4", state: "default" },
+            { value: "5", state: "default" },
+            { value: "7", state: "active" },
+            { value: "11", state: "visited" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "1", state: "active" },
+        { type: "variable", id: "r", name: "right", value: "4", state: "active" },
+        { type: "variable", id: "s", name: "sum", value: "10", state: "default" },
+        { type: "variable", id: "t", name: "target", value: "9", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "arr[1]+arr[4] = 3+7 = 10 > 9 → move right LEFT", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message:
+        "sum=10 > 9 → right: 4→3. arr[1]+arr[3]=3+5=8 < 9 → left: 1→2. arr[2]+arr[3]=4+5=9 ✅",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Sorted Array",
+          items: [
+            { value: "1", state: "visited" },
+            { value: "3", state: "visited" },
+            { value: "4", state: "done" },
+            { value: "5", state: "done" },
+            { value: "7", state: "visited" },
+            { value: "11", state: "visited" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "2", state: "done" },
+        { type: "variable", id: "r", name: "right", value: "3", state: "done" },
+        { type: "variable", id: "s", name: "sum", value: "9", state: "done" },
+        { type: "variable", id: "t", name: "target", value: "9", state: "done" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "FOUND: arr[2]+arr[3] = 4+5 = 9 ✅ O(n) solution", kind: "return" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 const slidingWindowViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: 'Max sum of k=3 consecutive elements in [2,1,5,1,3,2]. Sliding window avoids recomputing.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '2', state: 'default' }, { value: '1', state: 'default' }, { value: '5', state: 'default' }, { value: '1', state: 'default' }, { value: '3', state: 'default' }, { value: '2', state: 'default' }] },
-      { type: 'variable', id: 'k', name: 'k', value: '3', state: 'default' }, { type: 'variable', id: 'ws', name: 'windowSum', value: '—', state: 'default' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '—', state: 'default' },
-      { type: 'log', id: 'log', lines: [{ text: 'Slide window of size 3 across the array', kind: 'info' }] },
-    ]},
-    { message: 'Window [0..2]: 2+1+5=8. maxSum=8.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '2', state: 'active' }, { value: '1', state: 'active' }, { value: '5', state: 'active' }, { value: '1', state: 'default' }, { value: '3', state: 'default' }, { value: '2', state: 'default' }] },
-      { type: 'variable', id: 'ws', name: 'windowSum', value: '8', state: 'active' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '8', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'Window [0..2]: 2+1+5 = 8, maxSum = 8', kind: 'compare' }] },
-    ]},
-    { message: 'Slide: -arr[0]=2, +arr[3]=1 → sum=7 < 8, no new max.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '2', state: 'error' }, { value: '1', state: 'active' }, { value: '5', state: 'active' }, { value: '1', state: 'comparing' }, { value: '3', state: 'default' }, { value: '2', state: 'default' }] },
-      { type: 'variable', id: 'ws', name: 'windowSum', value: '7', state: 'active' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '8', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'Slide: -2 +1 → sum=7 < 8, maxSum unchanged', kind: 'swap' }] },
-    ]},
-    { message: 'Slide: -arr[1]=1, +arr[4]=3 → sum=9. New max!', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '2', state: 'default' }, { value: '1', state: 'error' }, { value: '5', state: 'active' }, { value: '1', state: 'active' }, { value: '3', state: 'comparing' }, { value: '2', state: 'default' }] },
-      { type: 'variable', id: 'ws', name: 'windowSum', value: '9', state: 'highlight' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '9', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'Slide: -1 +3 → sum=9 > 8, NEW maxSum=9 ✓', kind: 'compare' }] },
-    ]},
-    { message: 'Final slide: sum=6. Done! maxSum=9 from [5,1,3]. O(n) total.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '2', state: 'default' }, { value: '1', state: 'default' }, { value: '5', state: 'error' }, { value: '1', state: 'active' }, { value: '3', state: 'active' }, { value: '2', state: 'comparing' }] },
-      { type: 'variable', id: 'ws', name: 'windowSum', value: '6', state: 'default' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '9', state: 'done' },
-      { type: 'log', id: 'log', lines: [{ text: '✅ maxSum=9 from subarray [5,1,3]. O(n) with 1 pass.', kind: 'info' }] },
-    ]},
+    {
+      message:
+        "Max sum of k=3 consecutive elements in [2,1,5,1,3,2]. Sliding window avoids recomputing.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "2", state: "default" },
+            { value: "1", state: "default" },
+            { value: "5", state: "default" },
+            { value: "1", state: "default" },
+            { value: "3", state: "default" },
+            { value: "2", state: "default" },
+          ],
+        },
+        { type: "variable", id: "k", name: "k", value: "3", state: "default" },
+        { type: "variable", id: "ws", name: "windowSum", value: "—", state: "default" },
+        { type: "variable", id: "mx", name: "maxSum", value: "—", state: "default" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "Slide window of size 3 across the array", kind: "info" }],
+        },
+      ],
+    },
+    {
+      message: "Window [0..2]: 2+1+5=8. maxSum=8.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "2", state: "active" },
+            { value: "1", state: "active" },
+            { value: "5", state: "active" },
+            { value: "1", state: "default" },
+            { value: "3", state: "default" },
+            { value: "2", state: "default" },
+          ],
+        },
+        { type: "variable", id: "ws", name: "windowSum", value: "8", state: "active" },
+        { type: "variable", id: "mx", name: "maxSum", value: "8", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "Window [0..2]: 2+1+5 = 8, maxSum = 8", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "Slide: -arr[0]=2, +arr[3]=1 → sum=7 < 8, no new max.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "2", state: "error" },
+            { value: "1", state: "active" },
+            { value: "5", state: "active" },
+            { value: "1", state: "comparing" },
+            { value: "3", state: "default" },
+            { value: "2", state: "default" },
+          ],
+        },
+        { type: "variable", id: "ws", name: "windowSum", value: "7", state: "active" },
+        { type: "variable", id: "mx", name: "maxSum", value: "8", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "Slide: -2 +1 → sum=7 < 8, maxSum unchanged", kind: "swap" }],
+        },
+      ],
+    },
+    {
+      message: "Slide: -arr[1]=1, +arr[4]=3 → sum=9. New max!",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "2", state: "default" },
+            { value: "1", state: "error" },
+            { value: "5", state: "active" },
+            { value: "1", state: "active" },
+            { value: "3", state: "comparing" },
+            { value: "2", state: "default" },
+          ],
+        },
+        { type: "variable", id: "ws", name: "windowSum", value: "9", state: "highlight" },
+        { type: "variable", id: "mx", name: "maxSum", value: "9", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "Slide: -1 +3 → sum=9 > 8, NEW maxSum=9 ✓", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "Final slide: sum=6. Done! maxSum=9 from [5,1,3]. O(n) total.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "2", state: "default" },
+            { value: "1", state: "default" },
+            { value: "5", state: "error" },
+            { value: "1", state: "active" },
+            { value: "3", state: "active" },
+            { value: "2", state: "comparing" },
+          ],
+        },
+        { type: "variable", id: "ws", name: "windowSum", value: "6", state: "default" },
+        { type: "variable", id: "mx", name: "maxSum", value: "9", state: "done" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "✅ maxSum=9 from subarray [5,1,3]. O(n) with 1 pass.", kind: "info" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 const moveZeroesViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: 'Move Zeroes: Push all zeros to end, maintain relative order of non-zeros. In-place, O(n).', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '0', state: 'error' }, { value: '1', state: 'default' }, { value: '0', state: 'error' }, { value: '3', state: 'default' }, { value: '12', state: 'default' }] },
-      { type: 'variable', id: 'w', name: 'write', value: '0', state: 'active' },
-      { type: 'log', id: 'log', lines: [{ text: 'write pointer: tracks next position for non-zero', kind: 'info' }] },
-    ]},
-    { message: 'read=0: arr[0]=0, skip. read=1: arr[1]=1 ≠ 0 → swap(arr[0],arr[1]), write++.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '1', state: 'active' }, { value: '0', state: 'error' }, { value: '0', state: 'error' }, { value: '3', state: 'default' }, { value: '12', state: 'default' }] },
-      { type: 'variable', id: 'w', name: 'write', value: '1', state: 'active' },
-      { type: 'log', id: 'log', lines: [{ text: 'arr[1]=1 → swap(arr[0],arr[1]), write→1', kind: 'swap' }] },
-    ]},
-    { message: 'read=2: arr[2]=0, skip. read=3: arr[3]=3 → swap(arr[1],arr[3]), write++.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '1', state: 'done' }, { value: '3', state: 'active' }, { value: '0', state: 'error' }, { value: '0', state: 'error' }, { value: '12', state: 'default' }] },
-      { type: 'variable', id: 'w', name: 'write', value: '2', state: 'active' },
-      { type: 'log', id: 'log', lines: [{ text: 'arr[3]=3 → swap(arr[1],arr[3]), write→2', kind: 'swap' }] },
-    ]},
-    { message: 'read=4: arr[4]=12 → swap(arr[2],arr[4]), write++. Done! All zeros at end.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '1', state: 'done' }, { value: '3', state: 'done' }, { value: '12', state: 'done' }, { value: '0', state: 'visited' }, { value: '0', state: 'visited' }] },
-      { type: 'variable', id: 'w', name: 'write', value: '3', state: 'done' },
-      { type: 'log', id: 'log', lines: [{ text: '✅ [1,3,12,0,0] — zeros at end, order preserved. O(n).', kind: 'info' }] },
-    ]},
+    {
+      message:
+        "Move Zeroes: Push all zeros to end, maintain relative order of non-zeros. In-place, O(n).",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "0", state: "error" },
+            { value: "1", state: "default" },
+            { value: "0", state: "error" },
+            { value: "3", state: "default" },
+            { value: "12", state: "default" },
+          ],
+        },
+        { type: "variable", id: "w", name: "write", value: "0", state: "active" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "write pointer: tracks next position for non-zero", kind: "info" }],
+        },
+      ],
+    },
+    {
+      message: "read=0: arr[0]=0, skip. read=1: arr[1]=1 ≠ 0 → swap(arr[0],arr[1]), write++.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "1", state: "active" },
+            { value: "0", state: "error" },
+            { value: "0", state: "error" },
+            { value: "3", state: "default" },
+            { value: "12", state: "default" },
+          ],
+        },
+        { type: "variable", id: "w", name: "write", value: "1", state: "active" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "arr[1]=1 → swap(arr[0],arr[1]), write→1", kind: "swap" }],
+        },
+      ],
+    },
+    {
+      message: "read=2: arr[2]=0, skip. read=3: arr[3]=3 → swap(arr[1],arr[3]), write++.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "1", state: "done" },
+            { value: "3", state: "active" },
+            { value: "0", state: "error" },
+            { value: "0", state: "error" },
+            { value: "12", state: "default" },
+          ],
+        },
+        { type: "variable", id: "w", name: "write", value: "2", state: "active" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "arr[3]=3 → swap(arr[1],arr[3]), write→2", kind: "swap" }],
+        },
+      ],
+    },
+    {
+      message: "read=4: arr[4]=12 → swap(arr[2],arr[4]), write++. Done! All zeros at end.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "1", state: "done" },
+            { value: "3", state: "done" },
+            { value: "12", state: "done" },
+            { value: "0", state: "visited" },
+            { value: "0", state: "visited" },
+          ],
+        },
+        { type: "variable", id: "w", name: "write", value: "3", state: "done" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "✅ [1,3,12,0,0] — zeros at end, order preserved. O(n).", kind: "info" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 const prefixSumViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: 'Prefix Sums on [3,1,4,1,5]. After O(n) build, answer range queries in O(1).', elements: [
-      { type: 'array', id: 'arr', label: 'Original Array', items: [{ value: '3', state: 'default' }, { value: '1', state: 'default' }, { value: '4', state: 'default' }, { value: '1', state: 'default' }, { value: '5', state: 'default' }] },
-      { type: 'array', id: 'pfx', label: 'Prefix Sum (building...)', items: [{ value: '0', state: 'active' }, { value: '?', state: 'default' }, { value: '?', state: 'default' }, { value: '?', state: 'default' }, { value: '?', state: 'default' }, { value: '?', state: 'default' }] },
-      { type: 'log', id: 'log', lines: [{ text: 'prefix[i] = sum of arr[0..i-1]. prefix[0]=0.', kind: 'info' }] },
-    ]},
-    { message: 'Build: prefix[1]=3, [2]=4, [3]=8, [4]=9, [5]=14.', elements: [
-      { type: 'array', id: 'arr', label: 'Original Array', items: [{ value: '3', state: 'done' }, { value: '1', state: 'done' }, { value: '4', state: 'done' }, { value: '1', state: 'done' }, { value: '5', state: 'done' }] },
-      { type: 'array', id: 'pfx', label: 'Prefix Sum (complete)', items: [{ value: '0', state: 'done' }, { value: '3', state: 'done' }, { value: '4', state: 'done' }, { value: '8', state: 'done' }, { value: '9', state: 'done' }, { value: '14', state: 'done' }] },
-      { type: 'log', id: 'log', lines: [{ text: 'prefix = [0,3,4,8,9,14] — O(n) build done', kind: 'swap' }] },
-    ]},
-    { message: 'Query sum(1..3): prefix[4]-prefix[1] = 9-3 = 6. O(1)!', elements: [
-      { type: 'array', id: 'arr', label: 'Original Array', items: [{ value: '3', state: 'default' }, { value: '1', state: 'highlight' }, { value: '4', state: 'highlight' }, { value: '1', state: 'highlight' }, { value: '5', state: 'default' }] },
-      { type: 'array', id: 'pfx', label: 'Prefix Sum', items: [{ value: '0', state: 'default' }, { value: '3', state: 'comparing' }, { value: '4', state: 'default' }, { value: '8', state: 'default' }, { value: '9', state: 'comparing' }, { value: '14', state: 'default' }] },
-      { type: 'variable', id: 'ans', name: 'answer', value: '9-3=6', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: '✅ sum(1..3) = prefix[4]-prefix[1] = 6. O(1) query!', kind: 'return' }] },
-    ]},
+    {
+      message: "Prefix Sums on [3,1,4,1,5]. After O(n) build, answer range queries in O(1).",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Original Array",
+          items: [
+            { value: "3", state: "default" },
+            { value: "1", state: "default" },
+            { value: "4", state: "default" },
+            { value: "1", state: "default" },
+            { value: "5", state: "default" },
+          ],
+        },
+        {
+          type: "array",
+          id: "pfx",
+          label: "Prefix Sum (building...)",
+          items: [
+            { value: "0", state: "active" },
+            { value: "?", state: "default" },
+            { value: "?", state: "default" },
+            { value: "?", state: "default" },
+            { value: "?", state: "default" },
+            { value: "?", state: "default" },
+          ],
+        },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "prefix[i] = sum of arr[0..i-1]. prefix[0]=0.", kind: "info" }],
+        },
+      ],
+    },
+    {
+      message: "Build: prefix[1]=3, [2]=4, [3]=8, [4]=9, [5]=14.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Original Array",
+          items: [
+            { value: "3", state: "done" },
+            { value: "1", state: "done" },
+            { value: "4", state: "done" },
+            { value: "1", state: "done" },
+            { value: "5", state: "done" },
+          ],
+        },
+        {
+          type: "array",
+          id: "pfx",
+          label: "Prefix Sum (complete)",
+          items: [
+            { value: "0", state: "done" },
+            { value: "3", state: "done" },
+            { value: "4", state: "done" },
+            { value: "8", state: "done" },
+            { value: "9", state: "done" },
+            { value: "14", state: "done" },
+          ],
+        },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "prefix = [0,3,4,8,9,14] — O(n) build done", kind: "swap" }],
+        },
+      ],
+    },
+    {
+      message: "Query sum(1..3): prefix[4]-prefix[1] = 9-3 = 6. O(1)!",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Original Array",
+          items: [
+            { value: "3", state: "default" },
+            { value: "1", state: "highlight" },
+            { value: "4", state: "highlight" },
+            { value: "1", state: "highlight" },
+            { value: "5", state: "default" },
+          ],
+        },
+        {
+          type: "array",
+          id: "pfx",
+          label: "Prefix Sum",
+          items: [
+            { value: "0", state: "default" },
+            { value: "3", state: "comparing" },
+            { value: "4", state: "default" },
+            { value: "8", state: "default" },
+            { value: "9", state: "comparing" },
+            { value: "14", state: "default" },
+          ],
+        },
+        { type: "variable", id: "ans", name: "answer", value: "9-3=6", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "✅ sum(1..3) = prefix[4]-prefix[1] = 6. O(1) query!", kind: "return" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 const dynamicArrayViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: 'Dynamic array starts empty (capacity=2). push() doubles capacity when full.', elements: [
-      { type: 'array', id: 'arr', label: 'Dynamic Array', items: [{ value: '_', state: 'default' }, { value: '_', state: 'default' }] },
-      { type: 'variable', id: 'sz', name: 'size', value: '0', state: 'default' }, { type: 'variable', id: 'cap', name: 'capacity', value: '2', state: 'default' },
-      { type: 'log', id: 'log', lines: [{ text: 'Created: capacity=2, size=0', kind: 'info' }] },
-    ]},
-    { message: 'push(5), push(8): fill capacity. size=2=capacity → FULL.', elements: [
-      { type: 'array', id: 'arr', label: 'Dynamic Array', items: [{ value: '5', state: 'done' }, { value: '8', state: 'active' }] },
-      { type: 'variable', id: 'sz', name: 'size', value: '2', state: 'error' }, { type: 'variable', id: 'cap', name: 'capacity', value: '2', state: 'error' },
-      { type: 'log', id: 'log', lines: [{ text: 'push(5), push(8) → FULL! size==capacity', kind: 'compare' }] },
-    ]},
-    { message: 'push(3): RESIZE! Allocate new array capacity→4, copy elements.', elements: [
-      { type: 'array', id: 'old', label: 'Old Array (copied)', items: [{ value: '5', state: 'comparing' }, { value: '8', state: 'comparing' }] },
-      { type: 'array', id: 'arr', label: 'New Array (capacity 4)', items: [{ value: '5', state: 'done' }, { value: '8', state: 'done' }, { value: '3', state: 'active' }, { value: '_', state: 'default' }] },
-      { type: 'variable', id: 'sz', name: 'size', value: '3', state: 'active' }, { type: 'variable', id: 'cap', name: 'capacity', value: '2→4', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'RESIZE: capacity doubled 2→4. push(3) at index 2.', kind: 'call' }] },
-    ]},
-    { message: 'push(7), push(1): size→5 > cap=4 → RESIZE to 8. Amortized O(1) per push.', elements: [
-      { type: 'array', id: 'arr', label: 'Dynamic Array (capacity 8)', items: [{ value: '5', state: 'done' }, { value: '8', state: 'done' }, { value: '3', state: 'done' }, { value: '7', state: 'done' }, { value: '1', state: 'active' }, { value: '_', state: 'default' }, { value: '_', state: 'default' }, { value: '_', state: 'default' }] },
-      { type: 'variable', id: 'sz', name: 'size', value: '5', state: 'active' }, { type: 'variable', id: 'cap', name: 'capacity', value: '8', state: 'done' },
-      { type: 'log', id: 'log', lines: [{ text: '✅ 5 pushes, 2 resizes. Amortized O(1) per push.', kind: 'info' }] },
-    ]},
+    {
+      message: "Dynamic array starts empty (capacity=2). push() doubles capacity when full.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Dynamic Array",
+          items: [
+            { value: "_", state: "default" },
+            { value: "_", state: "default" },
+          ],
+        },
+        { type: "variable", id: "sz", name: "size", value: "0", state: "default" },
+        { type: "variable", id: "cap", name: "capacity", value: "2", state: "default" },
+        { type: "log", id: "log", lines: [{ text: "Created: capacity=2, size=0", kind: "info" }] },
+      ],
+    },
+    {
+      message: "push(5), push(8): fill capacity. size=2=capacity → FULL.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Dynamic Array",
+          items: [
+            { value: "5", state: "done" },
+            { value: "8", state: "active" },
+          ],
+        },
+        { type: "variable", id: "sz", name: "size", value: "2", state: "error" },
+        { type: "variable", id: "cap", name: "capacity", value: "2", state: "error" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "push(5), push(8) → FULL! size==capacity", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "push(3): RESIZE! Allocate new array capacity→4, copy elements.",
+      elements: [
+        {
+          type: "array",
+          id: "old",
+          label: "Old Array (copied)",
+          items: [
+            { value: "5", state: "comparing" },
+            { value: "8", state: "comparing" },
+          ],
+        },
+        {
+          type: "array",
+          id: "arr",
+          label: "New Array (capacity 4)",
+          items: [
+            { value: "5", state: "done" },
+            { value: "8", state: "done" },
+            { value: "3", state: "active" },
+            { value: "_", state: "default" },
+          ],
+        },
+        { type: "variable", id: "sz", name: "size", value: "3", state: "active" },
+        { type: "variable", id: "cap", name: "capacity", value: "2→4", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "RESIZE: capacity doubled 2→4. push(3) at index 2.", kind: "call" }],
+        },
+      ],
+    },
+    {
+      message: "push(7), push(1): size→5 > cap=4 → RESIZE to 8. Amortized O(1) per push.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Dynamic Array (capacity 8)",
+          items: [
+            { value: "5", state: "done" },
+            { value: "8", state: "done" },
+            { value: "3", state: "done" },
+            { value: "7", state: "done" },
+            { value: "1", state: "active" },
+            { value: "_", state: "default" },
+            { value: "_", state: "default" },
+            { value: "_", state: "default" },
+          ],
+        },
+        { type: "variable", id: "sz", name: "size", value: "5", state: "active" },
+        { type: "variable", id: "cap", name: "capacity", value: "8", state: "done" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "✅ 5 pushes, 2 resizes. Amortized O(1) per push.", kind: "info" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 const kadaneViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: "Kadane's Algorithm: Maximum Subarray on [-2,1,-3,4,-1,2,1,-5,4]. Track currentSum and maxSum.", elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '-2', state: 'default' }, { value: '1', state: 'default' }, { value: '-3', state: 'default' }, { value: '4', state: 'default' }, { value: '-1', state: 'default' }, { value: '2', state: 'default' }, { value: '1', state: 'default' }, { value: '-5', state: 'default' }, { value: '4', state: 'default' }] },
-      { type: 'variable', id: 'cur', name: 'currentSum', value: '-2', state: 'default' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '-2', state: 'default' },
-      { type: 'log', id: 'log', lines: [{ text: 'Start: currentSum=arr[0]=-2, maxSum=-2', kind: 'info' }] },
-    ]},
-    { message: 'i=1: currentSum=max(1, -2+1)=max(1,-1)=1. maxSum=max(-2,1)=1. Fresh start!', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '-2', state: 'visited' }, { value: '1', state: 'active' }, { value: '-3', state: 'default' }, { value: '4', state: 'default' }, { value: '-1', state: 'default' }, { value: '2', state: 'default' }, { value: '1', state: 'default' }, { value: '-5', state: 'default' }, { value: '4', state: 'default' }] },
-      { type: 'variable', id: 'cur', name: 'currentSum', value: '1', state: 'active' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '1', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'i=1: max(1, -2+1) = 1. Fresh start from here.', kind: 'compare' }] },
-    ]},
-    { message: 'i=2: currentSum=max(-3, 1-3)=max(-3,-2)=-2. maxSum stays 1.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '-2', state: 'visited' }, { value: '1', state: 'visited' }, { value: '-3', state: 'comparing' }, { value: '4', state: 'default' }, { value: '-1', state: 'default' }, { value: '2', state: 'default' }, { value: '1', state: 'default' }, { value: '-5', state: 'default' }, { value: '4', state: 'default' }] },
-      { type: 'variable', id: 'cur', name: 'currentSum', value: '-2', state: 'default' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '1', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'i=2: max(-3, -2)=-2. maxSum=1 unchanged.', kind: 'compare' }] },
-    ]},
-    { message: 'i=3..6: 4,-1,2,1 → currentSum grows to 6. maxSum=6! Subarray [4,-1,2,1].', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '-2', state: 'visited' }, { value: '1', state: 'visited' }, { value: '-3', state: 'visited' }, { value: '4', state: 'done' }, { value: '-1', state: 'done' }, { value: '2', state: 'done' }, { value: '1', state: 'done' }, { value: '-5', state: 'default' }, { value: '4', state: 'default' }] },
-      { type: 'variable', id: 'cur', name: 'currentSum', value: '6', state: 'highlight' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '6', state: 'highlight' },
-      { type: 'log', id: 'log', lines: [{ text: 'i=3→6: currentSum grows 4→3→5→6. NEW maxSum=6!', kind: 'return' }] },
-    ]},
-    { message: 'i=7,8: -5 drops to 1, +4 gives 5. maxSum remains 6. Answer: 6 (subarray [4,-1,2,1]).', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '-2', state: 'visited' }, { value: '1', state: 'visited' }, { value: '-3', state: 'visited' }, { value: '4', state: 'done' }, { value: '-1', state: 'done' }, { value: '2', state: 'done' }, { value: '1', state: 'done' }, { value: '-5', state: 'visited' }, { value: '4', state: 'visited' }] },
-      { type: 'variable', id: 'cur', name: 'currentSum', value: '5', state: 'default' }, { type: 'variable', id: 'mx', name: 'maxSum', value: '6', state: 'done' },
-      { type: 'log', id: 'log', lines: [{ text: '✅ maxSum=6 from [4,-1,2,1]. O(n) Kadane\'s.', kind: 'info' }] },
-    ]},
+    {
+      message:
+        "Kadane's Algorithm: Maximum Subarray on [-2,1,-3,4,-1,2,1,-5,4]. Track currentSum and maxSum.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "-2", state: "default" },
+            { value: "1", state: "default" },
+            { value: "-3", state: "default" },
+            { value: "4", state: "default" },
+            { value: "-1", state: "default" },
+            { value: "2", state: "default" },
+            { value: "1", state: "default" },
+            { value: "-5", state: "default" },
+            { value: "4", state: "default" },
+          ],
+        },
+        { type: "variable", id: "cur", name: "currentSum", value: "-2", state: "default" },
+        { type: "variable", id: "mx", name: "maxSum", value: "-2", state: "default" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "Start: currentSum=arr[0]=-2, maxSum=-2", kind: "info" }],
+        },
+      ],
+    },
+    {
+      message: "i=1: currentSum=max(1, -2+1)=max(1,-1)=1. maxSum=max(-2,1)=1. Fresh start!",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "-2", state: "visited" },
+            { value: "1", state: "active" },
+            { value: "-3", state: "default" },
+            { value: "4", state: "default" },
+            { value: "-1", state: "default" },
+            { value: "2", state: "default" },
+            { value: "1", state: "default" },
+            { value: "-5", state: "default" },
+            { value: "4", state: "default" },
+          ],
+        },
+        { type: "variable", id: "cur", name: "currentSum", value: "1", state: "active" },
+        { type: "variable", id: "mx", name: "maxSum", value: "1", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "i=1: max(1, -2+1) = 1. Fresh start from here.", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "i=2: currentSum=max(-3, 1-3)=max(-3,-2)=-2. maxSum stays 1.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "-2", state: "visited" },
+            { value: "1", state: "visited" },
+            { value: "-3", state: "comparing" },
+            { value: "4", state: "default" },
+            { value: "-1", state: "default" },
+            { value: "2", state: "default" },
+            { value: "1", state: "default" },
+            { value: "-5", state: "default" },
+            { value: "4", state: "default" },
+          ],
+        },
+        { type: "variable", id: "cur", name: "currentSum", value: "-2", state: "default" },
+        { type: "variable", id: "mx", name: "maxSum", value: "1", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "i=2: max(-3, -2)=-2. maxSum=1 unchanged.", kind: "compare" }],
+        },
+      ],
+    },
+    {
+      message: "i=3..6: 4,-1,2,1 → currentSum grows to 6. maxSum=6! Subarray [4,-1,2,1].",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "-2", state: "visited" },
+            { value: "1", state: "visited" },
+            { value: "-3", state: "visited" },
+            { value: "4", state: "done" },
+            { value: "-1", state: "done" },
+            { value: "2", state: "done" },
+            { value: "1", state: "done" },
+            { value: "-5", state: "default" },
+            { value: "4", state: "default" },
+          ],
+        },
+        { type: "variable", id: "cur", name: "currentSum", value: "6", state: "highlight" },
+        { type: "variable", id: "mx", name: "maxSum", value: "6", state: "highlight" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "i=3→6: currentSum grows 4→3→5→6. NEW maxSum=6!", kind: "return" }],
+        },
+      ],
+    },
+    {
+      message:
+        "i=7,8: -5 drops to 1, +4 gives 5. maxSum remains 6. Answer: 6 (subarray [4,-1,2,1]).",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "-2", state: "visited" },
+            { value: "1", state: "visited" },
+            { value: "-3", state: "visited" },
+            { value: "4", state: "done" },
+            { value: "-1", state: "done" },
+            { value: "2", state: "done" },
+            { value: "1", state: "done" },
+            { value: "-5", state: "visited" },
+            { value: "4", state: "visited" },
+          ],
+        },
+        { type: "variable", id: "cur", name: "currentSum", value: "5", state: "default" },
+        { type: "variable", id: "mx", name: "maxSum", value: "6", state: "done" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "✅ maxSum=6 from [4,-1,2,1]. O(n) Kadane's.", kind: "info" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 const reverseArrayViz: VisualizationBlock = {
-  type: 'array', initialState: {},
+  type: "array",
+  initialState: {},
   steps: [
-    { message: 'Reverse Array [1,2,3,4,5] in-place. Two pointers: left=0, right=4, swap and converge.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '1', state: 'active' }, { value: '2', state: 'default' }, { value: '3', state: 'default' }, { value: '4', state: 'default' }, { value: '5', state: 'active' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '0', state: 'active' }, { type: 'variable', id: 'r', name: 'right', value: '4', state: 'active' },
-      { type: 'log', id: 'log', lines: [{ text: 'swap(arr[0], arr[4]): 1↔5', kind: 'swap' }] },
-    ]},
-    { message: 'After swap(0,4): [5,2,3,4,1]. Move: left→1, right→3.', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '5', state: 'done' }, { value: '2', state: 'active' }, { value: '3', state: 'default' }, { value: '4', state: 'active' }, { value: '1', state: 'done' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '1', state: 'active' }, { type: 'variable', id: 'r', name: 'right', value: '3', state: 'active' },
-      { type: 'log', id: 'log', lines: [{ text: 'swap(arr[1], arr[3]): 2↔4', kind: 'swap' }] },
-    ]},
-    { message: 'After swap(1,3): [5,4,3,2,1]. left→2=right→2. Middle: no swap. Done!', elements: [
-      { type: 'array', id: 'arr', label: 'Array', items: [{ value: '5', state: 'done' }, { value: '4', state: 'done' }, { value: '3', state: 'highlight' }, { value: '2', state: 'done' }, { value: '1', state: 'done' }] },
-      { type: 'variable', id: 'l', name: 'left', value: '2', state: 'done' }, { type: 'variable', id: 'r', name: 'right', value: '2', state: 'done' },
-      { type: 'log', id: 'log', lines: [{ text: '✅ Reversed: [5,4,3,2,1]. O(n) time, O(1) space.', kind: 'info' }] },
-    ]},
+    {
+      message:
+        "Reverse Array [1,2,3,4,5] in-place. Two pointers: left=0, right=4, swap and converge.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "1", state: "active" },
+            { value: "2", state: "default" },
+            { value: "3", state: "default" },
+            { value: "4", state: "default" },
+            { value: "5", state: "active" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "0", state: "active" },
+        { type: "variable", id: "r", name: "right", value: "4", state: "active" },
+        { type: "log", id: "log", lines: [{ text: "swap(arr[0], arr[4]): 1↔5", kind: "swap" }] },
+      ],
+    },
+    {
+      message: "After swap(0,4): [5,2,3,4,1]. Move: left→1, right→3.",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "5", state: "done" },
+            { value: "2", state: "active" },
+            { value: "3", state: "default" },
+            { value: "4", state: "active" },
+            { value: "1", state: "done" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "1", state: "active" },
+        { type: "variable", id: "r", name: "right", value: "3", state: "active" },
+        { type: "log", id: "log", lines: [{ text: "swap(arr[1], arr[3]): 2↔4", kind: "swap" }] },
+      ],
+    },
+    {
+      message: "After swap(1,3): [5,4,3,2,1]. left→2=right→2. Middle: no swap. Done!",
+      elements: [
+        {
+          type: "array",
+          id: "arr",
+          label: "Array",
+          items: [
+            { value: "5", state: "done" },
+            { value: "4", state: "done" },
+            { value: "3", state: "highlight" },
+            { value: "2", state: "done" },
+            { value: "1", state: "done" },
+          ],
+        },
+        { type: "variable", id: "l", name: "left", value: "2", state: "done" },
+        { type: "variable", id: "r", name: "right", value: "2", state: "done" },
+        {
+          type: "log",
+          id: "log",
+          lines: [{ text: "✅ Reversed: [5,4,3,2,1]. O(n) time, O(1) space.", kind: "info" }],
+        },
+      ],
+    },
   ],
-}
+};
 
 // ─── Problem Registry ──────────────────────────────────────────────────
 
 export const ARRAY_PROBLEMS: ArrayProblem[] = [
   {
-    id: 'two-sum-sorted',
-    title: 'Two Sum II (Sorted)',
-    pattern: 'Two Pointer',
-    difficulty: 'Easy',
-    description: 'Given a sorted array, find two numbers that add up to a target. Return their indices.',
-    defaultInput: 'nums = [1, 3, 4, 5, 7, 11], target = 9',
+    id: "two-sum-sorted",
+    title: "Two Sum II (Sorted)",
+    pattern: "Two Pointer",
+    difficulty: "Easy",
+    description:
+      "Given a sorted array, find two numbers that add up to a target. Return their indices.",
+    defaultInput: "nums = [1, 3, 4, 5, 7, 11], target = 9",
     visualization: twoPointersViz,
     starterCode: {
       javascript: `// Two Sum II — Two Pointer O(n) solution
@@ -272,12 +874,13 @@ int main() {
     },
   },
   {
-    id: 'sliding-window-max',
-    title: 'Max Sum Subarray of Size K',
-    pattern: 'Sliding Window',
-    difficulty: 'Easy',
-    description: 'Find the maximum sum of any k consecutive elements in the array using a sliding window.',
-    defaultInput: 'nums = [2,1,5,1,3,2], k = 3',
+    id: "sliding-window-max",
+    title: "Max Sum Subarray of Size K",
+    pattern: "Sliding Window",
+    difficulty: "Easy",
+    description:
+      "Find the maximum sum of any k consecutive elements in the array using a sliding window.",
+    defaultInput: "nums = [2,1,5,1,3,2], k = 3",
     visualization: slidingWindowViz,
     starterCode: {
       javascript: `// Sliding Window — Max Sum of k consecutive elements
@@ -336,12 +939,13 @@ int main() {
     },
   },
   {
-    id: 'move-zeroes',
-    title: 'Move Zeroes',
-    pattern: 'Fast-Slow Pointer',
-    difficulty: 'Easy',
-    description: 'Move all zeros to the end while maintaining relative order of non-zero elements. In-place.',
-    defaultInput: 'nums = [0,1,0,3,12]',
+    id: "move-zeroes",
+    title: "Move Zeroes",
+    pattern: "Fast-Slow Pointer",
+    difficulty: "Easy",
+    description:
+      "Move all zeros to the end while maintaining relative order of non-zero elements. In-place.",
+    defaultInput: "nums = [0,1,0,3,12]",
     visualization: moveZeroesViz,
     starterCode: {
       javascript: `// Move Zeroes — Fast/Slow pointer in-place
@@ -393,12 +997,13 @@ int main() {
     },
   },
   {
-    id: 'prefix-sum',
-    title: 'Prefix Sum Queries',
-    pattern: 'Prefix Sum',
-    difficulty: 'Easy',
-    description: 'Build a prefix sum array to answer range sum queries in O(1) after O(n) preprocessing.',
-    defaultInput: 'nums = [3,1,4,1,5], query: sum(1..3)',
+    id: "prefix-sum",
+    title: "Prefix Sum Queries",
+    pattern: "Prefix Sum",
+    difficulty: "Easy",
+    description:
+      "Build a prefix sum array to answer range sum queries in O(1) after O(n) preprocessing.",
+    defaultInput: "nums = [3,1,4,1,5], query: sum(1..3)",
     visualization: prefixSumViz,
     starterCode: {
       javascript: `// Prefix Sum — O(n) build, O(1) per query
@@ -457,12 +1062,13 @@ int main() {
     },
   },
   {
-    id: 'max-subarray',
-    title: 'Maximum Subarray (Kadane\'s)',
-    pattern: 'Dynamic Programming',
-    difficulty: 'Medium',
-    description: 'Find the contiguous subarray with the largest sum using Kadane\'s algorithm in O(n).',
-    defaultInput: 'nums = [-2,1,-3,4,-1,2,1,-5,4]',
+    id: "max-subarray",
+    title: "Maximum Subarray (Kadane's)",
+    pattern: "Dynamic Programming",
+    difficulty: "Medium",
+    description:
+      "Find the contiguous subarray with the largest sum using Kadane's algorithm in O(n).",
+    defaultInput: "nums = [-2,1,-3,4,-1,2,1,-5,4]",
     visualization: kadaneViz,
     starterCode: {
       javascript: `// Kadane's Algorithm — Maximum Subarray O(n)
@@ -513,12 +1119,13 @@ int main() {
     },
   },
   {
-    id: 'dynamic-array',
-    title: 'Dynamic Array Internals',
-    pattern: 'Array Fundamentals',
-    difficulty: 'Easy',
-    description: 'Understand how dynamic arrays grow by doubling capacity. See push() with amortized O(1).',
-    defaultInput: 'push: 5, 8, 3, 7, 1',
+    id: "dynamic-array",
+    title: "Dynamic Array Internals",
+    pattern: "Array Fundamentals",
+    difficulty: "Easy",
+    description:
+      "Understand how dynamic arrays grow by doubling capacity. See push() with amortized O(1).",
+    defaultInput: "push: 5, 8, 3, 7, 1",
     visualization: dynamicArrayViz,
     starterCode: {
       javascript: `// Dynamic Array simulation — watch the capacity doubling!
@@ -589,12 +1196,13 @@ int main() {
     },
   },
   {
-    id: 'reverse-array',
-    title: 'Reverse Array In-Place',
-    pattern: 'Two Pointer',
-    difficulty: 'Easy',
-    description: 'Reverse an array in-place using two pointers. O(n) time, O(1) space — a fundamental technique.',
-    defaultInput: 'nums = [1,2,3,4,5]',
+    id: "reverse-array",
+    title: "Reverse Array In-Place",
+    pattern: "Two Pointer",
+    difficulty: "Easy",
+    description:
+      "Reverse an array in-place using two pointers. O(n) time, O(1) space — a fundamental technique.",
+    defaultInput: "nums = [1,2,3,4,5]",
     visualization: reverseArrayViz,
     starterCode: {
       javascript: `// Reverse Array in-place — Two Pointer O(n)
@@ -642,13 +1250,13 @@ int main() {
 }`,
     },
   },
-]
+];
 
 export const PROBLEM_GROUPS = [
-  { label: 'Two Pointer', ids: ['two-sum-sorted', 'reverse-array'] },
-  { label: 'Sliding Window', ids: ['sliding-window-max'] },
-  { label: 'Fast-Slow Pointer', ids: ['move-zeroes'] },
-  { label: 'Prefix Sum', ids: ['prefix-sum'] },
-  { label: 'Dynamic Programming', ids: ['max-subarray'] },
-  { label: 'Array Fundamentals', ids: ['dynamic-array'] },
-]
+  { label: "Two Pointer", ids: ["two-sum-sorted", "reverse-array"] },
+  { label: "Sliding Window", ids: ["sliding-window-max"] },
+  { label: "Fast-Slow Pointer", ids: ["move-zeroes"] },
+  { label: "Prefix Sum", ids: ["prefix-sum"] },
+  { label: "Dynamic Programming", ids: ["max-subarray"] },
+  { label: "Array Fundamentals", ids: ["dynamic-array"] },
+];

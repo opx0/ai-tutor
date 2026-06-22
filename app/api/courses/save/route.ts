@@ -1,23 +1,65 @@
+import { Prisma } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { z } from "zod";
+import type { CourseData } from "@/lib/ai-providers";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { type NextRequest, NextResponse } from "next/server";
-import { CourseData } from "@/lib/ai-providers";
+import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
+
+const lessonSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  summary: z.string().optional(),
+  exercises: z.record(z.string(), z.unknown()).optional(),
+  visualization: z.unknown().optional(),
+});
+
+const moduleSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  lessons: z.array(lessonSchema).optional(),
+});
+
+const saveCourseSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  modules: z.array(moduleSchema),
+  topic: z.string().min(1),
+  difficulty: z.string().min(1),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
+    }
+
+    const clientId = getClientIdentifier(req, session.user.id);
+    const limit = await consumeRateLimit(`course-save:${session.user.id}:${clientId}`, {
+      max: 20,
+      windowMs: 60000,
+    });
+    if (!limit.allowed) {
       return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
+        {
+          error: "Too many requests. Please try again later.",
+          retryAfterMs: limit.retryAfterMs,
+        },
+        { status: 429 },
       );
     }
 
-    const body = await req.json();
-    const { title, description, modules, topic, difficulty } = body as CourseData & {
+    const parsed = saveCourseSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid request body", details: parsed.error.flatten() },
+        { status: 400 },
+      );
+    }
+    const { title, description, modules, topic, difficulty } = parsed.data as CourseData & {
       topic: string;
       difficulty: string;
     };
@@ -25,15 +67,12 @@ export async function POST(req: NextRequest) {
     if (!title || !topic || !difficulty) {
       return NextResponse.json(
         { error: "title, topic, and difficulty are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!Array.isArray(modules) || modules.length === 0) {
-      return NextResponse.json(
-        { error: "Generated course is missing modules" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Generated course is missing modules" }, { status: 400 });
     }
 
     // Ensure each module has at least one lesson
@@ -88,10 +127,9 @@ export async function POST(req: NextRequest) {
     console.error("Error saving course:", error);
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Failed to save course",
+        error: error instanceof Error ? error.message : "Failed to save course",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

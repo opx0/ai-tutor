@@ -1,15 +1,15 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, Code2, Layers3, PanelLeft, Play, RotateCcw } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { EditorPanel } from "@/components/playground/EditorPanel";
 import { ConsolePanel } from "@/components/playground/ConsolePanel";
-import { VisualizationPanel } from "@/components/playground/VisualizationPanel";
+import { EditorPanel } from "@/components/playground/EditorPanel";
 import { ProblemSelector } from "@/components/playground/ProblemSelector";
+import { VisualizationPanel } from "@/components/playground/VisualizationPanel";
 import { useExecution } from "@/hooks/useExecution";
 import { ARRAY_PROBLEMS, type ArrayProblem } from "@/lib/playground/array-problems";
-import { Play, RotateCcw, ArrowLeft, Code2, Layers3, PanelLeft } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 
 type Language = "javascript" | "python" | "cpp";
 
@@ -51,7 +51,6 @@ export default function PlaygroundPage() {
 
   return (
     <div className="relative flex w-screen h-screen bg-[#050505] text-white overflow-hidden font-sans">
-
       {/* ─── Left Panel: Problem Selector ─── */}
       <AnimatePresence initial={false}>
         {sidebarOpen && (
@@ -72,7 +71,6 @@ export default function PlaygroundPage() {
 
       {/* ─── Middle Panel: Logic Hub (editor + console) ─── */}
       <div className="relative z-20 w-[500px] flex-shrink-0 h-full flex flex-col bg-[#0a0e14]/95 backdrop-blur-3xl border-x border-white/8 shadow-2xl shadow-black/80">
-
         {/* Title Bar */}
         <div className="flex flex-col gap-2 px-4 py-4 bg-gradient-to-b from-white/[0.03] to-transparent border-b border-white/8 flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -86,7 +84,7 @@ export default function PlaygroundPage() {
                 <PanelLeft className="w-4 h-4" />
               </button>
               <button
-                onClick={() => router.push('/courses')}
+                onClick={() => router.push("/courses")}
                 className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-white/40 hover:text-white"
                 title="Go Back"
               >
@@ -99,8 +97,12 @@ export default function PlaygroundPage() {
                 </div>
               </div>
               <div>
-                <div className="text-xs font-bold text-white truncate max-w-[140px]">{selectedProblem.title}</div>
-                <div className="text-[10px] uppercase tracking-widest text-violet-400/70">{selectedProblem.pattern}</div>
+                <div className="text-xs font-bold text-white truncate max-w-[140px]">
+                  {selectedProblem.title}
+                </div>
+                <div className="text-[10px] uppercase tracking-widest text-violet-400/70">
+                  {selectedProblem.pattern}
+                </div>
               </div>
             </div>
 
@@ -123,7 +125,10 @@ export default function PlaygroundPage() {
                     : "bg-violet-500 hover:bg-violet-400 text-white shadow-violet-500/25"
                 }`}
               >
-                <Play className={`w-3.5 h-3.5 ${isRunning ? "animate-pulse" : ""}`} fill={isRunning ? "none" : "currentColor"} />
+                <Play
+                  className={`w-3.5 h-3.5 ${isRunning ? "animate-pulse" : ""}`}
+                  fill={isRunning ? "none" : "currentColor"}
+                />
                 {isRunning ? "Running..." : "Run & Visualize"}
               </motion.button>
             </div>
@@ -158,7 +163,10 @@ export default function PlaygroundPage() {
       </div>
 
       {/* ─── Right Panel: Visualization Canvas ─── */}
-      <div className="absolute inset-0 z-0 pl-[500px]" style={{ paddingLeft: sidebarOpen ? 760 : 500 }}>
+      <div
+        className="absolute inset-0 z-0 pl-[500px]"
+        style={{ paddingLeft: sidebarOpen ? 760 : 500 }}
+      >
         <VisualizationPanel
           runCount={runCount}
           output={output}
@@ -167,7 +175,6 @@ export default function PlaygroundPage() {
           problemTitle={selectedProblem.title}
         />
       </div>
-
     </div>
   );
 }

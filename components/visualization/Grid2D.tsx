@@ -1,23 +1,25 @@
-'use client'
+"use client";
 
-import { getCellStyle } from '@/lib/visualization/cellStateColors'
-import type { Grid2DElement } from '@/lib/visualization/types'
+import { getCellStyle } from "@/lib/visualization/cellStateColors";
+import type { Grid2DElement } from "@/lib/visualization/types";
 
 type Grid2DProps = {
-  element: Grid2DElement
-}
+  element: Grid2DElement;
+};
 
 export default function Grid2D({ element }: Grid2DProps) {
-  const cells = element.cells || []
+  const cells = element.cells || [];
   if (cells.length === 0) {
     return (
       <div className="space-y-2">
         {element.label && (
-          <div className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{element.label}</div>
+          <div className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            {element.label}
+          </div>
         )}
         <div className="text-xs text-zinc-500 italic">Empty grid</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -34,9 +36,7 @@ export default function Grid2D({ element }: Grid2DProps) {
             <thead>
               <tr>
                 {/* Empty corner cell if we also have row labels */}
-                {element.rowLabels && (
-                  <th className="w-10 h-8" />
-                )}
+                {element.rowLabels && <th className="w-10 h-8" />}
                 {element.colLabels.map((col, ci) => (
                   <th
                     key={`col-${ci}`}
@@ -58,7 +58,7 @@ export default function Grid2D({ element }: Grid2DProps) {
                   </td>
                 )}
                 {row.map((cell, ci) => {
-                  const style = getCellStyle(cell.state)
+                  const style = getCellStyle(cell.state);
                   return (
                     <td
                       key={`cell-${ri}-${ci}`}
@@ -66,9 +66,9 @@ export default function Grid2D({ element }: Grid2DProps) {
                       style={style}
                       title={cell.label || undefined}
                     >
-                      {cell.value ?? ''}
+                      {cell.value ?? ""}
                     </td>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -76,5 +76,5 @@ export default function Grid2D({ element }: Grid2DProps) {
         </table>
       </div>
     </div>
-  )
+  );
 }

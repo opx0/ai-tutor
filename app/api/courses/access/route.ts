@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -9,10 +9,7 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
@@ -20,10 +17,7 @@ export async function GET(req: NextRequest) {
     const moduleId = searchParams.get("moduleId");
 
     if (!courseId) {
-      return NextResponse.json(
-        { error: "Course ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Course ID is required" }, { status: 400 });
     }
 
     // Get user with subscription info
@@ -40,10 +34,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Check if subscription has expired
@@ -62,7 +53,7 @@ export async function GET(req: NextRequest) {
           subscriptionExpiresAt: null,
         },
       });
-      
+
       user.subscriptionStatus = "FREE";
       user.subscriptionExpiresAt = null;
     }
@@ -81,16 +72,13 @@ export async function GET(req: NextRequest) {
       });
 
       if (!module) {
-        return NextResponse.json(
-          { error: "Module not found" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Module not found" }, { status: 404 });
       }
 
       if (module.courseId !== courseId) {
         return NextResponse.json(
           { error: "Module does not belong to the requested course" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -126,9 +114,6 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error checking access:", error);
-    return NextResponse.json(
-      { error: "Failed to check access" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to check access" }, { status: 500 });
   }
 }

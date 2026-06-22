@@ -1,7 +1,7 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export function ModeToggle() {
@@ -36,11 +36,7 @@ export function ModeToggle() {
       className="w-9 h-9 rounded-md flex items-center justify-center hover:bg-accent transition-colors"
       aria-label="Toggle theme"
     >
-      {resolvedTheme === "dark" ? (
-        <Sun className="h-5 w-5" />
-      ) : (
-        <Moon className="h-5 w-5" />
-      )}
+      {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </button>
   );
 }

@@ -52,8 +52,7 @@ export default function NewCoursePage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold">New Curated Course</h1>
         <p className="text-muted-foreground mt-1">
-          Create a new curated course. You can add modules and lessons after
-          creation.
+          Create a new curated course. You can add modules and lessons after creation.
         </p>
       </div>
 

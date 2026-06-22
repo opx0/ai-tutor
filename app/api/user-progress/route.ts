@@ -1,17 +1,22 @@
+import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { type NextRequest, NextResponse } from "next/server";
+import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
+
+const postSchema = z.object({
+  courseId: z.string(),
+  progress: z.number().min(0).max(100),
+  lastLessonId: z.string().nullable().optional(),
+});
 
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     const userId = session.user.id; // JWT — no extra DB lookup needed
@@ -20,10 +25,7 @@ export async function GET(req: NextRequest) {
     const courseId = searchParams.get("courseId");
 
     if (!courseId) {
-      return NextResponse.json(
-        { error: "Course ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Course ID is required" }, { status: 400 });
     }
 
     // findFirst with compound key — uses index, faster than full scan
@@ -44,10 +46,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching user progress:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch user progress" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch user progress" }, { status: 500 });
   }
 }
 
@@ -56,30 +55,28 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     const userId = session.user.id; // JWT — no extra DB lookup needed
 
-    const body = await req.json();
-    const { courseId, progress, lastLessonId } = body;
-
-    if (!courseId || progress === undefined) {
+    const clientId = getClientIdentifier(req, session.user.id);
+    const limit = await consumeRateLimit(`user-progress:${session.user.id}:${clientId}`, {
+      max: 120,
+      windowMs: 60000,
+    });
+    if (!limit.allowed) {
       return NextResponse.json(
-        { error: "Course ID and progress are required" },
-        { status: 400 }
+        { error: "Too many requests. Please try again later.", retryAfterMs: limit.retryAfterMs },
+        { status: 429 },
       );
     }
 
-    if (typeof progress !== "number" || progress < 0 || progress > 100) {
-      return NextResponse.json(
-        { error: "Progress must be a number between 0 and 100" },
-        { status: 400 }
-      );
+    const parsed = postSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Course ID and progress are required" }, { status: 400 });
     }
+    const { courseId, progress, lastLessonId } = parsed.data;
 
     // Verify course exists and user has access (still needed — security check)
     const course = await prisma.course.findFirst({
@@ -91,10 +88,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!course) {
-      return NextResponse.json(
-        { error: "Course not found or access denied" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Course not found or access denied" }, { status: 404 });
     }
 
     // Upsert using the compound unique key
@@ -112,9 +106,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error updating user progress:", error);
-    return NextResponse.json(
-      { error: "Failed to update user progress" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update user progress" }, { status: 500 });
   }
 }

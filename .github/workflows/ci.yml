@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+# Cancel superseded runs on the same ref
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Typecheck + Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # postinstall already runs `prisma generate`, but make it explicit so a
+      # stale generated client can never masquerade as type errors in CI.
+      - name: Generate Prisma client
+        run: bun run prisma generate
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun run test
+
+  # NOTE: a `next build` job is intentionally omitted here because the build
+  # requires a real DATABASE_URL (and other runtime secrets). Add a `build`
+  # job with the necessary repository secrets wired in when ready, e.g.:
+  #
+  # build:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  #   steps: [...checkout, setup-bun, setup-node, install, "bun run build"]

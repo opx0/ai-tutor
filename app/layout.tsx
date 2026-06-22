@@ -1,10 +1,10 @@
-import { SessionProvider } from "@/components/session-provider";
-import { SiteHeader } from "@/components/site-header";
-import { ThemeProvider } from "@/components/theme-provider";
-import { SWRProvider } from "@/components/swr-config";
 import type { Metadata } from "next";
 import type React from "react";
 import { Toaster } from "sonner";
+import { SessionProvider } from "@/components/session-provider";
+import { SiteHeader } from "@/components/site-header";
+import { SWRProvider } from "@/components/swr-config";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {

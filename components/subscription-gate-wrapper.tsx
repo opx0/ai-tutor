@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import SubscriptionGate from "./subscription-gate";
 
 interface SubscriptionGateWrapperProps {
@@ -17,11 +17,7 @@ export default function SubscriptionGateWrapper({
   moduleName,
 }: SubscriptionGateWrapperProps) {
   return (
-    <SubscriptionGate
-      courseId={courseId}
-      moduleId={moduleId}
-      moduleName={moduleName}
-    >
+    <SubscriptionGate courseId={courseId} moduleId={moduleId} moduleName={moduleName}>
       {children}
     </SubscriptionGate>
   );

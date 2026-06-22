@@ -1,27 +1,41 @@
+import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { type NextRequest, NextResponse } from "next/server";
+import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
+
+const completeLessonSchema = z.object({
+  lessonId: z.string().min(1, "lessonId is required"),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
+    }
+
+    const clientId = getClientIdentifier(req, session.user.id);
+    const limit = await consumeRateLimit(`lesson-complete:${session.user.id}:${clientId}`, {
+      max: 60,
+      windowMs: 60000,
+    });
+    if (!limit.allowed) {
       return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
+        {
+          error: "Too many requests. Please try again later.",
+          retryAfterMs: limit.retryAfterMs,
+        },
+        { status: 429 },
       );
     }
 
-    const body = await req.json();
-    const lessonId = body?.lessonId;
-
-    if (!lessonId || typeof lessonId !== "string") {
-      return NextResponse.json(
-        { error: "lessonId is required" },
-        { status: 400 }
-      );
+    const parsed = completeLessonSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "lessonId is required" }, { status: 400 });
     }
+    const { lessonId } = parsed.data;
 
     const lesson = await prisma.lesson.findUnique({
       where: { id: lessonId },
@@ -51,7 +65,7 @@ export async function POST(req: NextRequest) {
     if (!course.isPublic && course.type === "CUSTOM" && course.userId !== userId) {
       return NextResponse.json(
         { error: "You do not have access to this lesson." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -85,9 +99,7 @@ export async function POST(req: NextRequest) {
       });
 
       const progress =
-        totalLessons > 0
-          ? Math.round((completedLessonsCount / totalLessons) * 100)
-          : 0;
+        totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0;
 
       await tx.userProgress.upsert({
         where: { courseId_userId: { courseId: course.id, userId } },
@@ -129,9 +141,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Error completing lesson:", error);
-    return NextResponse.json(
-      { error: "Failed to complete lesson" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to complete lesson" }, { status: 500 });
   }
 }

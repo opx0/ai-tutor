@@ -1,7 +1,19 @@
-import { useState, useEffect, useRef } from "react";
-import { Activity, Sparkles, GitCommit, ArrowDown, PlayCircle, Layers, SkipBack, SkipForward, Play, Pause, RotateCcw } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Activity,
+  ArrowDown,
+  GitCommit,
+  Layers,
+  Pause,
+  Play,
+  PlayCircle,
+  RotateCcw,
+  SkipBack,
+  SkipForward,
+  Sparkles,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import SceneElement from "@/components/visualization/SceneElement";
-import { motion, AnimatePresence } from "framer-motion";
 import type { VisualizationBlock } from "@/lib/visualization/types";
 
 type Props = {
@@ -12,7 +24,13 @@ type Props = {
   problemTitle?: string;
 };
 
-export function VisualizationPanel({ runCount, output, isRunning, block = null, problemTitle }: Props) {
+export function VisualizationPanel({
+  runCount,
+  output,
+  isRunning,
+  block = null,
+  problemTitle,
+}: Props) {
   // ─── Static ScenePlayer state ─────────────────────────────────────
   const [staticStep, setStaticStep] = useState(0);
   const [isStaticPlaying, setIsStaticPlaying] = useState(false);
@@ -38,7 +56,10 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
     if (!isStaticPlaying || !block) return;
     const timer = setInterval(() => {
       setStaticStep((s) => {
-        if (s >= block.steps.length - 1) { setIsStaticPlaying(false); return s; }
+        if (s >= block.steps.length - 1) {
+          setIsStaticPlaying(false);
+          return s;
+        }
         return s + 1;
       });
     }, staticSpeed);
@@ -47,7 +68,10 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
 
   // Parse [DEBUG] logs for live mode
   useEffect(() => {
-    if (!output) { setParsedSteps([]); return; }
+    if (!output) {
+      setParsedSteps([]);
+      return;
+    }
     const lines = output.split("\n");
     const newSteps: any[] = [];
     let stepCounter = 1;
@@ -60,15 +84,28 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
           if (data.vars) {
             Object.entries(data.vars).forEach(([key, value], idx) => {
               if (Array.isArray(value)) {
-                elements.push({ type: "array", id: `arr_${stepCounter}_${idx}`, label: key, items: value.map((v) => ({ value: v, state: "default" })) });
+                elements.push({
+                  type: "array",
+                  id: `arr_${stepCounter}_${idx}`,
+                  label: key,
+                  items: value.map((v) => ({ value: v, state: "default" })),
+                });
               } else {
-                elements.push({ type: "variable", id: `var_${stepCounter}_${idx}`, name: key, value: value as any, state: "active" });
+                elements.push({
+                  type: "variable",
+                  id: `var_${stepCounter}_${idx}`,
+                  name: key,
+                  value: value as any,
+                  state: "active",
+                });
               }
             });
           }
           newSteps.push({ message: data.message || "State Update", elements });
           stepCounter++;
-        } catch { /* skip malformed */ }
+        } catch {
+          /* skip malformed */
+        }
       }
     });
     setParsedSteps(newSteps);
@@ -76,16 +113,25 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
 
   // Animate live steps
   useEffect(() => {
-    if (runCount === 0 || isRunning) { setVisibleSteps(0); return; }
+    if (runCount === 0 || isRunning) {
+      setVisibleSteps(0);
+      return;
+    }
     if (parsedSteps.length === 0) return;
     setVisibleSteps(1);
     let cur = 1;
-    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
+    setTimeout(
+      () => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+      100,
+    );
     const interval = setInterval(() => {
       if (cur < parsedSteps.length) {
         cur++;
         setVisibleSteps(cur);
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
+        setTimeout(
+          () => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+          100,
+        );
       } else {
         clearInterval(interval);
       }
@@ -101,7 +147,10 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
     <div className="w-full h-full relative overflow-hidden flex flex-col bg-[#050505]">
       {/* Ambient glows */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/8 rounded-full mix-blend-screen filter blur-[128px] animate-pulse pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-600/8 rounded-full mix-blend-screen filter blur-[128px] animate-pulse pointer-events-none" style={{ animationDelay: "2s" }} />
+      <div
+        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-600/8 rounded-full mix-blend-screen filter blur-[128px] animate-pulse pointer-events-none"
+        style={{ animationDelay: "2s" }}
+      />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)] pointer-events-none" />
 
       {/* Header */}
@@ -131,7 +180,9 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
           <div className="max-w-2xl mx-auto px-6 py-8 space-y-6">
             {/* Step indicator */}
             <div className="flex items-center justify-between">
-              <div className="text-xs text-white/30 font-mono">Step {staticStep + 1} / {totalStatic}</div>
+              <div className="text-xs text-white/30 font-mono">
+                Step {staticStep + 1} / {totalStatic}
+              </div>
               <div className="h-1 flex-1 mx-4 bg-white/5 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-violet-500 to-emerald-500"
@@ -155,7 +206,9 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
                 <div className="px-5 py-4 border-b border-white/5">
                   <div className="flex items-center gap-2 mb-1">
                     <GitCommit className="w-3.5 h-3.5 text-violet-400/60" />
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-violet-400/60">State Snapshot</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-violet-400/60">
+                      State Snapshot
+                    </span>
                   </div>
                   <p className="text-white/80 text-sm leading-relaxed">{currentScene.message}</p>
                 </div>
@@ -170,7 +223,10 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
                         {others.length > 0 && (
                           <div className="space-y-3">
                             {others.map((el, i) => (
-                              <div key={i} className="p-4 rounded-xl bg-black/40 ring-1 ring-white/5">
+                              <div
+                                key={i}
+                                className="p-4 rounded-xl bg-black/40 ring-1 ring-white/5"
+                              >
                                 <SceneElement element={el as any} />
                               </div>
                             ))}
@@ -178,7 +234,9 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
                         )}
                         {variables.length > 0 && (
                           <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-black/20 ring-1 ring-white/5">
-                            {variables.map((el, i) => <SceneElement key={i} element={el as any} />)}
+                            {variables.map((el, i) => (
+                              <SceneElement key={i} element={el as any} />
+                            ))}
                           </div>
                         )}
                       </>
@@ -191,16 +249,53 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
             {/* Playback Controls */}
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center gap-1">
-                <button onClick={() => { setStaticStep(0); setIsStaticPlaying(false); }} disabled={staticStep === 0} className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition-colors" title="Restart"><RotateCcw className="w-4 h-4" /></button>
-                <button onClick={() => setStaticStep((s) => Math.max(0, s - 1))} disabled={staticStep === 0} className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"><SkipBack className="w-4 h-4" /></button>
-                <button onClick={() => setIsStaticPlaying((p) => !p)} className="px-4 py-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-300 hover:bg-violet-500/30 transition-colors flex items-center gap-2 text-sm font-medium">
-                  {isStaticPlaying ? <><Pause className="w-4 h-4" /> Pause</> : <><Play className="w-4 h-4" fill="currentColor" /> Play</>}
+                <button
+                  onClick={() => {
+                    setStaticStep(0);
+                    setIsStaticPlaying(false);
+                  }}
+                  disabled={staticStep === 0}
+                  className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  title="Restart"
+                >
+                  <RotateCcw className="w-4 h-4" />
                 </button>
-                <button onClick={() => setStaticStep((s) => Math.min(totalStatic - 1, s + 1))} disabled={staticStep >= totalStatic - 1} className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"><SkipForward className="w-4 h-4" /></button>
+                <button
+                  onClick={() => setStaticStep((s) => Math.max(0, s - 1))}
+                  disabled={staticStep === 0}
+                  className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <SkipBack className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setIsStaticPlaying((p) => !p)}
+                  className="px-4 py-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-300 hover:bg-violet-500/30 transition-colors flex items-center gap-2 text-sm font-medium"
+                >
+                  {isStaticPlaying ? (
+                    <>
+                      <Pause className="w-4 h-4" /> Pause
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-4 h-4" fill="currentColor" /> Play
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setStaticStep((s) => Math.min(totalStatic - 1, s + 1))}
+                  disabled={staticStep >= totalStatic - 1}
+                  className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <SkipForward className="w-4 h-4" />
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-white/30 uppercase">Speed</span>
-                <select value={staticSpeed} onChange={(e) => setStaticSpeed(Number(e.target.value))} className="bg-white/5 border border-white/10 text-white/60 text-xs rounded-lg px-2 py-1 focus:outline-none">
+                <select
+                  value={staticSpeed}
+                  onChange={(e) => setStaticSpeed(Number(e.target.value))}
+                  className="bg-white/5 border border-white/10 text-white/60 text-xs rounded-lg px-2 py-1 focus:outline-none"
+                >
                   <option value={3000}>0.5×</option>
                   <option value={1500}>1×</option>
                   <option value={750}>2×</option>
@@ -210,7 +305,10 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
             </div>
 
             <div className="text-center">
-              <p className="text-[10px] text-white/20">Hit <span className="text-violet-400">Run Code</span> above to switch to live execution trace</p>
+              <p className="text-[10px] text-white/20">
+                Hit <span className="text-violet-400">Run Code</span> above to switch to live
+                execution trace
+              </p>
             </div>
           </div>
         </div>
@@ -232,16 +330,26 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
           {runCount > 0 && !isRunning && parsedSteps.length === 0 && (
             <div className="flex items-center justify-center h-full">
               <div className="px-6 py-3 bg-amber-400/10 rounded-xl border border-amber-500/20 text-amber-400/80 text-sm text-center max-w-xs">
-                No <code className="font-mono">[DEBUG]</code> logs found. The starter code already has them — just hit Run!
+                No <code className="font-mono">[DEBUG]</code> logs found. The starter code already
+                has them — just hit Run!
               </div>
             </div>
           )}
 
           {isRunning && (
             <div className="flex items-center justify-center h-full gap-2">
-              <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-              <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-              <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              <div
+                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
             </div>
           )}
 
@@ -263,16 +371,23 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
                         {idx + 1}
                       </div>
                       <div className="w-[calc(100%-3.5rem)] md:w-[calc(50%-3rem)] p-5 rounded-2xl bg-[#0a0e14]/80 backdrop-blur-xl border border-white/5 hover:border-violet-500/20 transition-colors">
-                        <p className="text-white/80 text-sm font-medium leading-relaxed mb-4">{step.message}</p>
+                        <p className="text-white/80 text-sm font-medium leading-relaxed mb-4">
+                          {step.message}
+                        </p>
                         <div className="space-y-3">
                           {others.map((el: any) => (
-                            <div key={el.id} className="p-3 rounded-xl bg-black/40 ring-1 ring-white/5">
+                            <div
+                              key={el.id}
+                              className="p-3 rounded-xl bg-black/40 ring-1 ring-white/5"
+                            >
                               <SceneElement element={el} />
                             </div>
                           ))}
                           {variables.length > 0 && (
                             <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-black/20 ring-1 ring-white/5">
-                              {variables.map((el: any) => <SceneElement key={el.id} element={el} />)}
+                              {variables.map((el: any) => (
+                                <SceneElement key={el.id} element={el} />
+                              ))}
                             </div>
                           )}
                         </div>
@@ -283,7 +398,11 @@ export function VisualizationPanel({ runCount, output, isRunning, block = null, 
               </AnimatePresence>
               <div ref={bottomRef} className="h-16 flex items-center justify-center">
                 {visibleSteps === parsedSteps.length && parsedSteps.length > 0 && (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-xs text-emerald-400/60 font-mono flex items-center gap-1.5">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="text-xs text-emerald-400/60 font-mono flex items-center gap-1.5"
+                  >
                     <ArrowDown className="w-3.5 h-3.5" /> Execution complete
                   </motion.div>
                 )}

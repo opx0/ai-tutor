@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 
 // ─── Pyodide singleton ──────────────────────────────────────────────
 let pyodidePromise: Promise<any> | null = null;

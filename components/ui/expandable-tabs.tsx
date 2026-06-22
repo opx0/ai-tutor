@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 interface Tab {
   title: string;
@@ -68,15 +68,13 @@ export function ExpandableTabs({
     onChange?.(index);
   };
 
-  const Separator = () => (
-    <div className="mx-1 h-[24px] w-[1.2px] bg-border" aria-hidden="true" />
-  );
+  const Separator = () => <div className="mx-1 h-[24px] w-[1.2px] bg-border" aria-hidden="true" />;
 
   return (
     <div
       className={cn(
         "flex flex-wrap items-center gap-2 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-xl p-1 shadow-sm",
-        className
+        className,
       )}
     >
       {tabs.map((tab, index) => {
@@ -98,7 +96,7 @@ export function ExpandableTabs({
               "relative flex items-center rounded-xl px-4 py-2 text-sm font-medium transition-colors duration-300",
               selected === index
                 ? cn("bg-muted", activeColor)
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             <Icon size={20} suppressHydrationWarning />

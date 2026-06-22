@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { notFound, redirect } from "next/navigation";
 import LessonPageContent from "./LessonPageContent";
 
 export const dynamic = "force-dynamic";
@@ -49,8 +49,7 @@ export async function generateMetadata({
 
     return {
       title: `${lesson.title} | ${lesson.module.course.title}`,
-      description:
-        lesson.description || `Learn about ${lesson.title} in this lesson.`,
+      description: lesson.description || `Learn about ${lesson.title} in this lesson.`,
     };
   } catch {
     return { title: "Lesson", description: "View lesson details" };
@@ -112,13 +111,9 @@ export default async function LessonPage({ params }: PageProps) {
   });
 
   // Compute prev/next navigation
-  const currentModuleIndex = modules.findIndex(
-    (m) => m.id === lesson.moduleId
-  );
+  const currentModuleIndex = modules.findIndex((m) => m.id === lesson.moduleId);
   const currentModule = modules[currentModuleIndex];
-  const currentLessonIndex = currentModule.lessons.findIndex(
-    (l) => l.id === lesson.id
-  );
+  const currentLessonIndex = currentModule.lessons.findIndex((l) => l.id === lesson.id);
 
   let nextLesson = null;
   let previousLesson = null;

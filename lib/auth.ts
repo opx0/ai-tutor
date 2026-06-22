@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import argon2 from "argon2";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -42,10 +42,7 @@ export const authOptions: NextAuthOptions = {
 
         let isPasswordValid = false;
         try {
-          isPasswordValid = await argon2.verify(
-            user.password,
-            credentials.password
-          );
+          isPasswordValid = await argon2.verify(user.password, credentials.password);
         } catch (error) {
           console.error("Argon2 verification error:", error);
           return null;

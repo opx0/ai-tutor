@@ -4,8 +4,9 @@
 
 body {
   /* Subtle background gradient for a premium feel */
-  background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.05), transparent 40%),
-                    radial-gradient(circle at bottom left, hsl(var(--chart-5) / 0.05), transparent 40%);
+  background-image:
+    radial-gradient(circle at top right, hsl(var(--primary) / 0.05), transparent 40%),
+    radial-gradient(circle at bottom left, hsl(var(--chart-5) / 0.05), transparent 40%);
 }
 
 @layer utilities {
@@ -18,7 +19,7 @@ body {
     @apply bg-background/60 backdrop-blur-xl border border-border/50 shadow-sm relative overflow-hidden;
   }
   .glass::before {
-    content: '';
+    content: "";
     @apply absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none;
   }
 }
@@ -31,31 +32,31 @@ body {
 @layer base {
   :root {
     /* Catppuccin Latte Enhanced */
-    --background: 220 23% 97%;          /* Slightly lighter base for cleaner look */
-    --foreground: 234 16% 35%;          /* Text */
-    --card: 220 23% 100%;              /* Pure white cards for high contrast against soft bg */
-    --card-foreground: 234 16% 35%;     /* Text */
-    --popover: 220 23% 100%;           /* Pure white popovers */
-    --popover-foreground: 234 16% 35%;  /* Text */
-    --primary: 266 85% 58%;            /* Mauve #8839ef */
+    --background: 220 23% 97%; /* Slightly lighter base for cleaner look */
+    --foreground: 234 16% 35%; /* Text */
+    --card: 220 23% 100%; /* Pure white cards for high contrast against soft bg */
+    --card-foreground: 234 16% 35%; /* Text */
+    --popover: 220 23% 100%; /* Pure white popovers */
+    --popover-foreground: 234 16% 35%; /* Text */
+    --primary: 266 85% 58%; /* Mauve #8839ef */
     --primary-foreground: 220 23% 95%; /* Base */
-    --secondary: 223 16% 85%;          /* Surface0 */
-    --secondary-foreground: 234 16% 35%;/* Text */
-    --muted: 220 22% 92%;              /* Mantle */
-    --muted-foreground: 233 10% 47%;   /* Subtext0 */
-    --accent: 223 40% 90%;             /* Tinted surface for hover states */
-    --accent-foreground: 266 85% 50%;  /* Darker mauve text on hover */
-    --destructive: 347 87% 44%;        /* Red */
+    --secondary: 223 16% 85%; /* Surface0 */
+    --secondary-foreground: 234 16% 35%; /* Text */
+    --muted: 220 22% 92%; /* Mantle */
+    --muted-foreground: 233 10% 47%; /* Subtext0 */
+    --accent: 223 40% 90%; /* Tinted surface for hover states */
+    --accent-foreground: 266 85% 50%; /* Darker mauve text on hover */
+    --destructive: 347 87% 44%; /* Red */
     --destructive-foreground: 220 23% 95%;
-    --border: 225 14% 85%;             /* Lighter borders for a cleaner look */
-    --input: 225 14% 85%;              /* Lighter inputs */
-    --ring: 266 85% 58%;               /* Mauve */
+    --border: 225 14% 85%; /* Lighter borders for a cleaner look */
+    --input: 225 14% 85%; /* Lighter inputs */
+    --ring: 266 85% 58%; /* Mauve */
     --chart-1: 347 87% 44%;
     --chart-2: 109 58% 40%;
     --chart-3: 266 85% 58%;
     --chart-4: 35 77% 49%;
     --chart-5: 197 97% 46%;
-    --radius: 0.75rem;                 /* Increased border radius for softer, modern feel */
+    --radius: 0.75rem; /* Increased border radius for softer, modern feel */
     --sidebar-background: 220 23% 97%;
     --sidebar-foreground: 234 16% 35%;
     --sidebar-primary: 266 85% 58%;
@@ -69,25 +70,25 @@ body {
 
   .dark {
     /* Catppuccin Mocha Enhanced */
-    --background: 240 21% 12%;          /* Slightly darker base for better contrast #181926 */
-    --foreground: 226 64% 88%;          /* Text #cdd6f4 */
-    --card: 240 21% 15%;               /* Mantle #1e1e2e */
-    --card-foreground: 226 64% 88%;     /* Text */
-    --popover: 240 21% 15%;            /* Mantle */
-    --popover-foreground: 226 64% 88%;  /* Text */
-    --primary: 267 84% 81%;            /* Mauve #cba6f7 */
+    --background: 240 21% 12%; /* Slightly darker base for better contrast #181926 */
+    --foreground: 226 64% 88%; /* Text #cdd6f4 */
+    --card: 240 21% 15%; /* Mantle #1e1e2e */
+    --card-foreground: 226 64% 88%; /* Text */
+    --popover: 240 21% 15%; /* Mantle */
+    --popover-foreground: 226 64% 88%; /* Text */
+    --primary: 267 84% 81%; /* Mauve #cba6f7 */
     --primary-foreground: 240 21% 12%; /* Mantle */
-    --secondary: 237 16% 23%;          /* Surface0 */
-    --secondary-foreground: 226 64% 88%;/* Text */
-    --muted: 240 21% 18%;              /* Slightly lighter Mantle */
-    --muted-foreground: 228 24% 72%;   /* Subtext0 */
-    --accent: 267 30% 25%;             /* Tinted dark surface for hover states */
-    --accent-foreground: 267 84% 85%;  /* Brighter mauve text on hover */
-    --destructive: 351 74% 73%;        /* Red */
+    --secondary: 237 16% 23%; /* Surface0 */
+    --secondary-foreground: 226 64% 88%; /* Text */
+    --muted: 240 21% 18%; /* Slightly lighter Mantle */
+    --muted-foreground: 228 24% 72%; /* Subtext0 */
+    --accent: 267 30% 25%; /* Tinted dark surface for hover states */
+    --accent-foreground: 267 84% 85%; /* Brighter mauve text on hover */
+    --destructive: 351 74% 73%; /* Red */
     --destructive-foreground: 240 21% 12%;
-    --border: 234 13% 25%;             /* Darker, subtler borders */
-    --input: 234 13% 25%;              /* Darker inputs */
-    --ring: 267 84% 81%;               /* Mauve */
+    --border: 234 13% 25%; /* Darker, subtler borders */
+    --input: 234 13% 25%; /* Darker inputs */
+    --ring: 267 84% 81%; /* Mauve */
     --chart-1: 351 74% 73%;
     --chart-2: 115 54% 76%;
     --chart-3: 267 84% 81%;
@@ -126,7 +127,7 @@ body {
 
 /* Glass effect on code blocks */
 .markdown-content pre::before {
-  content: '';
+  content: "";
   @apply absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none rounded-xl;
 }
 
@@ -206,21 +207,59 @@ body {
 .lesson-content {
   @apply text-foreground;
 }
-.lesson-content pre { @apply p-5 rounded-xl overflow-auto my-5 text-sm shadow-sm border border-border/50 relative; background: hsl(var(--card)); }
-.lesson-content code { @apply font-mono text-[0.9em]; }
-.lesson-content code:not(pre code) { @apply px-1.5 py-0.5 rounded-md font-medium; background: hsl(var(--primary)/0.1); color: hsl(var(--primary)); }
-.lesson-content h1 { @apply text-3xl font-bold tracking-tight my-5; }
-.lesson-content h2 { @apply text-2xl font-semibold tracking-tight my-4 mt-8; }
-.lesson-content h3 { @apply text-xl font-semibold tracking-tight my-3 mt-6; }
-.lesson-content p { @apply my-4 leading-relaxed text-[1.05rem]; }
-.lesson-content ul { @apply list-disc pl-6 my-4 space-y-2 text-[1.05rem]; }
-.lesson-content ol { @apply list-decimal pl-6 my-4 space-y-2 text-[1.05rem]; }
-.lesson-content a { @apply text-primary hover:text-primary/80 underline underline-offset-4 transition-colors; }
-.lesson-content blockquote { @apply border-l-4 pl-6 italic my-6 py-2 opacity-90; border-color: hsl(var(--primary)); background: linear-gradient(90deg, hsl(var(--primary)/0.05) 0%, transparent 100%); }
-.lesson-content table { @apply border-collapse my-6 w-full text-sm rounded-lg overflow-hidden shadow-sm; border: 1px solid hsl(var(--border)); }
-.lesson-content th { @apply px-4 py-3 font-medium text-left bg-muted/50; border-bottom: 1px solid hsl(var(--border)); }
-.lesson-content td { @apply px-4 py-3; border-bottom: 1px solid hsl(var(--border)); }
-.lesson-content img { @apply max-w-full h-auto rounded-xl shadow-md my-6 border border-border/50; }
+.lesson-content pre {
+  @apply p-5 rounded-xl overflow-auto my-5 text-sm shadow-sm border border-border/50 relative;
+  background: hsl(var(--card));
+}
+.lesson-content code {
+  @apply font-mono text-[0.9em];
+}
+.lesson-content code:not(pre code) {
+  @apply px-1.5 py-0.5 rounded-md font-medium;
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+}
+.lesson-content h1 {
+  @apply text-3xl font-bold tracking-tight my-5;
+}
+.lesson-content h2 {
+  @apply text-2xl font-semibold tracking-tight my-4 mt-8;
+}
+.lesson-content h3 {
+  @apply text-xl font-semibold tracking-tight my-3 mt-6;
+}
+.lesson-content p {
+  @apply my-4 leading-relaxed text-[1.05rem];
+}
+.lesson-content ul {
+  @apply list-disc pl-6 my-4 space-y-2 text-[1.05rem];
+}
+.lesson-content ol {
+  @apply list-decimal pl-6 my-4 space-y-2 text-[1.05rem];
+}
+.lesson-content a {
+  @apply text-primary hover:text-primary/80 underline underline-offset-4 transition-colors;
+}
+.lesson-content blockquote {
+  @apply border-l-4 pl-6 italic my-6 py-2 opacity-90;
+  border-color: hsl(var(--primary));
+  background: linear-gradient(90deg, hsl(var(--primary) / 0.05) 0%, transparent 100%);
+}
+.lesson-content table {
+  @apply border-collapse my-6 w-full text-sm rounded-lg overflow-hidden shadow-sm;
+  border: 1px solid hsl(var(--border));
+}
+.lesson-content th {
+  @apply px-4 py-3 font-medium text-left bg-muted/50;
+  border-bottom: 1px solid hsl(var(--border));
+}
+.lesson-content td {
+  @apply px-4 py-3;
+  border-bottom: 1px solid hsl(var(--border));
+}
+.lesson-content img {
+  @apply max-w-full h-auto rounded-xl shadow-md my-6 border border-border/50;
+}
 
 /* ─── Teaching Assistant Overlay ─── */
 .ta-overlay {
@@ -236,13 +275,19 @@ body {
 }
 
 @keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(20px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ─── Typing effect cursor ─── */
 .typing-cursor::after {
-  content: '';
+  content: "";
   display: inline-block;
   width: 2px;
   height: 1.1em;
@@ -253,8 +298,13 @@ body {
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ─── Roadmap Flow (xyflow theming) ─── */
@@ -288,7 +338,7 @@ body {
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .dark .glass-card {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.05);

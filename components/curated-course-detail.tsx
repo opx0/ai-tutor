@@ -1,112 +1,110 @@
-"use client"
+"use client";
 
-import Link from "next/link"
 import {
+  BookOpen,
   Brain,
   ChevronLeft,
   ChevronRight,
-  Clock,
-  BookOpen,
-  CircleCheck,
   Circle,
-  Play,
-  Eye,
+  CircleCheck,
+  Clock,
   Dumbbell,
+  Eye,
   Layers,
-  Trophy,
   type LucideIcon,
-} from "lucide-react"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+  Play,
+  Trophy,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { useState } from "react"
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Icon map for course icons
-const iconMap: Record<string, LucideIcon> = { Brain }
+const iconMap: Record<string, LucideIcon> = { Brain };
 
 type Lesson = {
-  id: string
-  title: string
-  description: string | null
-  order: number
-  estimatedMinutes: number | null
-  visualization: unknown
-  exercises: unknown
-}
+  id: string;
+  title: string;
+  description: string | null;
+  order: number;
+  estimatedMinutes: number | null;
+  visualization: unknown;
+  exercises: unknown;
+};
 
 type Module = {
-  id: string
-  title: string
-  description: string | null
-  order: number
-  lessons: Lesson[]
-}
+  id: string;
+  title: string;
+  description: string | null;
+  order: number;
+  lessons: Lesson[];
+};
 
 type Course = {
-  id: string
-  title: string
-  description: string | null
-  difficulty: string
-  topic: string
-  type: string
-  slug: string | null
-  icon: string | null
-  color: string | null
-  estimatedHours: number | null
-  modules: Module[]
-}
+  id: string;
+  title: string;
+  description: string | null;
+  difficulty: string;
+  topic: string;
+  type: string;
+  slug: string | null;
+  icon: string | null;
+  color: string | null;
+  estimatedHours: number | null;
+  modules: Module[];
+};
 
 type CuratedCourseDetailProps = {
-  course: Course
-  courseHref: string
-  progress: number
-  lastLessonId: string | null
-  completedLessonIds: string[]
-}
+  course: Course;
+  courseHref: string;
+  progress: number;
+  lastLessonId: string | null;
+  completedLessonIds: string[];
+};
 
 function getModuleProgress(
   mod: Module,
-  completedLessonIds: string[]
+  completedLessonIds: string[],
 ): { completed: number; total: number; percent: number } {
-  const total = mod.lessons.length
-  const completed = mod.lessons.filter((l) =>
-    completedLessonIds.includes(l.id)
-  ).length
+  const total = mod.lessons.length;
+  const completed = mod.lessons.filter((l) => completedLessonIds.includes(l.id)).length;
   return {
     completed,
     total,
     percent: total > 0 ? Math.round((completed / total) * 100) : 0,
-  }
+  };
 }
 
 function findContinueLesson(
   modules: Module[],
   completedLessonIds: string[],
-  lastLessonId: string | null
+  lastLessonId: string | null,
 ): string | null {
   if (lastLessonId) {
     for (let mi = 0; mi < modules.length; mi++) {
-      const mod = modules[mi]
-      const li = mod.lessons.findIndex((l) => l.id === lastLessonId)
+      const mod = modules[mi];
+      const li = mod.lessons.findIndex((l) => l.id === lastLessonId);
       if (li !== -1) {
-        if (li + 1 < mod.lessons.length) return mod.lessons[li + 1].id
-        if (mi + 1 < modules.length) return modules[mi + 1].lessons[0]?.id ?? null
+        if (li + 1 < mod.lessons.length) return mod.lessons[li + 1].id;
+        if (mi + 1 < modules.length) return modules[mi + 1].lessons[0]?.id ?? null;
       }
     }
   }
   for (const mod of modules) {
     for (const lesson of mod.lessons) {
-      if (!completedLessonIds.includes(lesson.id)) return lesson.id
+      if (!completedLessonIds.includes(lesson.id)) return lesson.id;
     }
   }
-  return modules[0]?.lessons[0]?.id ?? null
+  return modules[0]?.lessons[0]?.id ?? null;
 }
 
 export default function CuratedCourseDetail({
@@ -116,32 +114,24 @@ export default function CuratedCourseDetail({
   lastLessonId,
   completedLessonIds,
 }: CuratedCourseDetailProps) {
-  const [sidebarOpen] = useState(true)
-  const CourseIcon = (course.icon && iconMap[course.icon]) || Brain
-  const accentColor = course.color || "hsl(var(--primary))"
+  const [sidebarOpen] = useState(true);
+  const CourseIcon = (course.icon && iconMap[course.icon]) || Brain;
+  const accentColor = course.color || "hsl(var(--primary))";
 
-  const totalLessons = course.modules.reduce(
-    (acc, m) => acc + m.lessons.length,
-    0
-  )
-  const completedCount = completedLessonIds.length
+  const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
+  const completedCount = completedLessonIds.length;
   const totalMinutes = course.modules.reduce(
-    (acc, m) =>
-      acc + m.lessons.reduce((s, l) => s + (l.estimatedMinutes ?? 5), 0),
-    0
-  )
+    (acc, m) => acc + m.lessons.reduce((s, l) => s + (l.estimatedMinutes ?? 5), 0),
+    0,
+  );
 
-  const continueLessonId = findContinueLesson(
-    course.modules,
-    completedLessonIds,
-    lastLessonId
-  )
+  const continueLessonId = findContinueLesson(course.modules, completedLessonIds, lastLessonId);
 
   const defaultOpenModule = course.modules.find((m) =>
-    m.lessons.some((l) => !completedLessonIds.includes(l.id))
-  )
+    m.lessons.some((l) => !completedLessonIds.includes(l.id)),
+  );
 
-  const isAllComplete = completedCount === totalLessons && totalLessons > 0
+  const isAllComplete = completedCount === totalLessons && totalLessons > 0;
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-5rem)]">
@@ -189,17 +179,12 @@ export default function CuratedCourseDetail({
                   boxShadow: `0 8px 32px ${accentColor}15`,
                 }}
               >
-                <CourseIcon
-                  className="w-7 h-7"
-                  style={{ color: accentColor }}
-                />
+                <CourseIcon className="w-7 h-7" style={{ color: accentColor }} />
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2.5 mb-2 flex-wrap">
-                  <h1 className="text-2xl font-bold tracking-tight">
-                    {course.title}
-                  </h1>
+                  <h1 className="text-2xl font-bold tracking-tight">{course.title}</h1>
                   <Badge
                     variant="outline"
                     className="text-[10px] uppercase tracking-widest font-semibold"
@@ -248,9 +233,7 @@ export default function CuratedCourseDetail({
                     <div
                       key={i}
                       className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg transition-colors ${
-                        stat.highlight
-                          ? "text-foreground font-medium"
-                          : "text-muted-foreground"
+                        stat.highlight ? "text-foreground font-medium" : "text-muted-foreground"
                       }`}
                       style={
                         stat.highlight
@@ -274,10 +257,7 @@ export default function CuratedCourseDetail({
               {/* Circular-style progress display */}
               <div className="flex items-center gap-3 bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl px-5 py-3.5 shadow-sm w-full">
                 <div className="relative w-12 h-12 shrink-0">
-                  <svg
-                    className="w-12 h-12 -rotate-90"
-                    viewBox="0 0 48 48"
-                  >
+                  <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
                     <circle
                       cx="24"
                       cy="24"
@@ -356,16 +336,11 @@ export default function CuratedCourseDetail({
               </div>
               <Accordion
                 type="multiple"
-                defaultValue={
-                  defaultOpenModule ? [defaultOpenModule.id] : []
-                }
+                defaultValue={defaultOpenModule ? [defaultOpenModule.id] : []}
               >
                 {course.modules.map((mod) => {
-                  const modProgress = getModuleProgress(
-                    mod,
-                    completedLessonIds
-                  )
-                  const isModComplete = modProgress.percent === 100
+                  const modProgress = getModuleProgress(mod, completedLessonIds);
+                  const isModComplete = modProgress.percent === 100;
                   return (
                     <AccordionItem
                       key={mod.id}
@@ -381,16 +356,10 @@ export default function CuratedCourseDetail({
                               backgroundColor: isModComplete
                                 ? `${accentColor}20`
                                 : "hsl(var(--muted))",
-                              color: isModComplete
-                                ? accentColor
-                                : "hsl(var(--muted-foreground))",
+                              color: isModComplete ? accentColor : "hsl(var(--muted-foreground))",
                             }}
                           >
-                            {isModComplete ? (
-                              <CircleCheck className="w-4 h-4" />
-                            ) : (
-                              mod.order + 1
-                            )}
+                            {isModComplete ? <CircleCheck className="w-4 h-4" /> : mod.order + 1}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-sm font-medium leading-tight truncate">
@@ -416,26 +385,19 @@ export default function CuratedCourseDetail({
                       <AccordionContent className="pb-0">
                         <div className="divide-y divide-border/50">
                           {mod.lessons.map((lesson) => {
-                            const isCompleted =
-                              completedLessonIds.includes(lesson.id)
-                            const isCurrent = lastLessonId === lesson.id
-                            const hasViz = !!lesson.visualization
-                            const hasExercises = !!lesson.exercises
+                            const isCompleted = completedLessonIds.includes(lesson.id);
+                            const isCurrent = lastLessonId === lesson.id;
+                            const hasViz = !!lesson.visualization;
+                            const hasExercises = !!lesson.exercises;
 
                             return (
                               <Link
                                 key={lesson.id}
                                 href={`/courses/${courseHref}/${lesson.id}`}
                                 className={`flex items-center gap-2.5 px-3 py-2.5 text-sm transition-all hover:bg-accent/50 group ${
-                                  isCurrent
-                                    ? "bg-primary/5 border-l-2"
-                                    : ""
+                                  isCurrent ? "bg-primary/5 border-l-2" : ""
                                 }`}
-                                style={
-                                  isCurrent
-                                    ? { borderLeftColor: accentColor }
-                                    : undefined
-                                }
+                                style={isCurrent ? { borderLeftColor: accentColor } : undefined}
                               >
                                 {/* Completion icon */}
                                 <div className="shrink-0">
@@ -453,9 +415,7 @@ export default function CuratedCourseDetail({
                                 <div className="flex-1 min-w-0">
                                   <div
                                     className={`font-medium leading-tight truncate transition-colors ${
-                                      isCompleted
-                                        ? "text-muted-foreground"
-                                        : "text-foreground"
+                                      isCompleted ? "text-muted-foreground" : "text-foreground"
                                     }`}
                                   >
                                     {lesson.title}
@@ -498,12 +458,12 @@ export default function CuratedCourseDetail({
 
                                 <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0 transition-transform group-hover:translate-x-0.5" />
                               </Link>
-                            )
+                            );
                           })}
                         </div>
                       </AccordionContent>
                     </AccordionItem>
-                  )
+                  );
                 })}
               </Accordion>
             </div>
@@ -515,9 +475,7 @@ export default function CuratedCourseDetail({
           <div className="max-w-2xl mx-auto">
             <h2 className="text-lg font-semibold mb-2">Course Overview</h2>
             {course.description && (
-              <p className="text-muted-foreground mb-6 leading-relaxed">
-                {course.description}
-              </p>
+              <p className="text-muted-foreground mb-6 leading-relaxed">{course.description}</p>
             )}
 
             {/* Overall progress bar */}
@@ -538,11 +496,11 @@ export default function CuratedCourseDetail({
             {/* Module cards */}
             <div className="space-y-3">
               {course.modules.map((mod) => {
-                const modProgress = getModuleProgress(mod, completedLessonIds)
-                const isComplete = modProgress.percent === 100
+                const modProgress = getModuleProgress(mod, completedLessonIds);
+                const isComplete = modProgress.percent === 100;
                 const firstUncompletedLesson = mod.lessons.find(
-                  (l) => !completedLessonIds.includes(l.id)
-                )
+                  (l) => !completedLessonIds.includes(l.id),
+                );
 
                 return (
                   <div
@@ -553,26 +511,16 @@ export default function CuratedCourseDetail({
                     <div
                       className="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-bold shrink-0 transition-all duration-200"
                       style={{
-                        backgroundColor: isComplete
-                          ? `${accentColor}20`
-                          : "hsl(var(--muted))",
-                        color: isComplete
-                          ? accentColor
-                          : "hsl(var(--muted-foreground))",
+                        backgroundColor: isComplete ? `${accentColor}20` : "hsl(var(--muted))",
+                        color: isComplete ? accentColor : "hsl(var(--muted-foreground))",
                       }}
                     >
-                      {isComplete ? (
-                        <CircleCheck className="w-5 h-5" />
-                      ) : (
-                        mod.order + 1
-                      )}
+                      {isComplete ? <CircleCheck className="w-5 h-5" /> : mod.order + 1}
                     </div>
 
                     {/* Module info */}
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold truncate">
-                        {mod.title}
-                      </div>
+                      <div className="text-sm font-semibold truncate">{mod.title}</div>
                       {mod.description && (
                         <div className="text-xs text-muted-foreground truncate mt-0.5">
                           {mod.description}
@@ -618,12 +566,12 @@ export default function CuratedCourseDetail({
                       )}
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

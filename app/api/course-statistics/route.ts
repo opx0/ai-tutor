@@ -7,27 +7,12 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
     const courseId = searchParams.get("courseId");
-
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email as string },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
 
     if (courseId) {
       // Get statistics for a specific course
@@ -36,18 +21,12 @@ export async function GET(req: NextRequest) {
       const course = await prisma.course.findFirst({
         where: {
           id: courseId,
-          OR: [
-            { userId: user.id },
-            { isPublic: true },
-          ],
+          OR: [{ userId: session.user.id }, { isPublic: true }],
         },
       });
 
       if (!course) {
-        return NextResponse.json(
-          { error: "Course not found or access denied" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Course not found or access denied" }, { status: 404 });
       }
 
       // Get total number of lessons in the course
@@ -62,7 +41,7 @@ export async function GET(req: NextRequest) {
       // Get number of lessons this user has completed in the course
       const completedLessons = await prisma.lessonCompletion.count({
         where: {
-          userId: user.id,
+          userId: session.user.id,
           Lesson: {
             module: {
               courseId,
@@ -105,28 +84,28 @@ export async function GET(req: NextRequest) {
 
       // Get total courses created by user
       const courseCount = await prisma.course.count({
-        where: { userId: user.id },
+        where: { userId: session.user.id },
       });
 
       // Get average progress across all user's courses
       const progressStats = await prisma.userProgress.aggregate({
-        where: { userId: user.id },
+        where: { userId: session.user.id },
         _avg: { progress: true },
       });
 
       // Get total bookmarks
       const bookmarkCount = await prisma.bookmark.count({
-        where: { userId: user.id },
+        where: { userId: session.user.id },
       });
 
       // Get total notes
       const noteCount = await prisma.note.count({
-        where: { userId: user.id },
+        where: { userId: session.user.id },
       });
 
       // Get courses with highest progress
       const topCourses = await prisma.userProgress.findMany({
-        where: { userId: user.id },
+        where: { userId: session.user.id },
         include: {
           Course: {
             select: {
@@ -157,9 +136,6 @@ export async function GET(req: NextRequest) {
     }
   } catch (error) {
     console.error("Error fetching course statistics:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch course statistics" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch course statistics" }, { status: 500 });
   }
 }

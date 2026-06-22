@@ -8,13 +8,15 @@
 
 import { generateObject, generateText, streamObject, streamText } from "ai";
 import {
-    CourseSchema,
-    QuizSchema,
-    geminiFlash,
-    geminiPro,
-    type CourseData,
-    type QuizQuestion
+  type CourseData,
+  CourseSchema,
+  geminiFlash,
+  geminiLite,
+  geminiPro,
+  type QuizQuestion,
+  QuizSchema,
 } from "./ai-providers";
+import { logError, logInfo } from "./logger";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -25,6 +27,78 @@ const TECHNICAL_TOPICS_REGEX =
 
 function isTechnicalTopic(topic: string): boolean {
   return TECHNICAL_TOPICS_REGEX.test(topic);
+}
+
+// ---------------------------------------------------------------------------
+// Shared generation tuning
+//
+// - temperature: low for deterministic, schema-conformant structured output.
+// - maxOutputTokens: set EXPLICITLY. Gemini 3 models default to a low output
+//   cap and would silently truncate the large nested CourseSchema; we raise it.
+// - maxRetries: retry transient 429/5xx (routine on Gemini tiers) instead of
+//   immediately dropping the user to the static fallback course/quiz.
+// ---------------------------------------------------------------------------
+
+const COURSE_GEN_OPTIONS = {
+  temperature: 0.4,
+  maxOutputTokens: 32_768,
+  maxRetries: 3,
+} as const;
+
+const QUIZ_GEN_OPTIONS = {
+  temperature: 0.5,
+  maxOutputTokens: 4_096,
+  maxRetries: 3,
+} as const;
+
+const TA_GEN_OPTIONS = {
+  temperature: 0.6,
+  maxOutputTokens: 8_192,
+  maxRetries: 3,
+} as const;
+
+/** Token/cost/latency telemetry — one line per AI generation. */
+function logAiUsage(
+  operation: string,
+  usage?: { inputTokens?: number; outputTokens?: number; totalTokens?: number },
+) {
+  logInfo("AI generation usage", {
+    operation,
+    inputTokens: usage?.inputTokens,
+    outputTokens: usage?.outputTokens,
+    totalTokens: usage?.totalTokens,
+  });
+}
+
+/**
+ * Single source of truth for the course-generation prompt — used by BOTH the
+ * non-streaming and streaming paths so they can never drift apart.
+ */
+function buildCoursePrompt(topic: string, difficulty: string, additionalDetails?: string): string {
+  return `
+    Create a comprehensive learning course on "${topic}" for ${difficulty} level students.
+    ${additionalDetails ? `Additional context: ${additionalDetails}` : ""}
+
+    Course Structure Requirements:
+    1. Create 5-7 distinct modules suitable for this difficulty level.
+    2. Each module must have 4-6 detailed lessons.
+    3. "content" field MUST use HTML formatting (<h1>, <p>, <ul>, <li>, <pre><code>) for readability.
+    4. "exercises" should be a set of 2-3 practical tasks relevant to the lesson.
+
+    Visualization Requirements (for algorithm/data-structure courses):
+    - For any lesson that explains a step-by-step algorithm or process, include a "visualization" field.
+    - Set "visualization" to null ONLY for pure theory or introductory lessons.
+    - Each visualization has a "type" ("array", "graph", or "grid") and 3-8 "steps".
+    - Each step has a "message" (explain WHY, not just WHAT) and "elements" (visual components).
+    - Element types: "array" (items with value+state), "variable" (name+value+state), "log" (lines with text+kind).
+    - Valid states: "default","active","comparing","done","highlight","error","visited".
+    - Valid log kinds: "info","call","return","compare","swap".
+    - Example array element: {"type":"array","id":"arr","label":"Array","items":[{"value":"5","state":"comparing"},{"value":"3","state":"active"}]}
+    - Example variable: {"type":"variable","id":"v-i","name":"i","value":"2","state":"active"}
+    - Example log: {"type":"log","id":"log","lines":[{"text":"Swapping 5 and 3","kind":"swap"}]}
+
+    Make the content educational, engaging, and accurate.
+  `;
 }
 
 // ---------------------------------------------------------------------------
@@ -70,48 +144,26 @@ function createFallbackCourse(title: string, description: string): CourseData {
 export async function generateCourseContent(
   topic: string,
   difficulty: string,
-  additionalDetails?: string
+  additionalDetails?: string,
 ): Promise<CourseData> {
   const model = isTechnicalTopic(topic) ? geminiPro : geminiFlash;
-
-  const prompt = `
-    Create a comprehensive learning course on "${topic}" for ${difficulty} level students.
-    ${additionalDetails ? `Additional context: ${additionalDetails}` : ""}
-
-    Course Structure Requirements:
-    1. Create 5-7 distinct modules suitable for this difficulty level.
-    2. Each module must have 4-6 detailed lessons.
-    3. "content" field MUST use HTML formatting (<h1>, <p>, <ul>, <li>, <pre><code>) for readability.
-    4. "exercises" should be a set of 2-3 practical tasks relevant to the lesson.
-
-    Visualization Requirements (for algorithm/data-structure courses):
-    - For any lesson that explains a step-by-step algorithm or process, include a "visualization" field.
-    - Set "visualization" to null ONLY for pure theory or introductory lessons.
-    - Each visualization has a "type" ("array", "graph", or "grid") and 3-8 "steps".
-    - Each step has a "message" (explain WHY, not just WHAT) and "elements" (visual components).
-    - Element types: "array" (items with value+state), "variable" (name+value+state), "log" (lines with text+kind).
-    - Valid states: "default","active","comparing","done","highlight","error","visited".
-    - Valid log kinds: "info","call","return","compare","swap".
-    - Example array element: {"type":"array","id":"arr","label":"Array","items":[{"value":"5","state":"comparing"},{"value":"3","state":"active"}]}
-    - Example variable: {"type":"variable","id":"v-i","name":"i","value":"2","state":"active"}
-    - Example log: {"type":"log","id":"log","lines":[{"text":"Swapping 5 and 3","kind":"swap"}]}
-
-    Make the content educational, engaging, and accurate.
-  `;
+  const prompt = buildCoursePrompt(topic, difficulty, additionalDetails);
 
   try {
-    const { object } = await generateObject({
+    const { object, usage } = await generateObject({
       model,
       schema: CourseSchema,
       prompt,
+      ...COURSE_GEN_OPTIONS,
     });
 
+    logAiUsage("course.generate", usage);
     return object;
   } catch (error) {
     console.error("Error generating course content:", error);
     return createFallbackCourse(
       `${topic} Course (Offline)`,
-      "We couldn't generate the full course right now. Please check your connection or API key."
+      "We couldn't generate the full course right now. Please check your connection or API key.",
     );
   }
 }
@@ -123,36 +175,20 @@ export async function generateCourseContent(
 export async function streamCourseContent(
   topic: string,
   difficulty: string,
-  additionalDetails?: string
+  additionalDetails?: string,
+  signal?: AbortSignal,
 ) {
   const model = isTechnicalTopic(topic) ? geminiPro : geminiFlash;
-
-  const prompt = `
-    Create a comprehensive learning course on "${topic}" for ${difficulty} level students.
-    ${additionalDetails ? `Additional context: ${additionalDetails}` : ""}
-
-    Course Structure Requirements:
-    1. Create 5-7 distinct modules suitable for this difficulty level.
-    2. Each module must have 4-6 detailed lessons.
-    3. "content" field MUST use HTML formatting (<h1>, <p>, <ul>, <li>, <pre><code>) for readability.
-    4. "exercises" should be a set of 2-3 practical tasks relevant to the lesson.
-
-    Visualization Requirements (for algorithm/data-structure courses):
-    - For any lesson that explains a step-by-step algorithm or process, include a "visualization" field.
-    - Set "visualization" to null ONLY for pure theory or introductory lessons.
-    - Each visualization has a "type" ("array", "graph", or "grid") and 3-8 "steps".
-    - Each step has a "message" (explain WHY, not just WHAT) and "elements" (visual components).
-    - Element types: "array", "variable", "log".
-    - Valid states: "default","active","comparing","done","highlight","error","visited".
-    - Valid log kinds: "info","call","return","compare","swap".
-
-    Make the content educational, engaging, and accurate.
-  `;
+  const prompt = buildCoursePrompt(topic, difficulty, additionalDetails);
 
   return streamObject({
     model,
     schema: CourseSchema,
     prompt,
+    abortSignal: signal,
+    ...COURSE_GEN_OPTIONS,
+    onError: ({ error }) => logError("course.stream failed", { error: String(error) }),
+    onFinish: ({ usage }) => logAiUsage("course.stream", usage),
   });
 }
 
@@ -219,12 +255,15 @@ export async function generateKnowledgeTestQuestions(lesson: {
   `;
 
   try {
-    const { object } = await generateObject({
-      model: geminiFlash,
+    const { object, usage } = await generateObject({
+      // Quizzes are high-volume + low-stakes → route to the cheapest GA tier.
+      model: geminiLite,
       schema: QuizSchema,
       prompt,
+      ...QUIZ_GEN_OPTIONS,
     });
 
+    logAiUsage("quiz.generate", usage);
     return object.questions;
   } catch (error) {
     console.error("Error generating knowledge test questions:", error);
@@ -248,14 +287,20 @@ export async function generateKnowledgeTestQuestions(lesson: {
 export async function streamTAResponse({
   systemPrompt,
   userMessage,
+  signal,
 }: {
   systemPrompt: string;
   userMessage: string;
+  signal?: AbortSignal;
 }) {
   return streamText({
     model: geminiPro,
     system: systemPrompt,
     messages: [{ role: "user", content: userMessage }],
+    abortSignal: signal,
+    ...TA_GEN_OPTIONS,
+    onError: ({ error }) => logError("ta.stream failed", { error: String(error) }),
+    onFinish: ({ usage }) => logAiUsage("ta.stream", usage),
   });
 }
 
@@ -270,11 +315,13 @@ export async function getTAResponse({
   systemPrompt: string;
   userMessage: string;
 }): Promise<string> {
-  const { text } = await generateText({
+  const { text, usage } = await generateText({
     model: geminiPro,
     system: systemPrompt,
     messages: [{ role: "user", content: userMessage }],
+    ...TA_GEN_OPTIONS,
   });
 
+  logAiUsage("ta.generate", usage);
   return text;
 }

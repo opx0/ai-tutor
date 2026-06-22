@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
-import { Copy, Check, Play, Square, ChevronDown, ChevronUp, Terminal } from "lucide-react";
 import hljs from "highlight.js/lib/core";
-import python from "highlight.js/lib/languages/python";
-import javascript from "highlight.js/lib/languages/javascript";
-import typescript from "highlight.js/lib/languages/typescript";
-import java from "highlight.js/lib/languages/java";
 import cpp from "highlight.js/lib/languages/cpp";
+import java from "highlight.js/lib/languages/java";
+import javascript from "highlight.js/lib/languages/javascript";
+import python from "highlight.js/lib/languages/python";
+import typescript from "highlight.js/lib/languages/typescript";
+import { Check, ChevronDown, ChevronUp, Copy, Play, Square, Terminal } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Register languages
 hljs.registerLanguage("python", python);
@@ -83,7 +83,7 @@ export default function AdvancedCodeBlock({ code, language }: Props) {
 
   const lang = language?.toLowerCase().replace("language-", "") || "";
   const meta = LANG_META[lang] || LANG_META[""];
-  
+
   // A snippet is runnable if the language supports it AND
   // for C++, it MUST contain an entry point (main function) to compile.
   const isCPlusPlus = lang === "cpp" || lang === "c++";
@@ -99,10 +99,7 @@ export default function AdvancedCodeBlock({ code, language }: Props) {
       const result = hljs.highlightAuto(editableCode);
       return result.value;
     } catch {
-      return editableCode
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+      return editableCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
   })();
 
@@ -169,20 +166,20 @@ sys.stderr = StringIO()
       } else if (lang === "cpp" || lang === "c++") {
         // C++ execution via local API route
         setOutput("⏳ Compiling & Running C++...");
-        
+
         const response = await fetch("/api/execute", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: editableCode, language: "cpp" }),
         });
-        
+
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
           throw new Error(errData.error || errData.details || `Server Error ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (data.stderr && data.stderr.includes("Error")) {
           // Compilation or runtime error
           setError(data.stderr);
@@ -260,9 +257,10 @@ sys.stderr = StringIO()
               onClick={() => setIsEditing(!isEditing)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
                 transition-all duration-200 border
-                ${isEditing
-                  ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
-                  : "bg-white/5 text-white/40 hover:text-white/60 border-white/10 hover:border-white/20"
+                ${
+                  isEditing
+                    ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
+                    : "bg-white/5 text-white/40 hover:text-white/60 border-white/10 hover:border-white/20"
                 }`}
             >
               ✏️ Edit
@@ -295,14 +293,12 @@ sys.stderr = StringIO()
       <div className="relative overflow-auto max-h-[500px]">
         <div className="flex min-w-full">
           {/* Line numbers */}
-          <div className="sticky left-0 flex flex-col text-right px-3 py-4 bg-[#0d1117] border-r border-white/[0.06] select-none z-10"
+          <div
+            className="sticky left-0 flex flex-col text-right px-3 py-4 bg-[#0d1117] border-r border-white/[0.06] select-none z-10"
             aria-hidden="true"
           >
             {Array.from({ length: lineCount }, (_, i) => (
-              <span
-                key={i}
-                className="text-[13px] leading-[1.6] text-white/20 font-mono"
-              >
+              <span key={i} className="text-[13px] leading-[1.6] text-white/20 font-mono">
                 {i + 1}
               </span>
             ))}
@@ -342,7 +338,11 @@ sys.stderr = StringIO()
           >
             <Terminal className="w-3.5 h-3.5" />
             Output
-            {showOutput ? <ChevronUp className="w-3 h-3 ml-auto" /> : <ChevronDown className="w-3 h-3 ml-auto" />}
+            {showOutput ? (
+              <ChevronUp className="w-3 h-3 ml-auto" />
+            ) : (
+              <ChevronDown className="w-3 h-3 ml-auto" />
+            )}
           </button>
           <div className="px-4 py-3 bg-[#0a0e14] max-h-[200px] overflow-auto">
             <pre className="!m-0 !p-0 !bg-transparent !border-none !shadow-none text-[13px] leading-[1.5] font-mono whitespace-pre-wrap">

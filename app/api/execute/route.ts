@@ -1,9 +1,9 @@
-import { NextResponse, type NextRequest } from "next/server";
 import { spawn } from "child_process";
 import fs from "fs/promises";
-import path from "path";
-import os from "os";
+import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import os from "os";
+import path from "path";
 import { authOptions } from "@/lib/auth";
 import { consumeRateLimit, getClientIdentifier } from "@/lib/rate-limit";
 
@@ -14,11 +14,7 @@ type ProcessResult = {
   timedOut: boolean;
 };
 
-function runProcess(
-  command: string,
-  args: string[],
-  timeoutMs: number
-): Promise<ProcessResult> {
+function runProcess(command: string, args: string[], timeoutMs: number): Promise<ProcessResult> {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       shell: false,
@@ -56,8 +52,7 @@ function runProcess(
 
 function isExecutionEnabled() {
   return (
-    process.env.ENABLE_SERVER_CODE_EXECUTION === "true" ||
-    process.env.NODE_ENV !== "production"
+    process.env.ENABLE_SERVER_CODE_EXECUTION === "true" || process.env.NODE_ENV !== "production"
   );
 }
 
@@ -65,10 +60,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     if (!isExecutionEnabled()) {
@@ -77,22 +69,22 @@ export async function POST(req: NextRequest) {
           error:
             "Server-side code execution is disabled. Set ENABLE_SERVER_CODE_EXECUTION=true to enable it.",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
     const clientId = getClientIdentifier(req, session.user.id);
-    const limit = consumeRateLimit(
-      `execute:${session.user.id}:${clientId}`,
-      { max: 20, windowMs: 60_000 }
-    );
+    const limit = await consumeRateLimit(`execute:${session.user.id}:${clientId}`, {
+      max: 20,
+      windowMs: 60_000,
+    });
     if (!limit.allowed) {
       return NextResponse.json(
         {
           error: "Too many execution requests. Please retry shortly.",
           retryAfterMs: limit.retryAfterMs,
         },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -109,7 +101,7 @@ export async function POST(req: NextRequest) {
     if (code.length > 20_000) {
       return NextResponse.json(
         { error: "Code is too long. Maximum allowed is 20,000 characters." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -126,7 +118,7 @@ export async function POST(req: NextRequest) {
       const compileResult = await runProcess(
         "g++",
         ["-O2", "-std=c++20", sourceFile, "-o", binaryFile],
-        8_000
+        8_000,
       );
 
       if (compileResult.timedOut) {
@@ -168,7 +160,7 @@ export async function POST(req: NextRequest) {
     console.error("Execution API Error:", error);
     return NextResponse.json(
       { error: "Failed to execute code", details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

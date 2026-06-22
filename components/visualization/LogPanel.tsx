@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import { logKindColors } from '@/lib/visualization/cellStateColors'
-import type { LogElement } from '@/lib/visualization/types'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react";
+import { logKindColors } from "@/lib/visualization/cellStateColors";
+import type { LogElement } from "@/lib/visualization/types";
 
 type LogPanelProps = {
-  element: LogElement
-}
+  element: LogElement;
+};
 
 export default function LogPanel({ element }: LogPanelProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const lines = element.lines || []
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const lines = element.lines || [];
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [lines.length])
+  }, [lines.length]);
 
   return (
     <div className="space-y-1">
@@ -33,17 +33,15 @@ export default function LogPanel({ element }: LogPanelProps) {
           lines.map((line, i) => (
             <div
               key={`${element.id}-log-${i}`}
-              className={`flex items-start gap-2 ${logKindColors[line.kind] || 'text-zinc-400'}`}
+              className={`flex items-start gap-2 ${logKindColors[line.kind] || "text-zinc-400"}`}
             >
-              <span className="text-zinc-600 select-none w-5 text-right shrink-0">
-                {i + 1}
-              </span>
+              <span className="text-zinc-600 select-none w-5 text-right shrink-0">{i + 1}</span>
               <span className="opacity-50 shrink-0">
-                {line.kind === 'call' && '→'}
-                {line.kind === 'return' && '←'}
-                {line.kind === 'compare' && '⇔'}
-                {line.kind === 'swap' && '⇄'}
-                {line.kind === 'info' && '•'}
+                {line.kind === "call" && "→"}
+                {line.kind === "return" && "←"}
+                {line.kind === "compare" && "⇔"}
+                {line.kind === "swap" && "⇄"}
+                {line.kind === "info" && "•"}
               </span>
               <span>{line.text}</span>
             </div>
@@ -51,5 +49,5 @@ export default function LogPanel({ element }: LogPanelProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

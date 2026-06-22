@@ -33,7 +33,7 @@ export function createErrorResponse(
   message: string,
   statusCode: number = 400,
   details?: string,
-  errorCode?: string
+  errorCode?: string,
 ): NextResponse<ErrorResponse> {
   const response: ErrorResponse = {
     status: "error",
@@ -68,7 +68,7 @@ export function createErrorResponse(
  */
 export function createSuccessResponse<T>(
   data: T,
-  statusCode: number = 200
+  statusCode: number = 200,
 ): NextResponse<SuccessResponse<T>> {
   // Log the success response
   logInfo(`Success response sent`, { statusCode });
@@ -78,6 +78,6 @@ export function createSuccessResponse<T>(
       status: "success",
       data,
     },
-    { status: statusCode }
+    { status: statusCode },
   );
 }

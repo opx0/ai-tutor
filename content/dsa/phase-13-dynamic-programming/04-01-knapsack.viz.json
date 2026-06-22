@@ -115,20 +115,8 @@
               }
             ]
           ],
-          "rowLabels": [
-            "0 items",
-            "item1(1,6)",
-            "item2(2,10)",
-            "item3(3,12)"
-          ],
-          "colLabels": [
-            "cap=0",
-            "cap=1",
-            "cap=2",
-            "cap=3",
-            "cap=4",
-            "cap=5"
-          ]
+          "rowLabels": ["0 items", "item1(1,6)", "item2(2,10)", "item3(3,12)"],
+          "colLabels": ["cap=0", "cap=1", "cap=2", "cap=3", "cap=4", "cap=5"]
         },
         {
           "type": "log",
@@ -263,20 +251,8 @@
               }
             ]
           ],
-          "rowLabels": [
-            "0 items",
-            "item1(1,6)",
-            "item2(2,10)",
-            "item3(3,12)"
-          ],
-          "colLabels": [
-            "cap=0",
-            "cap=1",
-            "cap=2",
-            "cap=3",
-            "cap=4",
-            "cap=5"
-          ]
+          "rowLabels": ["0 items", "item1(1,6)", "item2(2,10)", "item3(3,12)"],
+          "colLabels": ["cap=0", "cap=1", "cap=2", "cap=3", "cap=4", "cap=5"]
         },
         {
           "type": "log",
@@ -411,20 +387,8 @@
               }
             ]
           ],
-          "rowLabels": [
-            "0 items",
-            "item1(1,6)",
-            "item2(2,10)",
-            "item3(3,12)"
-          ],
-          "colLabels": [
-            "cap=0",
-            "cap=1",
-            "cap=2",
-            "cap=3",
-            "cap=4",
-            "cap=5"
-          ]
+          "rowLabels": ["0 items", "item1(1,6)", "item2(2,10)", "item3(3,12)"],
+          "colLabels": ["cap=0", "cap=1", "cap=2", "cap=3", "cap=4", "cap=5"]
         },
         {
           "type": "log",
@@ -559,20 +523,8 @@
               }
             ]
           ],
-          "rowLabels": [
-            "0 items",
-            "item1(1,6)",
-            "item2(2,10)",
-            "item3(3,12)"
-          ],
-          "colLabels": [
-            "cap=0",
-            "cap=1",
-            "cap=2",
-            "cap=3",
-            "cap=4",
-            "cap=5"
-          ]
+          "rowLabels": ["0 items", "item1(1,6)", "item2(2,10)", "item3(3,12)"],
+          "colLabels": ["cap=0", "cap=1", "cap=2", "cap=3", "cap=4", "cap=5"]
         },
         {
           "type": "variable",

@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/badge";
-import { prisma } from "@/lib/prisma";
 import { Pencil, Plus } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { prisma } from "@/lib/prisma";
 
 export default async function AdminCoursesPage() {
   const courses = await prisma.course.findMany({
@@ -17,18 +17,15 @@ export default async function AdminCoursesPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const totalLessons = (
-    course: (typeof courses)[0]
-  ) => course.modules.reduce((sum, m) => sum + m._count.lessons, 0);
+  const totalLessons = (course: (typeof courses)[0]) =>
+    course.modules.reduce((sum, m) => sum + m._count.lessons, 0);
 
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold">Curated Courses</h1>
-          <p className="text-muted-foreground mt-1">
-            Create and manage curated learning paths.
-          </p>
+          <p className="text-muted-foreground mt-1">Create and manage curated learning paths.</p>
         </div>
         <Link
           href="/admin/courses/new"
@@ -60,9 +57,7 @@ export default async function AdminCoursesPage() {
               className="flex items-center justify-between rounded-xl border border-border bg-card p-4 hover:bg-muted/30 transition-colors"
             >
               <div className="flex items-center gap-4">
-                {course.icon && (
-                  <span className="text-2xl">{course.icon}</span>
-                )}
+                {course.icon && <span className="text-2xl">{course.icon}</span>}
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-medium">{course.title}</h3>
@@ -76,10 +71,8 @@ export default async function AdminCoursesPage() {
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    {course._count.modules} modules, {totalLessons(course)}{" "}
-                    lessons
-                    {course.estimatedHours &&
-                      ` · ~${course.estimatedHours}h`}
+                    {course._count.modules} modules, {totalLessons(course)} lessons
+                    {course.estimatedHours && ` · ~${course.estimatedHours}h`}
                   </p>
                 </div>
               </div>

@@ -1,52 +1,56 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { LoaderCircle } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
+import { LoaderCircle } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 type ProgressTrackerProps = {
-  courseId: string
-  initialProgress?: number
-  lastLessonId?: string | null
-}
+  courseId: string;
+  initialProgress?: number;
+  lastLessonId?: string | null;
+};
 
-export default function ProgressTracker({ courseId, initialProgress = 0, lastLessonId = null }: ProgressTrackerProps) {
-  const { data: session, status } = useSession()
-  const [progress, setProgress] = useState(initialProgress)
-  const [isLoading, setIsLoading] = useState(true)
+export default function ProgressTracker({
+  courseId,
+  initialProgress = 0,
+  lastLessonId = null,
+}: ProgressTrackerProps) {
+  const { data: session, status } = useSession();
+  const [progress, setProgress] = useState(initialProgress);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetchProgress()
+      fetchProgress();
     } else if (status === "unauthenticated") {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [status, courseId])
+  }, [status, courseId]);
 
   const fetchProgress = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const response = await fetch(`/api/user-progress?courseId=${courseId}`)
-      const data = await response.json()
+      const response = await fetch(`/api/user-progress?courseId=${courseId}`);
+      const data = await response.json();
 
       if (data.progress) {
-        setProgress(data.progress.progress)
+        setProgress(data.progress.progress);
       } else {
-        setProgress(initialProgress)
+        setProgress(initialProgress);
       }
     } catch (error) {
-      console.error("API error:", error)
-      setProgress(initialProgress)
+      console.error("API error:", error);
+      setProgress(initialProgress);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const updateProgress = async (newProgress: number, newLastLessonId?: string) => {
-    if (!session?.user) return
+    if (!session?.user) return;
 
     try {
       const response = await fetch("/api/user-progress", {
@@ -59,19 +63,19 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
           progress: newProgress,
           lastLessonId: newLastLessonId || lastLessonId,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to update progress")
+        throw new Error("Failed to update progress");
       }
 
-      const data = await response.json()
-      setProgress(data.progress.progress)
+      const data = await response.json();
+      setProgress(data.progress.progress);
     } catch (error) {
-      console.error("API error:", error)
-      toast.error("Failed to update progress")
+      console.error("API error:", error);
+      toast.error("Failed to update progress");
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -83,7 +87,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
           <LoaderCircle className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (status === "unauthenticated") {
@@ -96,7 +100,7 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
           <p className="text-center text-muted-foreground">Sign in to track your progress</p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -106,10 +110,8 @@ export default function ProgressTracker({ courseId, initialProgress = 0, lastLes
       </CardHeader>
       <CardContent>
         <Progress value={progress} className="h-2 mb-2" />
-        <div className="text-right text-sm text-muted-foreground">
-          {progress}% complete
-        </div>
+        <div className="text-right text-sm text-muted-foreground">{progress}% complete</div>
       </CardContent>
     </Card>
-  )
+  );
 }

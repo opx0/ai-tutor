@@ -8,17 +8,17 @@
  * Run: bun scripts/generate-algo-course.ts
  */
 
-import { generateObject } from 'ai'
-import { Prisma } from '@prisma/client'
-import * as dotenv from 'dotenv'
-import { prisma } from '../lib/prisma'
-import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { CourseSchema } from '../lib/ai-providers'
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { Prisma } from "@prisma/client";
+import { generateObject } from "ai";
+import * as dotenv from "dotenv";
+import { CourseSchema } from "../lib/ai-providers";
+import { prisma } from "../lib/prisma";
 
-dotenv.config()
+dotenv.config();
 
-const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY! })
-const model = google('gemini-2.5-flash')
+const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY! });
+const model = google("gemini-2.5-flash");
 
 const prompt = `
   You are a world-class computer science educator who teaches like Richard Feynman.
@@ -112,46 +112,49 @@ const prompt = `
   IMPORTANT: Include ALL elements in EVERY step. Update states across steps to show progress.
   Valid states: "default","active","comparing","done","highlight","error","visited"
   Valid log kinds: "info","call","return","compare","swap"
-`
+`;
 
 async function main() {
-  console.log('Starting generation via Vercel AI SDK...')
+  console.log("Starting generation via Vercel AI SDK...");
 
   try {
     const { object: data } = await generateObject({
       model,
       schema: CourseSchema,
       prompt,
-    })
+    });
 
-    console.log('Generated:', data.title)
-    console.log('Modules:', data.modules.length)
+    console.log("Generated:", data.title);
+    console.log("Modules:", data.modules.length);
 
-    let vizCount = 0
-    let totalLessons = 0
+    let vizCount = 0;
+    let totalLessons = 0;
     data.modules.forEach((m) => {
-      console.log(`  ${m.title} (${m.lessons.length} lessons)`)
+      console.log(`  ${m.title} (${m.lessons.length} lessons)`);
       m.lessons.forEach((l) => {
-        totalLessons++
+        totalLessons++;
         if (l.visualization) {
-          vizCount++
-          console.log(`    ✅ ${l.title} — ${l.visualization.steps?.length || 0} viz steps`)
+          vizCount++;
+          console.log(`    ✅ ${l.title} — ${l.visualization.steps?.length || 0} viz steps`);
         } else {
-          console.log(`    ❌ ${l.title} — no visualization`)
+          console.log(`    ❌ ${l.title} — no visualization`);
         }
-      })
-    })
-    console.log(`\nVisualization coverage: ${vizCount}/${totalLessons} lessons`)
+      });
+    });
+    console.log(`\nVisualization coverage: ${vizCount}/${totalLessons} lessons`);
 
-    const user = await prisma.user.findFirst()
-    if (!user) { console.error('No user found — create an account first'); return }
+    const user = await prisma.user.findFirst();
+    if (!user) {
+      console.error("No user found — create an account first");
+      return;
+    }
 
     const course = await prisma.course.create({
       data: {
         title: data.title,
         description: data.description,
-        difficulty: 'BEGINNER',
-        topic: 'Algorithms & Data Structures',
+        difficulty: "BEGINNER",
+        topic: "Algorithms & Data Structures",
         userId: user.id,
         modules: {
           create: data.modules.map((mod, mi) => ({
@@ -171,16 +174,16 @@ async function main() {
           })),
         },
       },
-    })
+    });
 
-    console.log('\n✅ Course created!')
-    console.log('ID:', course.id)
-    console.log('URL: http://localhost:3000/courses/' + course.id)
+    console.log("\n✅ Course created!");
+    console.log("ID:", course.id);
+    console.log("URL: http://localhost:3000/courses/" + course.id);
   } catch (error: any) {
-    console.error('Error:', error.message || error)
+    console.error("Error:", error.message || error);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
 
-main()
+main();

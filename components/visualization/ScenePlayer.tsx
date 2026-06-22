@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useVisualizationStore } from '@/lib/visualization/store'
-import type { VisualizationBlock } from '@/lib/visualization/types'
-import { Pause, Play, RotateCcw, SkipBack, SkipForward } from 'lucide-react'
-import { useEffect } from 'react'
-import SceneElement from './SceneElement'
+import { Pause, Play, RotateCcw, SkipBack, SkipForward } from "lucide-react";
+import { useEffect } from "react";
+import { useVisualizationStore } from "@/lib/visualization/store";
+import type { VisualizationBlock } from "@/lib/visualization/types";
+import SceneElement from "./SceneElement";
 
 type ScenePlayerProps = {
-  block: VisualizationBlock
-}
+  block: VisualizationBlock;
+};
 
 export default function ScenePlayer({ block }: ScenePlayerProps) {
   const {
@@ -22,28 +22,28 @@ export default function ScenePlayer({ block }: ScenePlayerProps) {
     togglePlay,
     setSpeed,
     reset,
-  } = useVisualizationStore()
+  } = useVisualizationStore();
 
   // Initialize store when block changes
   useEffect(() => {
-    reset(block.steps.length)
-  }, [block.steps.length, reset])
+    reset(block.steps.length);
+  }, [block.steps.length, reset]);
 
   // Auto-advance timer
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying) return;
     const timer = setInterval(() => {
-      next()
-    }, speed)
-    return () => clearInterval(timer)
-  }, [isPlaying, speed, next])
+      next();
+    }, speed);
+    return () => clearInterval(timer);
+  }, [isPlaying, speed, next]);
 
-  const scene = block.steps[currentStep]
-  if (!scene) return null
+  const scene = block.steps[currentStep];
+  if (!scene) return null;
 
   // Group elements by type for layout
-  const variables = scene.elements.filter((e) => e.type === 'variable')
-  const others = scene.elements.filter((e) => e.type !== 'variable')
+  const variables = scene.elements.filter((e) => e.type === "variable");
+  const others = scene.elements.filter((e) => e.type !== "variable");
 
   return (
     <div className="rounded-xl border border-zinc-700/50 bg-zinc-900/80 backdrop-blur-sm overflow-hidden">
@@ -97,13 +97,9 @@ export default function ScenePlayer({ block }: ScenePlayerProps) {
           <button
             onClick={togglePlay}
             className="p-2.5 rounded-lg bg-zinc-800 text-zinc-100 hover:bg-zinc-700 transition-colors"
-            title={isPlaying ? 'Pause' : 'Play'}
+            title={isPlaying ? "Pause" : "Play"}
           >
-            {isPlaying ? (
-              <Pause className="w-4 h-4" />
-            ) : (
-              <Play className="w-4 h-4" />
-            )}
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           </button>
           <button
             onClick={next}
@@ -137,10 +133,10 @@ export default function ScenePlayer({ block }: ScenePlayerProps) {
           className="h-full transition-all duration-300 ease-out"
           style={{
             width: `${((currentStep + 1) / totalSteps) * 100}%`,
-            background: 'linear-gradient(90deg, #06b6d4, #0d9488, #10b981)',
+            background: "linear-gradient(90deg, #06b6d4, #0d9488, #10b981)",
           }}
         />
       </div>
     </div>
-  )
+  );
 }

@@ -1,18 +1,14 @@
-
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     // JWT strategy: user.id is embedded in the token — no extra DB lookup needed
@@ -78,17 +74,14 @@ export async function GET() {
     });
 
     const progressMap: Record<string, number> = Object.fromEntries(
-      allProgress.map((p) => [p.courseId, p.progress])
+      allProgress.map((p) => [p.courseId, p.progress]),
     );
 
     const coursesWithProgress = courses.map((course) => ({
       ...course,
       _count: {
         ...course._count,
-        lessons: course.modules.reduce(
-          (acc, mod) => acc + mod._count.lessons,
-          0
-        ),
+        lessons: course.modules.reduce((acc, mod) => acc + mod._count.lessons, 0),
       },
       progress: progressMap[course.id] ?? 0,
     }));
@@ -101,9 +94,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching courses:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch courses" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch courses" }, { status: 500 });
   }
 }

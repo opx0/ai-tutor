@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SUBSCRIPTION_PLANS, createOrder } from "@/lib/razorpay";
+import { createOrder, SUBSCRIPTION_PLANS } from "@/lib/razorpay";
 
 // Get subscription plans
 export async function GET() {
@@ -10,10 +10,7 @@ export async function GET() {
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     // Get user's current subscription status
@@ -80,10 +77,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching subscription plans:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch subscription plans" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch subscription plans" }, { status: 500 });
   }
 }
 
@@ -93,20 +87,14 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please sign in." }, { status: 401 });
     }
 
     const body = await req.json();
     const { planId } = body;
 
     if (!planId) {
-      return NextResponse.json(
-        { error: "Plan ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Plan ID is required" }, { status: 400 });
     }
 
     // Get the subscription plan
@@ -117,10 +105,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!plan) {
-      return NextResponse.json(
-        { error: "Subscription plan not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Subscription plan not found" }, { status: 404 });
     }
 
     // Create a Razorpay order with a short receipt ID (max 40 chars)
@@ -159,13 +144,10 @@ export async function POST(req: NextRequest) {
           details: razorpayError.error.description,
           code: razorpayError.error.code || "UNKNOWN_ERROR",
         },
-        { status: razorpayError.statusCode || 500 }
+        { status: razorpayError.statusCode || 500 },
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to create subscription order" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create subscription order" }, { status: 500 });
   }
 }

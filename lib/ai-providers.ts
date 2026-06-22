@@ -15,12 +15,27 @@ export const google = createGoogleGenerativeAI({
 });
 
 // --- Model Selectors ---
+//
+// Model IDs are env-overridable so a regression on a (preview) model can be
+// rolled back instantly via an env var — no code change or redeploy needed.
+// Defaults track Google's *named* replacements for the deprecated gemini-2.5-*
+// models (earliest shutdown 2026-10-16, per ai.google.dev/gemini-api/docs/deprecations):
+//   gemini-2.5-flash -> gemini-3.5-flash        (GA / stable)
+//   gemini-2.5-pro   -> gemini-3.1-pro-preview  (preview; set GEMINI_PRO_MODEL=
+//                       gemini-3.5-flash for a fully-GA path if preview is a concern)
+// gemini-3.1-flash-lite (GA) is the cheap tier reserved for high-volume sub-tasks.
+const FLASH_MODEL = process.env.GEMINI_FLASH_MODEL ?? "gemini-3.5-flash";
+const PRO_MODEL = process.env.GEMINI_PRO_MODEL ?? "gemini-3.1-pro-preview";
+const LITE_MODEL = process.env.GEMINI_LITE_MODEL ?? "gemini-3.1-flash-lite";
 
-/** Fast Gemini for standard course generation and knowledge tests */
-export const geminiFlash = google("gemini-2.5-flash");
+/** Fast, GA model for standard course generation and knowledge tests */
+export const geminiFlash = google(FLASH_MODEL);
 
-/** Powerful Gemini for technical/complex course topics */
-export const geminiPro = google("gemini-2.5-pro");
+/** Most capable model for technical/complex course topics + TA reasoning */
+export const geminiPro = google(PRO_MODEL);
+
+/** Cheapest GA tier, reserved for high-volume sub-tasks (e.g. quizzes) */
+export const geminiLite = google(LITE_MODEL);
 
 // --- Zod Schemas (single source of truth for all AI structured output) ---
 
@@ -57,24 +72,18 @@ export const VisualizationSchema = z
     steps: z.array(SceneStepSchema).min(3).max(8),
   })
   .nullable()
-  .describe(
-    "Step-by-step algorithm visualization. Set to null for pure theory lessons."
-  );
+  .describe("Step-by-step algorithm visualization. Set to null for pure theory lessons.");
 
 export const LessonSchema = z.object({
   title: z.string().describe("Lesson title"),
   summary: z.string().describe("Brief summary of the lesson"),
   content: z
     .string()
-    .describe(
-      "Detailed lesson content using HTML tags (<h1>, <p>, <ul>, <code>, etc.)"
-    ),
+    .describe("Detailed lesson content using HTML tags (<h1>, <p>, <ul>, <code>, etc.)"),
   exercises: z
     .record(z.string(), z.string())
     .optional()
-    .describe(
-      "Map of exercise titles to descriptions. Example: {'Exercise 1': 'Do X'}"
-    ),
+    .describe("Map of exercise titles to descriptions. Example: {'Exercise 1': 'Do X'}"),
   visualization: VisualizationSchema.optional(),
 });
 
@@ -94,12 +103,7 @@ export const QuizQuestionSchema = z.object({
   id: z.string(),
   question: z.string(),
   options: z.array(z.string()).length(4),
-  correctAnswer: z
-    .number()
-    .int()
-    .min(0)
-    .max(3)
-    .describe("Index of the correct answer (0-3)"),
+  correctAnswer: z.number().int().min(0).max(3).describe("Index of the correct answer (0-3)"),
 });
 
 export const QuizSchema = z.object({

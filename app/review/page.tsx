@@ -1,9 +1,5 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useCallback } from "react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
 import {
   Brain,
   ChevronRight,
@@ -13,79 +9,83 @@ import {
   Loader2,
   PartyPopper,
   RotateCcw,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { qualityLabels } from "@/lib/spaced-repetition"
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { qualityLabels } from "@/lib/spaced-repetition";
 
 type ReviewLesson = {
-  id: string
-  title: string
-  description: string | null
-  content: string | null
-  estimatedMinutes: number | null
+  id: string;
+  title: string;
+  description: string | null;
+  content: string | null;
+  estimatedMinutes: number | null;
   module: {
-    title: string
+    title: string;
     course: {
-      id: string
-      title: string
-      slug: string | null
-      color: string | null
-      icon: string | null
-    }
-  }
-}
+      id: string;
+      title: string;
+      slug: string | null;
+      color: string | null;
+      icon: string | null;
+    };
+  };
+};
 
 type Review = {
-  id: string
-  lessonId: string
-  nextReviewAt: string
-  interval: number
-  easeFactor: number
-  repetitions: number
-  lesson: ReviewLesson
-}
+  id: string;
+  lessonId: string;
+  nextReviewAt: string;
+  interval: number;
+  easeFactor: number;
+  repetitions: number;
+  lesson: ReviewLesson;
+};
 
 export default function ReviewPage() {
-  const { data: session, status: authStatus } = useSession()
-  const router = useRouter()
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [loading, setLoading] = useState(true)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [revealed, setRevealed] = useState(false)
-  const [grading, setGrading] = useState(false)
+  const { data: session, status: authStatus } = useSession();
+  const router = useRouter();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
+  const [grading, setGrading] = useState(false);
 
   const fetchReviews = useCallback(async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await fetch("/api/reviews?limit=20")
+      const res = await fetch("/api/reviews?limit=20");
       if (res.ok) {
-        const data = await res.json()
-        setReviews(data.reviews || [])
+        const data = await res.json();
+        setReviews(data.reviews || []);
       }
     } catch {
       // silent fail
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (authStatus === "unauthenticated") {
-      router.push("/auth/signin?callbackUrl=/review")
-      return
+      router.push("/auth/signin?callbackUrl=/review");
+      return;
     }
     if (authStatus === "authenticated") {
-      fetchReviews()
+      fetchReviews();
     }
-  }, [authStatus, router, fetchReviews])
+  }, [authStatus, router, fetchReviews]);
 
-  const currentReview = reviews[currentIndex]
+  const currentReview = reviews[currentIndex];
 
   const handleGrade = async (quality: number) => {
-    if (!currentReview || grading) return
-    setGrading(true)
+    if (!currentReview || grading) return;
+    setGrading(true);
     try {
       await fetch("/api/reviews", {
         method: "POST",
@@ -94,31 +94,31 @@ export default function ReviewPage() {
           lessonId: currentReview.lessonId,
           quality,
         }),
-      })
+      });
 
       // Move to next review
       if (currentIndex < reviews.length - 1) {
-        setCurrentIndex((i) => i + 1)
-        setRevealed(false)
+        setCurrentIndex((i) => i + 1);
+        setRevealed(false);
       } else {
         // All done — refetch to see if more have come due
-        setCurrentIndex(0)
-        setRevealed(false)
-        await fetchReviews()
+        setCurrentIndex(0);
+        setRevealed(false);
+        await fetchReviews();
       }
     } catch {
       // silent fail
     } finally {
-      setGrading(false)
+      setGrading(false);
     }
-  }
+  };
 
   if (authStatus === "loading" || loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    )
+    );
   }
 
   // All reviews done
@@ -129,21 +129,21 @@ export default function ReviewPage() {
           <PartyPopper className="w-16 h-16 text-chart-2" />
           <h1 className="text-2xl font-bold">All caught up!</h1>
           <p className="text-muted-foreground">
-            No lessons due for review right now. Complete more lessons to add
-            them to your review queue.
+            No lessons due for review right now. Complete more lessons to add them to your review
+            queue.
           </p>
           <Button asChild>
             <Link href="/courses">Browse Courses</Link>
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
-  const lesson = currentReview.lesson
-  const course = lesson.module.course
-  const courseHref = course.slug || course.id
-  const accentColor = course.color || "hsl(var(--primary))"
+  const lesson = currentReview.lesson;
+  const course = lesson.module.course;
+  const courseHref = course.slug || course.id;
+  const accentColor = course.color || "hsl(var(--primary))";
 
   // Create a summary/prompt from the lesson content
   // Show title + first paragraph as the "prompt"
@@ -153,7 +153,7 @@ export default function ReviewPage() {
         .replace(/\s+/g, " ")
         .trim()
         .slice(0, 300)
-    : lesson.description || ""
+    : lesson.description || "";
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-2xl">
@@ -197,8 +197,7 @@ export default function ReviewPage() {
           <CardTitle className="text-lg">{lesson.title}</CardTitle>
           {lesson.estimatedMinutes && (
             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-              <Clock className="w-3 h-3" />
-              ~{lesson.estimatedMinutes} min
+              <Clock className="w-3 h-3" />~{lesson.estimatedMinutes} min
             </div>
           )}
         </CardHeader>
@@ -216,11 +215,7 @@ export default function ReviewPage() {
 
           {/* Reveal button */}
           {!revealed && (
-            <Button
-              variant="outline"
-              className="w-full gap-2"
-              onClick={() => setRevealed(true)}
-            >
+            <Button variant="outline" className="w-full gap-2" onClick={() => setRevealed(true)}>
               <Eye className="w-4 h-4" />
               Reveal full lesson
             </Button>
@@ -230,10 +225,7 @@ export default function ReviewPage() {
           {revealed && (
             <div className="space-y-3">
               <Button variant="outline" size="sm" className="gap-2" asChild>
-                <Link
-                  href={`/courses/${courseHref}/${lesson.id}`}
-                  target="_blank"
-                >
+                <Link href={`/courses/${courseHref}/${lesson.id}`} target="_blank">
                   <EyeOff className="w-3.5 h-3.5" />
                   Open full lesson
                 </Link>
@@ -259,9 +251,7 @@ export default function ReviewPage() {
               disabled={grading}
             >
               <span className="text-sm font-medium">Again</span>
-              <span className="text-[10px] text-muted-foreground">
-                1 day
-              </span>
+              <span className="text-[10px] text-muted-foreground">1 day</span>
             </Button>
             <Button
               variant="outline"
@@ -300,5 +290,5 @@ export default function ReviewPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

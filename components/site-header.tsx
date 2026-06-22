@@ -1,21 +1,21 @@
 "use client";
 
 import {
-    Bookmark,
-    BookOpen,
-    CreditCard,
-    LayoutDashboard,
-    LogOut,
-    Map,
-    StickyNote,
-    Flame,
-    Orbit,
+  Bookmark,
+  BookOpen,
+  CreditCard,
+  Flame,
+  LayoutDashboard,
+  LogOut,
+  Map,
+  Orbit,
+  StickyNote,
 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,7 +38,10 @@ function StreakIndicator() {
   if (streak === null || streak < 1) return null;
 
   return (
-    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-bold text-sm shadow-sm cursor-help transition-all hover:bg-orange-500/15" title={`${streak} day streak`}>
+    <div
+      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 font-bold text-sm shadow-sm cursor-help transition-all hover:bg-orange-500/15"
+      title={`${streak} day streak`}
+    >
       <Flame className="w-4 h-4 fill-current" suppressHydrationWarning />
       <span>{streak}</span>
     </div>
@@ -66,9 +69,9 @@ export function SiteHeader() {
       navTabs.map((tab) =>
         tab.type === "separator"
           ? { type: "separator" as const }
-          : { title: tab.title, icon: tab.icon }
+          : { title: tab.title, icon: tab.icon },
       ),
-    []
+    [],
   );
 
   // Find the active index: exact match first, then best prefix match.
@@ -77,9 +80,7 @@ export function SiteHeader() {
     if (!pathname) return null;
 
     // Exact match first
-    const exact = navTabs.findIndex(
-      (tab) => "href" in tab && tab.href === pathname
-    );
+    const exact = navTabs.findIndex((tab) => "href" in tab && tab.href === pathname);
     if (exact !== -1) return exact;
 
     // Prefix match: find the longest matching href (most specific)
@@ -104,17 +105,17 @@ export function SiteHeader() {
         router.push(tab.href);
       }
     },
-    [router]
+    [router],
   );
 
-  const isCoursePage = pathname && pathname.split('/').length >= 3 && pathname.startsWith('/courses/');
-  if (pathname?.startsWith("/auth") || pathname?.startsWith("/playground") || isCoursePage) return null;
+  const isCoursePage =
+    pathname && pathname.split("/").length >= 3 && pathname.startsWith("/courses/");
+  if (pathname?.startsWith("/auth") || pathname?.startsWith("/playground") || isCoursePage)
+    return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none mt-4 px-4">
       <header className="pointer-events-auto w-full max-w-7xl flex justify-between items-center relative h-14 bg-background/30 dark:bg-black/30 backdrop-blur-3xl border border-white/10 dark:border-white/5 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.02)] px-4">
-
-
         {/* Logo - Fixed Left */}
         <div className="flex-shrink-0 flex items-center">
           <Link href="/" className="flex items-center gap-2 group">
@@ -155,20 +156,23 @@ export function SiteHeader() {
           ) : status === "authenticated" ? (
             <div className="flex items-center gap-2 bg-background/50 backdrop-blur-xl border border-border/50 p-1 rounded-full shadow-sm">
               <StreakIndicator /> {/* Added StreakFlame component */}
-              <Link href="/profile" className="rounded-full ring-2 ring-transparent transition-all hover:ring-primary/50 hover:shadow-[0_0_15px_hsl(var(--primary)/0.5)]">
+              <Link
+                href="/profile"
+                className="rounded-full ring-2 ring-transparent transition-all hover:ring-primary/50 hover:shadow-[0_0_15px_hsl(var(--primary)/0.5)]"
+              >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={session?.user?.image || ""}
-                    alt={session?.user?.name || ""}
-                  />
+                  <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
                   <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">
                     {session?.user?.name
-                      ? session.user.name.split(" ").map((n) => n[0]).join("").toUpperCase()
+                      ? session.user.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
                       : "U"}
                   </AvatarFallback>
                 </Avatar>
               </Link>
-
               <Button
                 variant="ghost"
                 size="icon"

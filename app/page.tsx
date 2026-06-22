@@ -1,17 +1,28 @@
-
 "use client";
 
-import MotionWrapper from "@/components/motion-wrapper";
-import { Button } from "@/components/ui/button";
-import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
-import { motion, Variants } from "framer-motion";
-import { ArrowRight, BookMarked, BookOpen, Brain, CodeXml, Github, Laptop, Lightbulb, MessageCircle, Sparkles, Star, Zap } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { motion, type Variants } from "framer-motion";
+import {
+  ArrowRight,
+  BookMarked,
+  BookOpen,
+  Brain,
+  CodeXml,
+  Github,
+  Laptop,
+  Lightbulb,
+  MessageCircle,
+  Sparkles,
+  Star,
+  Zap,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-
+import MotionWrapper from "@/components/motion-wrapper";
+import { Button } from "@/components/ui/button";
+import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
 
 const fadeIn: Variants = {
   hidden: { opacity: 0 },
@@ -69,29 +80,47 @@ export default function Home() {
       <HeroHighlight containerClassName="py-20 md:py-32 h-auto min-h-screen overflow-hidden">
         {/* Floating elements animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <MotionWrapper variants={blobVariants} animate="animate" className="absolute -top-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-          <MotionWrapper variants={blobVariants} animate="animate" transition={{ delay: 2 }} className="absolute top-60 -right-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
-          <MotionWrapper variants={blobVariants} animate="animate" transition={{ delay: 4 }} className="absolute -bottom-40 left-20 w-64 h-64 bg-green-500/5 rounded-full blur-3xl" />
+          <MotionWrapper
+            variants={blobVariants}
+            animate="animate"
+            className="absolute -top-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"
+          />
+          <MotionWrapper
+            variants={blobVariants}
+            animate="animate"
+            transition={{ delay: 2 }}
+            className="absolute top-60 -right-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"
+          />
+          <MotionWrapper
+            variants={blobVariants}
+            animate="animate"
+            transition={{ delay: 4 }}
+            className="absolute -bottom-40 left-20 w-64 h-64 bg-green-500/5 rounded-full blur-3xl"
+          />
         </div>
 
         <div className="container px-4 mx-auto max-w-6xl relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <MotionWrapper variants={fadeIn}>
               <div className="text-left md:pr-8">
-                <MotionWrapper variants={slideUp} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary mb-6">
+                <MotionWrapper
+                  variants={slideUp}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary mb-6"
+                >
                   <Sparkles className="h-3.5 w-3.5 mr-2" />
                   <span>AI-powered learning platform</span>
                 </MotionWrapper>
                 <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }}>
                   <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-foreground">
-                    Think <Highlight className="text-black dark:text-white">Smarter</Highlight>,<br />
+                    Think <Highlight className="text-black dark:text-white">Smarter</Highlight>,
+                    <br />
                     Not Harder
                   </h1>
                 </MotionWrapper>
                 <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }}>
                   <p className="text-xl text-muted-foreground max-w-2xl mb-10">
-                    The ultimate tool for understanding any information that matters
-                    most to you, built with Generative AI.
+                    The ultimate tool for understanding any information that matters most to you,
+                    built with Generative AI.
                   </p>
                 </MotionWrapper>
                 <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }}>
@@ -126,7 +155,11 @@ export default function Home() {
                 </MotionWrapper>
               </div>
             </MotionWrapper>
-            <MotionWrapper variants={fadeIn} transition={{ delay: 1.2 }} className="hidden md:block">
+            <MotionWrapper
+              variants={fadeIn}
+              transition={{ delay: 1.2 }}
+              className="hidden md:block"
+            >
               <div className="relative rounded-xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-all duration-300 group">
                 <Image
                   src="/images/hero-image.jpg"
@@ -138,7 +171,9 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent mix-blend-overlay group-hover:opacity-70 transition-opacity"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent text-white transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <p className="text-sm font-medium">Experience personalized learning with AI that adapts to your needs</p>
+                  <p className="text-sm font-medium">
+                    Experience personalized learning with AI that adapts to your needs
+                  </p>
                 </div>
               </div>
             </MotionWrapper>
@@ -154,25 +189,33 @@ export default function Home() {
               Your Personalized AI Learning Assistant
             </h2>
             <p className="text-lg text-muted-foreground text-center max-w-3xl mx-auto mb-24">
-              Experience a revolutionary approach to learning with our AI-powered platform that adapts to your unique needs
+              Experience a revolutionary approach to learning with our AI-powered platform that
+              adapts to your unique needs
             </p>
           </MotionWrapper>
 
           {/* Feature 1 */}
-          <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }} className="grid md:grid-cols-5 gap-16 mb-32 items-center">
+          <MotionWrapper
+            variants={slideUp}
+            transition={{ delay: 0.3 }}
+            className="grid md:grid-cols-5 gap-16 mb-32 items-center"
+          >
             <div className="space-y-6 order-2 md:order-1 md:col-span-2">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10">
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-2xl font-semibold text-foreground">
-                AI-Powered Learning Paths
-              </h3>
+              <h3 className="text-2xl font-semibold text-foreground">AI-Powered Learning Paths</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                LearnLM analyzes your learning style and adapts in real-time, creating a personalized path that evolves with your progress.
+                LearnLM analyzes your learning style and adapts in real-time, creating a
+                personalized path that evolves with your progress.
               </p>
               <div className="pt-2">
-                <Link href="/dashboard" className="text-primary hover:text-primary/80 font-medium inline-flex items-center group">
-                  Try it yourself <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <Link
+                  href="/dashboard"
+                  className="text-primary hover:text-primary/80 font-medium inline-flex items-center group"
+                >
+                  Try it yourself{" "}
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
@@ -191,7 +234,11 @@ export default function Home() {
           </MotionWrapper>
 
           {/* Feature 2 */}
-          <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }} className="grid md:grid-cols-5 gap-16 mb-32 items-center">
+          <MotionWrapper
+            variants={slideUp}
+            transition={{ delay: 0.6 }}
+            className="grid md:grid-cols-5 gap-16 mb-32 items-center"
+          >
             <div className="rounded-xl overflow-hidden shadow-xl md:col-span-3 transform hover:scale-[1.02] transition-all duration-300">
               <div className="relative">
                 <Image
@@ -210,29 +257,43 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-semibold text-foreground">Interactive LearnLMing</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Engage in natural dialogue with context-aware AI that remembers your history and provides tailored explanations to your questions.
+                Engage in natural dialogue with context-aware AI that remembers your history and
+                provides tailored explanations to your questions.
               </p>
               <div className="pt-2">
-                <Link href="/dashboard" className="text-blue-500 hover:text-blue-400 font-medium inline-flex items-center group">
-                  Start a conversation <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <Link
+                  href="/dashboard"
+                  className="text-blue-500 hover:text-blue-400 font-medium inline-flex items-center group"
+                >
+                  Start a conversation{" "}
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
           </MotionWrapper>
 
           {/* Feature 3 */}
-          <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }} className="grid md:grid-cols-5 gap-16 mb-32 items-center">
+          <MotionWrapper
+            variants={slideUp}
+            transition={{ delay: 0.9 }}
+            className="grid md:grid-cols-5 gap-16 mb-32 items-center"
+          >
             <div className="space-y-6 order-2 md:order-1 md:col-span-2">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-400/20 to-yellow-400/10">
                 <Lightbulb className="h-6 w-6 text-amber-500" />
               </div>
               <h3 className="text-2xl font-semibold text-foreground">Source-Based Learning</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                See exactly where information comes from with direct source citations, building trust and deeper understanding of materials.
+                See exactly where information comes from with direct source citations, building
+                trust and deeper understanding of materials.
               </p>
               <div className="pt-2">
-                <Link href="/dashboard" className="text-amber-500 hover:text-amber-400 font-medium inline-flex items-center group">
-                  Explore sources <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <Link
+                  href="/dashboard"
+                  className="text-amber-500 hover:text-amber-400 font-medium inline-flex items-center group"
+                >
+                  Explore sources{" "}
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
@@ -251,7 +312,11 @@ export default function Home() {
           </MotionWrapper>
 
           {/* Feature 4 */}
-          <MotionWrapper variants={slideUp} transition={{ delay: 1.2 }} className="grid md:grid-cols-5 gap-16 mb-16 items-center">
+          <MotionWrapper
+            variants={slideUp}
+            transition={{ delay: 1.2 }}
+            className="grid md:grid-cols-5 gap-16 mb-16 items-center"
+          >
             <div className="rounded-xl overflow-hidden shadow-xl md:col-span-3 transform hover:scale-[1.02] transition-all duration-300">
               <div className="relative">
                 <Image
@@ -270,11 +335,16 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-semibold text-foreground">Learn Anywhere, Anytime</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Access your learning materials from any device with real-time synchronization, continuing your journey wherever you go.
+                Access your learning materials from any device with real-time synchronization,
+                continuing your journey wherever you go.
               </p>
               <div className="pt-2">
-                <Link href="/dashboard" className="text-teal-500 hover:text-teal-400 font-medium inline-flex items-center group">
-                  Get started <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <Link
+                  href="/dashboard"
+                  className="text-teal-500 hover:text-teal-400 font-medium inline-flex items-center group"
+                >
+                  Get started{" "}
+                  <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
@@ -289,8 +359,8 @@ export default function Home() {
             We value your privacy and do not use your personal data to train LearnLM
           </h2>
           <p className="text-muted-foreground mb-8">
-            LearnLM does not use your personal data, including your source materials,
-            queries, and the responses from the model for training.
+            LearnLM does not use your personal data, including your source materials, queries, and
+            the responses from the model for training.
           </p>
           <div className="flex justify-center">
             <div className="bg-primary/10 p-4 rounded-full">
@@ -311,13 +381,18 @@ export default function Home() {
               What Our Users Say
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of students and professionals who have transformed their learning experience
+              Join thousands of students and professionals who have transformed their learning
+              experience
             </p>
           </MotionWrapper>
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Testimonial 1 */}
-            <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }} className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300">
+            <MotionWrapper
+              variants={slideUp}
+              transition={{ delay: 0.3 }}
+              className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300"
+            >
               <div className="flex items-center mb-4">
                 <div className="flex-shrink-0 mr-4">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -337,13 +412,19 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
-                "LearnLM has completely changed how I approach difficult programming concepts. The personalized learning paths helped me master algorithms in half the time it would have taken otherwise."
+                "LearnLM has completely changed how I approach difficult programming concepts. The
+                personalized learning paths helped me master algorithms in half the time it would
+                have taken otherwise."
               </p>
               <p className="text-sm text-muted-foreground">2 weeks ago</p>
             </MotionWrapper>
 
             {/* Testimonial 2 */}
-            <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }} className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300">
+            <MotionWrapper
+              variants={slideUp}
+              transition={{ delay: 0.6 }}
+              className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300"
+            >
               <div className="flex items-center mb-4">
                 <div className="flex-shrink-0 mr-4">
                   <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
@@ -363,13 +444,19 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
-                "Studying anatomy became so much easier with LearnLM. The interactive explanations and source-based learning helped me connect concepts that I was struggling with for months."
+                "Studying anatomy became so much easier with LearnLM. The interactive explanations
+                and source-based learning helped me connect concepts that I was struggling with for
+                months."
               </p>
               <p className="text-sm text-muted-foreground">1 month ago</p>
             </MotionWrapper>
 
             {/* Testimonial 3 */}
-            <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }} className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300">
+            <MotionWrapper
+              variants={slideUp}
+              transition={{ delay: 0.9 }}
+              className="bg-card rounded-xl p-8 shadow-lg border border-muted hover:shadow-xl transition-all duration-300"
+            >
               <div className="flex items-center mb-4">
                 <div className="flex-shrink-0 mr-4">
                   <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center">
@@ -389,7 +476,9 @@ export default function Home() {
                 <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
               </div>
               <p className="text-foreground leading-relaxed mb-4">
-                "I needed to quickly learn about market analysis for a new project. LearnLM created a custom course that fit my schedule and learning style. The mobile access was perfect for my busy lifestyle."
+                "I needed to quickly learn about market analysis for a new project. LearnLM created
+                a custom course that fit my schedule and learning style. The mobile access was
+                perfect for my busy lifestyle."
               </p>
               <p className="text-sm text-muted-foreground">3 months ago</p>
             </MotionWrapper>
@@ -411,7 +500,11 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-10">
             {/* Use Case 1 */}
-            <MotionWrapper variants={slideUp} transition={{ delay: 0.3 }} className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]">
+            <MotionWrapper
+              variants={slideUp}
+              transition={{ delay: 0.3 }}
+              className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]"
+            >
               <div className="flex flex-col items-center text-center mb-5">
                 <div className="bg-gradient-to-br from-primary/20 to-primary/5 p-4 rounded-full mb-4">
                   <BookOpen className="h-8 w-8 text-primary" />
@@ -419,12 +512,17 @@ export default function Home() {
                 <h3 className="text-xl font-medium text-foreground">Study Smarter, Not Harder</h3>
               </div>
               <p className="text-muted-foreground text-lg leading-relaxed text-center">
-                Break down difficult concepts from textbooks and research papers into digestible, easy-to-understand explanations.
+                Break down difficult concepts from textbooks and research papers into digestible,
+                easy-to-understand explanations.
               </p>
             </MotionWrapper>
 
             {/* Use Case 2 */}
-            <MotionWrapper variants={slideUp} transition={{ delay: 0.6 }} className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]">
+            <MotionWrapper
+              variants={slideUp}
+              transition={{ delay: 0.6 }}
+              className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]"
+            >
               <div className="flex flex-col items-center text-center mb-5">
                 <div className="bg-gradient-to-br from-blue-400/20 to-blue-400/5 p-4 rounded-full mb-4">
                   <Brain className="h-8 w-8 text-blue-500" />
@@ -432,12 +530,17 @@ export default function Home() {
                 <h3 className="text-xl font-medium text-foreground">Organize Your Knowledge</h3>
               </div>
               <p className="text-muted-foreground text-lg leading-relaxed text-center">
-                Extract key insights from multiple sources and connect related concepts to create comprehensive knowledge maps.
+                Extract key insights from multiple sources and connect related concepts to create
+                comprehensive knowledge maps.
               </p>
             </MotionWrapper>
 
             {/* Use Case 3 */}
-            <MotionWrapper variants={slideUp} transition={{ delay: 0.9 }} className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]">
+            <MotionWrapper
+              variants={slideUp}
+              transition={{ delay: 0.9 }}
+              className="p-8 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-4px]"
+            >
               <div className="flex flex-col items-center text-center mb-5">
                 <div className="bg-gradient-to-br from-amber-400/20 to-amber-400/5 p-4 rounded-full mb-4">
                   <Zap className="h-8 w-8 text-amber-500" />
@@ -445,7 +548,8 @@ export default function Home() {
                 <h3 className="text-xl font-medium text-foreground">Master New Skills Faster</h3>
               </div>
               <p className="text-muted-foreground text-lg leading-relaxed text-center">
-                Learn new subjects faster with interactive explanations and practical examples that reinforce theoretical concepts.
+                Learn new subjects faster with interactive explanations and practical examples that
+                reinforce theoretical concepts.
               </p>
             </MotionWrapper>
           </div>
@@ -461,8 +565,17 @@ export default function Home() {
 
         {/* Floating elements animation */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <MotionWrapper variants={blobVariants} animate="animate" transition={{ delay: 4 }} className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-          <MotionWrapper variants={blobVariants} animate="animate" className="absolute bottom-40 -left-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
+          <MotionWrapper
+            variants={blobVariants}
+            animate="animate"
+            transition={{ delay: 4 }}
+            className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"
+          />
+          <MotionWrapper
+            variants={blobVariants}
+            animate="animate"
+            className="absolute bottom-40 -left-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl"
+          />
         </div>
 
         <div className="container px-4 mx-auto text-center max-w-4xl relative z-10">
@@ -514,7 +627,11 @@ export default function Home() {
       </section>
 
       {/* Floating Chat Button */}
-      <MotionWrapper variants={bounceSlow} animate="animate" className="fixed bottom-6 right-6 z-50">
+      <MotionWrapper
+        variants={bounceSlow}
+        animate="animate"
+        className="fixed bottom-6 right-6 z-50"
+      >
         <Button
           className="h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-white p-0 flex items-center justify-center group"
           aria-label="Chat with AI Assistant"
@@ -533,11 +650,16 @@ export default function Home() {
                 <span className="font-semibold text-lg">LearnLM</span>
               </Link>
               <p className="text-sm text-muted-foreground mb-4">
-                The ultimate AI-powered learning platform that adapts to your unique needs and helps you master any subject.
+                The ultimate AI-powered learning platform that adapts to your unique needs and helps
+                you master any subject.
               </p>
               <div className="flex space-x-4">
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" asChild>
-                  <Link href={process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/qxnZero"} target="_blank" rel="noopener noreferrer">
+                  <Link
+                    href={process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/qxnZero"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Github className="h-4 w-4" />
                     <span className="sr-only">GitHub</span>
                   </Link>
@@ -548,20 +670,76 @@ export default function Home() {
             <div>
               <h3 className="font-medium mb-4">Product</h3>
               <ul className="space-y-2">
-                <li><Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">Dashboard</Link></li>
-                <li><Link href="/courses" className="text-sm text-muted-foreground hover:text-foreground">Courses</Link></li>
-                <li><Link href="/courses/dsa-mastery" className="text-sm text-muted-foreground hover:text-foreground">DSA Mastery Course</Link></li>
-                <li><Link href="/bookmarks" className="text-sm text-muted-foreground hover:text-foreground">Bookmarks</Link></li>
-                <li><Link href="/notes" className="text-sm text-muted-foreground hover:text-foreground">Notes</Link></li>
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/courses"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Courses
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/courses/dsa-mastery"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    DSA Mastery Course
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/bookmarks"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Bookmarks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/notes"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Notes
+                  </Link>
+                </li>
               </ul>
             </div>
 
             <div>
               <h3 className="font-medium mb-4">Legal</h3>
               <ul className="space-y-2">
-                <li><Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground">Terms of Service</Link></li>
-                <li><Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
-                <li><Link href="/cookies" className="text-sm text-muted-foreground hover:text-foreground">Cookie Policy</Link></li>
+                <li>
+                  <Link
+                    href="/terms"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/privacy"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/cookies"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
